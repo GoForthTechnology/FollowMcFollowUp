@@ -29,6 +29,9 @@ class Observation {
   }
 
   IconData? getIcon() {
+    if (flow != null) {
+      return null;
+    }
     if (dischargeSummary != null && dischargeSummary!.dischargeType.isMucus) {
       return Icons.child_care;
     }
