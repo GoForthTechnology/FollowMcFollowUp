@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Observation {
   final Flow? flow;
   final DischargeSummary? dischargeSummary;
@@ -14,6 +16,23 @@ class Observation {
       parts.add(dischargeSummary.toString());
     }
     return parts.join(" ");
+  }
+
+  Color getStickerColor() {
+    if (flow != null) {
+      return Colors.red;
+    }
+    if (dischargeSummary != null && !dischargeSummary!.dischargeType.isMucus) {
+      return Colors.green;
+    }
+    return Colors.white;
+  }
+
+  IconData? getIcon() {
+    if (dischargeSummary != null && dischargeSummary!.dischargeType.isMucus) {
+      return Icons.child_care;
+    }
+    return null;
   }
 }
 
@@ -35,17 +54,29 @@ enum Flow {
         return "VL";
     }
   }
+
+  bool get requiresDischargeSummary {
+    switch (this) {
+      case Flow.heavy:
+      case Flow.medium:
+        return false;
+      case Flow.light:
+      case Flow.veryLight:
+        return true;
+    }
+  }
 }
 
 class DischargeSummary {
   final DischargeType dischargeType;
   final DischargeFrequency dischargeFrequency;
+  final List<DischargeDescriptor> dischargeDescriptors;
 
-  DischargeSummary(this.dischargeType, this.dischargeFrequency);
+  DischargeSummary(this.dischargeType, this.dischargeFrequency, this.dischargeDescriptors);
 
   @override
   String toString() {
-    return "${dischargeType.code}${dischargeFrequency.code}";
+    return "${dischargeType.code}${dischargeDescriptors.join("")} ${dischargeFrequency.code}";
   }
 }
 
@@ -85,6 +116,23 @@ enum DischargeType {
         return "10";
     }
   }
+
+  bool get isMucus {
+    switch (this) {
+      case DischargeType.dry:
+      case DischargeType.wetWithoutLubrication:
+      case DischargeType.dampWithoutLubrication:
+      case DischargeType.shinyWithoutLubrication:
+        return false;
+      case DischargeType.sticky:
+      case DischargeType.tacky:
+      case DischargeType.wetWithLubrication:
+      case DischargeType.dampWithLubrication:
+      case DischargeType.shinyWithLubrication:
+      case DischargeType.stretchy:
+        return true;
+    }
+  }
 }
 
 enum DischargeFrequency {
@@ -105,5 +153,41 @@ enum DischargeFrequency {
         return "AD";
     }
   }
+}
 
+enum DischargeDescriptor {
+  brown,
+  cloudy,
+  cloudyClear,
+  gummy,
+  clear,
+  lubricative,
+  pasty,
+  yellow;
+
+  String get code {
+    switch (this) {
+      case DischargeDescriptor.brown:
+        return "B";
+      case DischargeDescriptor.cloudy:
+        return "C";
+      case DischargeDescriptor.cloudyClear:
+        return "C/K";
+      case DischargeDescriptor.gummy:
+        return "G";
+      case DischargeDescriptor.clear:
+        return "K";
+      case DischargeDescriptor.lubricative:
+        return "L";
+      case DischargeDescriptor.pasty:
+        return "P";
+      case DischargeDescriptor.yellow:
+        return "Y";
+    }
+  }
+
+  @override
+  String toString() {
+    return code;
+  }
 }

@@ -1,7 +1,7 @@
 
 import 'dart:math';
-import 'package:dart_numerics/dart_numerics.dart' as numerics;
 import '../models/observation.dart';
+import 'gamma.dart';
 
 abstract class Recipe {
   List<Observation> getObservations();
@@ -25,6 +25,54 @@ class CycleRecipe extends Recipe {
     }
     return observations;
   }
+
+  static CycleRecipe standardRecipe = CycleRecipe(
+    FlowRecipe(
+        NormalDistribution(5, 1),
+        Flow.heavy,
+        Flow.veryLight
+    ),
+    PreBuildUpRecipe(
+      NormalDistribution(4, 1),
+      nonMucusDischargeGenerator,
+    ),
+    BuildUpRecipe(
+      NormalDistribution(4, 1),
+      NormalDistribution(3, 1),
+      peakTypeDischargeGenerator,
+      nonPeakTypeDischargeGenerator,
+    ),
+    PostPeakRecipe(
+      NormalDistribution(12, 1),
+      NormalDistribution(1, 1),
+      nonPeakTypeDischargeGenerator,
+      nonMucusDischargeGenerator,
+    ),
+  );
+
+  static final DischargeSummaryGenerator nonMucusDischargeGenerator = DischargeSummaryGenerator(
+      DischargeSummary(DischargeType.dry, DischargeFrequency.allDay, []), [
+        AlternativeDischarge(
+            DischargeSummary(DischargeType.shinyWithoutLubrication, DischargeFrequency.twice, []),
+            0.5,
+        )
+      ]);
+
+  static final DischargeSummaryGenerator peakTypeDischargeGenerator = DischargeSummaryGenerator(
+      DischargeSummary(DischargeType.stretchy, DischargeFrequency.twice, [DischargeDescriptor.clear]), [
+    AlternativeDischarge(
+      DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.clear]),
+      0.5,
+    )
+  ]);
+
+  static final DischargeSummaryGenerator nonPeakTypeDischargeGenerator = DischargeSummaryGenerator(
+      DischargeSummary(DischargeType.sticky, DischargeFrequency.twice, [DischargeDescriptor.cloudy]), [
+    AlternativeDischarge(
+      DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
+      0.5,
+    )
+  ]);
 }
 
 class FlowRecipe extends Recipe {
@@ -40,8 +88,11 @@ class FlowRecipe extends Recipe {
   List<Observation> getObservations() {
     List<Observation> observations = [];
     for (var flow in _flowDistribution.get(flowLength.get())) {
-      // TODO: add discharge type for L and VL days
-      observations.add(Observation(flow, null));
+      DischargeSummary? dischargeSummary;
+      if (flow.requiresDischargeSummary) {
+        dischargeSummary = DischargeSummary(DischargeType.dry, DischargeFrequency.once, []);
+      }
+      observations.add(Observation(flow, dischargeSummary));
     }
     return observations;
   }
@@ -67,16 +118,41 @@ class FlowRecipe extends Recipe {
   }
 }
 
+class AlternativeDischarge {
+  final DischargeSummary summary;
+  final double probability;
+
+  AlternativeDischarge(this.summary, this.probability);
+}
+
+class DischargeSummaryGenerator {
+  final DischargeSummary _typicalDischarge;
+  final List<AlternativeDischarge> _alternatives;
+
+  DischargeSummaryGenerator(this._typicalDischarge, this._alternatives);
+
+
+  DischargeSummary get() {
+    for (var alternative in List.from(_alternatives)..shuffle()) {
+      if (Random().nextDouble() >= alternative.probability) {
+        return alternative.summary;
+      }
+    }
+    return _typicalDischarge;
+  }
+}
+
 class PreBuildUpRecipe extends Recipe {
   final NormalDistribution _length;
+  final DischargeSummaryGenerator _dischargeSummaryGenerator;
 
-  PreBuildUpRecipe(this._length);
+  PreBuildUpRecipe(this._length, this._dischargeSummaryGenerator);
 
   @override
   List<Observation> getObservations() {
     List<Observation> observation = [];
     for (int i=0; i<_length.get(); i++) {
-      observation.add(Observation(null, DischargeSummary(DischargeType.dry, DischargeFrequency.allDay)));
+      observation.add(Observation(null, _dischargeSummaryGenerator.get()));
     }
     return observation;
   }
@@ -84,14 +160,21 @@ class PreBuildUpRecipe extends Recipe {
 
 class BuildUpRecipe extends Recipe {
   final NormalDistribution _length;
+  final NormalDistribution _peakTypeLength;
+  final DischargeSummaryGenerator _peakTypeDischargeGenerator;
+  final DischargeSummaryGenerator _nonPeakTypeDischargeGenerator;
 
-  BuildUpRecipe(this._length);
+  BuildUpRecipe(this._length, this._peakTypeLength, this._peakTypeDischargeGenerator, this._nonPeakTypeDischargeGenerator);
 
   @override
   List<Observation> getObservations() {
     List<Observation> observation = [];
-    for (int i=0; i<_length.get(); i++) {
-      observation.add(Observation(null, DischargeSummary(DischargeType.sticky, DischargeFrequency.once)));
+    int length = _length.get();
+    int nonPeakTypeLength = length - _peakTypeLength.get();
+    for (int i=0; i<length; i++) {
+      var dischargeSummary = observation.length < nonPeakTypeLength ?
+          _nonPeakTypeDischargeGenerator.get() : _peakTypeDischargeGenerator.get();
+      observation.add(Observation(null, dischargeSummary));
     }
     return observation;
   }
@@ -99,14 +182,20 @@ class BuildUpRecipe extends Recipe {
 
 class PostPeakRecipe extends Recipe {
   final NormalDistribution _length;
+  final NormalDistribution _mucusLength;
+  final DischargeSummaryGenerator _nonPeakTypeMucusDischargeGenerator;
+  final DischargeSummaryGenerator _nonMucusDischargeGenerator;
 
-  PostPeakRecipe(this._length);
+  PostPeakRecipe(this._length, this._mucusLength, this._nonPeakTypeMucusDischargeGenerator, this._nonMucusDischargeGenerator);
 
   @override
   List<Observation> getObservations() {
     List<Observation> observation = [];
+    int mucusLength = _mucusLength.get();
     for (int i=0; i<_length.get(); i++) {
-      observation.add(Observation(null, DischargeSummary(DischargeType.dry, DischargeFrequency.once)));
+      var dischargeSummary = observation.length < mucusLength ?
+          _nonPeakTypeMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
+      observation.add(Observation(null, dischargeSummary));
     }
     return observation;
   }
@@ -139,10 +228,10 @@ class GamaDistribution {
   final double cachedFactor;
 
   GamaDistribution(this.shape, this.scale) :
-        cachedFactor = 1/(numerics.gamma(shape) * pow(scale, shape));
+        cachedFactor = 1/(gamma(shape) * pow(scale, shape));
 
   double cdf(double x) {
-    return cachedFactor * pow(x, shape - 1) * pow(numerics.e, -1 * x / scale);
+    return cachedFactor * pow(x, shape - 1) * pow(e, -1 * x / scale);
   }
 }
 

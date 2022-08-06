@@ -53,10 +53,12 @@ packages:
   dart_numerics:
     dependency: "direct main"
     description:
-      name: dart_numerics
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.6"
+      path: "."
+      ref: b819be5c908f76f350772b510aec76c1705397e6
+      resolved-ref: b819be5c908f76f350772b510aec76c1705397e6
+      url: "https://github.com/zlumyo/dart_numerics"
+    source: git
+    version: "0.0.7-SNAPSHOT"
   fake_async:
     dependency: transitive
     description:
