@@ -6,12 +6,8 @@ import 'package:fmfu/utils/cycle_recipe.dart';
 class ChartPage extends StatelessWidget {
   const ChartPage({Key? key}) : super(key: key);
 
-  static List<List<Observation>> cycles = [
-    CycleRecipe.standardRecipe.getObservations(),
-    CycleRecipe.standardRecipe.getObservations(),
-    CycleRecipe.standardRecipe.getObservations(),
-    CycleRecipe.standardRecipe.getObservations(),
-  ];
+  static List<List<Observation>> cycles = List.generate(
+      50, (i) => CycleRecipe.standardRecipe.getObservations());
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +22,9 @@ class ChartPage extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
         ),
-        child: Column(children: _createRows(context))
+        child: SingleChildScrollView(
+          child: Column(children: _createRows(context)),
+        )
       ),
     );
   }
