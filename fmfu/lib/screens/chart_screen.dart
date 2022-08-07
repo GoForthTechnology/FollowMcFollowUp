@@ -17,14 +17,21 @@ class ChartPage extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: const Text("Grid Page"),
       ),
+      // TODO: figure out how to make horizontal scrolling work...
       body: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
         ),
-        child: SingleChildScrollView(
-          child: Column(children: _createRows(context)),
-        )
+        child: ListView.builder(
+          itemCount: cycles.length,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return _createHeaderRow();
+            }
+            return _createCycleRow(index-1, context);
+          },
+        ),
       ),
     );
   }
