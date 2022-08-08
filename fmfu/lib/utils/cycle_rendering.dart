@@ -10,12 +10,12 @@ List<RenderedObservation> renderObservations(List<Observation> observations) {
   int daysOfFlow = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;
-  bool isPostPeak = false;
   CountsOfThree countsOfThree = CountsOfThree();
 
   List<RenderedObservation> renderedObservations = [];
   for (int i=0; i < observations.length; i++) {
     var observation = observations[i];
+    var isPostPeak = countsOfThree.getCount(CountOfThreeReason.peakDay, i) > 0;
 
     if (observation.flow != null) {
       daysOfFlow++;
@@ -54,7 +54,8 @@ List<RenderedObservation> renderObservations(List<Observation> observations) {
     if (inFlow) {
       fertilityReasons.add(Instruction.d1);
     }
-    if (!isPostPeak && observation.hasMucus) {
+    // NOTE: This should really check !isPostPeak && observation.hasMucus but...
+    if (observation.hasMucus || countsOfThree.inCountOfThree(CountOfThreeReason.peakDay, i)) {
       fertilityReasons.add(Instruction.d2);
     }
     if (!isPostPeak && (consecutiveDaysOfNonPeakMucus > 0 && consecutiveDaysOfNonPeakMucus < 3)) {
@@ -72,6 +73,9 @@ List<RenderedObservation> renderObservations(List<Observation> observations) {
 
     bool hasAnotherEntry = i+1 < observations.length;
     bool isPeakDay = hasAnotherEntry && (consecutiveDaysOfPeakMucus > 0 && !observations[i+1].hasPeakTypeMucus);
+    if (isPeakDay) {
+      countsOfThree.registerCountStart(CountOfThreeReason.peakDay, i);
+    }
     bool hasSpecialInstructions = false;
     List<Instruction> infertilityReasons = [];
 
@@ -178,16 +182,16 @@ class CountsOfThree {
     return out;
   }
 
-  int? getCount(CountOfThreeReason reason, int i) {
+  int getCount(CountOfThreeReason reason, int i) {
     int? countStart = _countStarts[reason];
     if (countStart == null) {
-      return null;
+      return 0;
     }
     return i - countStart;
   }
 
   bool inCountOfThree(CountOfThreeReason reason, int i) {
     int? count = getCount(reason, i);
-    return count != null && count <= 3;
+    return count != null && count > 0 && count <= 3;
   }
 }

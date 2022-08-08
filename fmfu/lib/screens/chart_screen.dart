@@ -75,24 +75,46 @@ class _ChartPageState extends State<ChartPage> {
                   });
                 },
               ),
-              const Text("Flow Length:"),
-              Expanded(child: TextFormField(
-                initialValue: flowLength.toString(),
-                onChanged: (value) {
+              const Text("Flow Length: "),
+              Text(flowLength.toString()),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: ElevatedButton(onPressed: () {
                   setState(() {
-                    flowLength = int.parse(value);
+                    if (flowLength > 0) {
+                      flowLength--;
+                    }
                   });
-                },
-              )),
+                }, child: const Text("-")),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: ElevatedButton(onPressed: () {
+                  setState(() {
+                    flowLength++;
+                  });
+                }, child: const Text("+")),
+              ),
               const Text("Pre Buildup Length:"),
-              Expanded(child: TextFormField(
-                initialValue: flowLength.toString(),
-                onChanged: (value) {
+              Text(preBuildupLength.toString()),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: ElevatedButton(onPressed: () {
                   setState(() {
-                    preBuildupLength = int.parse(value);
+                    if (preBuildupLength > 0) {
+                      preBuildupLength--;
+                    }
                   });
-                },
-              )),
+                }, child: const Text("-")),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: ElevatedButton(onPressed: () {
+                  setState(() {
+                    preBuildupLength++;
+                  });
+                }, child: const Text("+")),
+              ),
             ]),
             Expanded(child: ListView.builder(
               itemCount: cycles.length,

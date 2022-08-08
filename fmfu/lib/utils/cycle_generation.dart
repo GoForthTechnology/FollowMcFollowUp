@@ -195,7 +195,6 @@ class AnomalyGenerator {
   List<bool> generate(int periodLength) {
     List<bool> anomalyField = List.filled(periodLength, false);
 
-
     if (Random().nextDouble() > 1 - _probability) {
       int mucusPatchLength = _anomalyLength.get();
       int maxStartIndex = periodLength - mucusPatchLength;
