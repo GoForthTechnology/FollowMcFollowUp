@@ -28,70 +28,95 @@ class CycleRecipe extends Recipe {
     return observations;
   }
 
-  static CycleRecipe standardRecipe = CycleRecipe(
-    FlowRecipe(
-        NormalDistribution(5, 1),
-        Flow.heavy,
-        Flow.veryLight
-    ),
-    PreBuildUpRecipe(
-      NormalDistribution(6, 1),
-      nonMucusDischargeGenerator,
-      AnomalyGenerator(
-        NormalDistribution(2, 1),
-        0.5,
+  static CycleRecipe create(double unusualBleedingProbability, double mucusPatchProbability, int flowLength, int preBuildUpLength) {
+    if (unusualBleedingProbability < 0 || unusualBleedingProbability > 1) {
+      throw Exception("Invalid unusualBleedingProbability $unusualBleedingProbability");
+    }
+    if (mucusPatchProbability < 0 || mucusPatchProbability > 1) {
+      throw Exception("Invalid mucusPatchProbability $mucusPatchProbability");
+    }
+    if (flowLength < 0) {
+      throw Exception("Invalid flowLength $flowLength");
+    }
+    if (preBuildUpLength < 0) {
+      throw Exception("Invalid preBuildUpLength $preBuildUpLength");
+    }
+    return CycleRecipe(
+      FlowRecipe(
+          NormalDistribution(flowLength, 1),
+          Flow.heavy,
+          Flow.veryLight
       ),
-      nonPeakTypeDischargeGenerator,
-      AnomalyGenerator(
+      PreBuildUpRecipe(
+        NormalDistribution(preBuildUpLength, 1),
+        nonMucusDischargeGenerator,
+        AnomalyGenerator(
+          NormalDistribution(2, 1),
+          mucusPatchProbability,
+        ),
+        DischargeSummaryGenerator(
+          // Non-peak
+          nonPeakTypeDischargeSummary, [
+          AlternativeDischarge(peakTypeDischargeSummary, 0.5)
+        ],
+        ),
+        AnomalyGenerator(
+          NormalDistribution(1, 1),
+          unusualBleedingProbability,
+        ),
+      ),
+      BuildUpRecipe(
+        NormalDistribution(4, 1),
+        NormalDistribution(3, 1),
+        peakTypeDischargeGenerator,
+        nonPeakTypeDischargeGenerator,
+      ),
+      PostPeakRecipe(
+        NormalDistribution(12, 1),
         NormalDistribution(1, 1),
-        0.2,
+        nonPeakTypeDischargeGenerator,
+        nonMucusDischargeGenerator,
+        AnomalyGenerator(
+          NormalDistribution(1, 1),
+          unusualBleedingProbability,
+        ),
+        AnomalyGenerator(
+          NormalDistribution(2, 1),
+          0.5,
+        ),
       ),
-    ),
-    BuildUpRecipe(
-      NormalDistribution(4, 1),
-      NormalDistribution(3, 1),
-      peakTypeDischargeGenerator,
-      nonPeakTypeDischargeGenerator,
-    ),
-    PostPeakRecipe(
-      NormalDistribution(12, 1),
-      NormalDistribution(1, 1),
-      nonPeakTypeDischargeGenerator,
-      nonMucusDischargeGenerator,
-      AnomalyGenerator(
-        NormalDistribution(1, 1),
-        0.3,
-      ),
-      AnomalyGenerator(
-        NormalDistribution(2, 1),
-        0.5,
-      ),
-    ),
-  );
+    );
+  }
 
-  static final DischargeSummaryGenerator nonMucusDischargeGenerator = DischargeSummaryGenerator(
-      DischargeSummary(DischargeType.dry, DischargeFrequency.allDay, []), [
+  static CycleRecipe standardRecipe = create(0.2, 0.4, 5, 4);
+
+  static final nonMucusDischargeSummary = DischargeSummary(
+      DischargeType.dry, DischargeFrequency.allDay, []);
+  static final nonMucusDischargeGenerator = DischargeSummaryGenerator(
+      nonMucusDischargeSummary, [
         AlternativeDischarge(
             DischargeSummary(DischargeType.shinyWithoutLubrication, DischargeFrequency.twice, []),
             0.5,
         )
       ]);
 
-  static final DischargeSummaryGenerator peakTypeDischargeGenerator = DischargeSummaryGenerator(
-      DischargeSummary(DischargeType.stretchy, DischargeFrequency.twice, [DischargeDescriptor.clear]), [
-    AlternativeDischarge(
-      DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.clear]),
-      0.5,
-    )
-  ]);
+  static final peakTypeDischargeSummary = DischargeSummary(
+      DischargeType.stretchy, DischargeFrequency.twice, [DischargeDescriptor.clear]);
+  static final peakTypeDischargeGenerator = DischargeSummaryGenerator(
+      peakTypeDischargeSummary, [
+        AlternativeDischarge(
+          DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.clear]),
+          0.5,
+        )]);
 
-  static final DischargeSummaryGenerator nonPeakTypeDischargeGenerator = DischargeSummaryGenerator(
-      DischargeSummary(DischargeType.sticky, DischargeFrequency.twice, [DischargeDescriptor.cloudy]), [
-    AlternativeDischarge(
-      DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
-      0.5,
-    )
-  ]);
+  static final nonPeakTypeDischargeSummary = DischargeSummary(
+      DischargeType.sticky, DischargeFrequency.twice, [DischargeDescriptor.cloudy]);
+  static final nonPeakTypeDischargeGenerator = DischargeSummaryGenerator(
+      nonPeakTypeDischargeSummary, [
+        AlternativeDischarge(
+          DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
+          0.5,
+        )]);
 }
 
 class FlowRecipe extends Recipe {
@@ -169,9 +194,14 @@ class AnomalyGenerator {
 
   List<bool> generate(int periodLength) {
     List<bool> anomalyField = List.filled(periodLength, false);
-    if (Random().nextDouble() >= _probability) {
+
+
+    if (Random().nextDouble() > 1 - _probability) {
       int mucusPatchLength = _anomalyLength.get();
       int maxStartIndex = periodLength - mucusPatchLength;
+      if (maxStartIndex < 0) {
+        return anomalyField;
+      }
       int startIndex = Random().nextInt(maxStartIndex+1);
       for (int i=startIndex; i < startIndex + mucusPatchLength; i++) {
         anomalyField[i] = true;
