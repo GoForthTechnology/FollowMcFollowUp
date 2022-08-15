@@ -28,18 +28,56 @@ class CycleRecipe extends Recipe {
     return observations;
   }
 
-  static CycleRecipe create(double unusualBleedingProbability, double mucusPatchProbability, int flowLength, int preBuildUpLength) {
+  static double defaultUnusualBleedingFrequency = 20;
+  static double defaultMucusPatchFrequency = 20;
+  static int defaultFlowLength = 5;
+  static int defaultPreBuildupLength = 4;
+  static int defaultBuildUpLength = 4;
+  static int defaultPeakTypeLength = 4;
+  static int defaultPostPeakLength = 12;
+
+  static CycleRecipe standardRecipe = create(
+      defaultUnusualBleedingFrequency / 100,
+      defaultMucusPatchFrequency / 100,
+      defaultMucusPatchFrequency / 100,
+      defaultFlowLength,
+      defaultPreBuildupLength,
+      defaultBuildUpLength,
+      defaultPeakTypeLength,
+      defaultPostPeakLength);
+
+  static CycleRecipe create(
+      double unusualBleedingProbability,
+      double prePeakMucusPatchProbability,
+      double postPeakMucusPatchProbability,
+      int flowLength,
+      int preBuildUpLength,
+      int buildUpLength,
+      int peakTypeLength,
+      int postPeakLength) {
     if (unusualBleedingProbability < 0 || unusualBleedingProbability > 1) {
       throw Exception("Invalid unusualBleedingProbability $unusualBleedingProbability");
     }
-    if (mucusPatchProbability < 0 || mucusPatchProbability > 1) {
-      throw Exception("Invalid mucusPatchProbability $mucusPatchProbability");
+    if (prePeakMucusPatchProbability < 0 || prePeakMucusPatchProbability > 1) {
+      throw Exception("Invalid mucusPatchProbability $prePeakMucusPatchProbability");
+    }
+    if (postPeakMucusPatchProbability < 0 || postPeakMucusPatchProbability > 1) {
+      throw Exception("Invalid mucusPatchProbability $postPeakMucusPatchProbability");
     }
     if (flowLength < 0) {
       throw Exception("Invalid flowLength $flowLength");
     }
     if (preBuildUpLength < 0) {
       throw Exception("Invalid preBuildUpLength $preBuildUpLength");
+    }
+    if (buildUpLength < 0) {
+      throw Exception("Invalid buildUpLength $buildUpLength");
+    }
+    if (peakTypeLength < 0 || peakTypeLength > buildUpLength) {
+      throw Exception("Invalid peakTypeLength $peakTypeLength");
+    }
+    if (postPeakLength < 0) {
+      throw Exception("Invalid postPeakLength $postPeakLength");
     }
     return CycleRecipe(
       FlowRecipe(
@@ -50,45 +88,39 @@ class CycleRecipe extends Recipe {
       PreBuildUpRecipe(
         NormalDistribution(preBuildUpLength, 1),
         nonMucusDischargeGenerator,
-        AnomalyGenerator(
-          NormalDistribution(2, 1),
-          mucusPatchProbability,
+        UniformAnomalyGenerator(
+          prePeakMucusPatchProbability,
         ),
         DischargeSummaryGenerator(
           // Non-peak
           nonPeakTypeDischargeSummary, [
-          AlternativeDischarge(peakTypeDischargeSummary, 0.5)
+            AlternativeDischarge(peakTypeDischargeSummary, 0.5),
         ],
         ),
-        AnomalyGenerator(
+        NormalAnomalyGenerator(
           NormalDistribution(1, 1),
           unusualBleedingProbability,
         ),
       ),
       BuildUpRecipe(
-        NormalDistribution(4, 1),
-        NormalDistribution(3, 1),
+        NormalDistribution(buildUpLength, 1),
+        NormalDistribution(peakTypeLength, 1),
         peakTypeDischargeGenerator,
         nonPeakTypeDischargeGenerator,
       ),
       PostPeakRecipe(
-        NormalDistribution(12, 1),
+        NormalDistribution(postPeakLength, 1),
         NormalDistribution(1, 1),
         nonPeakTypeDischargeGenerator,
         nonMucusDischargeGenerator,
-        AnomalyGenerator(
+        NormalAnomalyGenerator(
           NormalDistribution(1, 1),
           unusualBleedingProbability,
         ),
-        AnomalyGenerator(
-          NormalDistribution(2, 1),
-          0.5,
-        ),
+        UniformAnomalyGenerator(postPeakMucusPatchProbability),
       ),
     );
   }
-
-  static CycleRecipe standardRecipe = create(0.2, 0.4, 5, 4);
 
   static final nonMucusDischargeSummary = DischargeSummary(
       DischargeType.dry, DischargeFrequency.allDay, []);
@@ -103,11 +135,18 @@ class CycleRecipe extends Recipe {
   static final peakTypeDischargeSummary = DischargeSummary(
       DischargeType.stretchy, DischargeFrequency.twice, [DischargeDescriptor.clear]);
   static final peakTypeDischargeGenerator = DischargeSummaryGenerator(
-      peakTypeDischargeSummary, [
+      peakTypeDischargeSummary,
+      [
         AlternativeDischarge(
           DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.clear]),
           0.5,
-        )]);
+        ),
+        AlternativeDischarge(
+          DischargeSummary(DischargeType.stretchy, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
+          0.5,
+        ),
+      ],
+  );
 
   static final nonPeakTypeDischargeSummary = DischargeSummary(
       DischargeType.sticky, DischargeFrequency.twice, [DischargeDescriptor.cloudy]);
@@ -186,16 +225,39 @@ class DischargeSummaryGenerator {
   }
 }
 
-class AnomalyGenerator {
+abstract class AnomalyGenerator {
+  List<bool> generate(int periodLength);
+}
+
+class UniformAnomalyGenerator extends AnomalyGenerator {
+  final Random _r = Random();
+  final double _probability;
+
+  UniformAnomalyGenerator(this._probability);
+
+  @override
+  List<bool> generate(int periodLength) {
+    List<bool> anomalyField = List.filled(periodLength, false);
+    for (int i=0; i<anomalyField.length; i++) {
+      if (_r.nextDouble() < _probability) {
+        anomalyField[i] = true;
+      }
+    }
+    return anomalyField;
+  }}
+
+class NormalAnomalyGenerator extends AnomalyGenerator {
+  final Random _r = Random();
   final NormalDistribution _anomalyLength;
   final double _probability;
 
-  AnomalyGenerator(this._anomalyLength, this._probability);
+  NormalAnomalyGenerator(this._anomalyLength, this._probability);
 
+  @override
   List<bool> generate(int periodLength) {
     List<bool> anomalyField = List.filled(periodLength, false);
 
-    if (Random().nextDouble() > 1 - _probability) {
+    if (_r.nextDouble() < _probability) {
       int mucusPatchLength = _anomalyLength.get();
       int maxStartIndex = periodLength - mucusPatchLength;
       if (maxStartIndex < 0) {
