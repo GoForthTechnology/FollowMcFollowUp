@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/models/Instructions.dart';
 import 'package:fmfu/models/observation.dart';
 
+import '../models/stickers.dart';
+
 List<RenderedObservation> renderObservations(List<Observation> observations) {
   int daysOfFlow = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
@@ -134,25 +136,18 @@ class RenderedObservation {
 
     if (inFlow || isFertile) {
       if (hasBleeding) {
-        return Sticker(Colors.red, false);
+        return Sticker.red;
       } else {
         if (hasMucus) {
-          return hasInfertilityReasons ? Sticker(Colors.yellow, true) : Sticker(Colors.white, true);
+          return hasInfertilityReasons ? Sticker.yellow : Sticker.whiteBaby;
         } else {
-          return Sticker(_lightGreen, true);
+          return Sticker.greenBaby;
         }
       }
     } else {
-      return hasMucus ? Sticker(Colors.yellow, false) : Sticker(Colors.green, false);
+      return hasMucus ? Sticker.yellow : Sticker.green;
     }
   }
-}
-
-class Sticker {
-  final Color color;
-  final bool showBaby;
-
-  Sticker(this.color, this.showBaby);
 }
 
 enum CountOfThreeReason {

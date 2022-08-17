@@ -1,6 +1,9 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fmfu/models/observation.dart';
+import 'package:fmfu/models/stickers.dart';
 import 'package:fmfu/utils/cycle_generation.dart';
 import 'package:fmfu/utils/cycle_rendering.dart';
 
@@ -276,6 +279,10 @@ Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycl
     );
 }
 
+void _onStickerSelect(Sticker? sticker) {
+
+}
+
 List<Widget> _entries(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles) {
   List<Widget> stackedCells = [];
   for (int i=0; i<nEntriesPerSection; i++) {
@@ -285,39 +292,109 @@ List<Widget> _entries(int rowIndex, int sectionIndex, BuildContext context, Cycl
     if (observationIndex < observations.length) {
       observation = observations[observationIndex];
     }
-    Widget sticker = Container();
-    Color stickerBackgroundColor = Colors.white;
-    if (observation != null) {
-      stickerBackgroundColor = observation.getSticker().color;
-      sticker = Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(observation.getStickerText(), textAlign: TextAlign.center),
-          Icon(
-            observation.getSticker().showBaby ? Icons.child_care : null,
-            color: Colors.black12,
-          )
-        ],
-      );
-    }
-    stackedCells.add(Column(
-      children: [
-        _createCell(sticker, stickerBackgroundColor, (){
-          final scaffold = ScaffoldMessenger.of(context);
-          scaffold.showSnackBar(
-            SnackBar(content: Text('Sticker click: cycle #${rowIndex+1}')),
+    Widget sticker = _createSticker(
+        observation?.getSticker(),
+        observation?.getStickerText(), () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Sticker Correction'),
+              content: _createStickerCorrectionContent(
+                    (sticker) {
+                      if (observation != null && observation.getSticker() == sticker) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Same sticker selected.')));
+                      }
+                    },
+                    (text) {
+                      if (observation != null && observation.getStickerText() == text) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Same text selected.')));
+                      }
+                    }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+            ),
           );
-        }),
-        _createCell(Text(observation == null ? "" : observation.observationText), Colors.white, () {
-          final scaffold = ScaffoldMessenger.of(context);
-          scaffold.showSnackBar(
+        });
+    if (observation != null && Random().nextDouble() < 0.1) {
+      sticker = Stack(children: [
+        sticker,
+        Transform.rotate(
+          angle: -pi / 12.0,
+          child: sticker,
+        )
+      ]);
+    }
+    Widget observationText = _createCell(
+        Text(observation == null ? "" : observation.observationText),
+        Colors.white, () {
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Entry click: cycle #${rowIndex+1}')),
           );
-        })
-      ],
-    ));
+        });
+    stackedCells.add(Column(children: [sticker, observationText]));
   }
   return stackedCells;
+}
+
+Widget _createSticker(Sticker? sticker, String? stickerText, void Function() onTap) {
+  Widget content = Container();
+  Color stickerBackgroundColor = Colors.white;
+  if (sticker != null) {
+    stickerBackgroundColor = sticker.color;
+    content =  Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+          stickerText ?? "", textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Icon(
+          sticker.showBaby ? Icons.child_care : null,
+          color: Colors.black12,
+        )
+      ],
+    );
+  }
+  return _createCell(content, stickerBackgroundColor, onTap);
+}
+
+Widget _createStickerCorrectionContent(void Function(Sticker?) onSelectSticker, void Function(String?) onSelectText) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Padding(padding: EdgeInsets.all(10), child: Text("Select the correct sticker")),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _padAllWith(2, _createSticker(Sticker.red, "", () => onSelectSticker(Sticker.red))),
+          _padAllWith(2, _createSticker(Sticker.green, "", () => onSelectSticker(Sticker.green))),
+          _padAllWith(2, _createSticker(Sticker.greenBaby, "", () => onSelectSticker(Sticker.greenBaby))),
+          _padAllWith(2, _createSticker(Sticker.whiteBaby, "", () => onSelectSticker(Sticker.whiteBaby))),
+        ],
+      ),
+      const Padding(padding: EdgeInsets.all(10), child: Text("Select the correct text")),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _padAllWith(2, _createSticker(Sticker.white, "", () => onSelectText(""))),
+          _padAllWith(2, _createSticker(Sticker.white, "P", () => onSelectText("P"))),
+          _padAllWith(2, _createSticker(Sticker.white, "1", () => onSelectText("1"))),
+          _padAllWith(2, _createSticker(Sticker.white, "2", () => onSelectText("2"))),
+          _padAllWith(2, _createSticker(Sticker.white, "3", () => onSelectText("3"))),
+        ],
+      ),
+    ],
+  );
 }
 
 Widget _createCell(Widget content, Color backgroundColor, void Function() onTap) {
@@ -334,4 +411,8 @@ Widget _createCell(Widget content, Color backgroundColor, void Function() onTap)
       child: content,
     ),
   );
+}
+
+Widget _padAllWith(double padding, Widget child) {
+  return Padding(padding: EdgeInsets.all(padding), child: child);
 }
