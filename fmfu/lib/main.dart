@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fmfu/screens/chart_screen.dart';
-import 'package:fmfu/screens/cycle_viewmodel.dart';
+import 'package:fmfu/view/chart_screen.dart';
+import 'package:fmfu/view_model/cycle_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {

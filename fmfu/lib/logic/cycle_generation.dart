@@ -1,9 +1,7 @@
 
 import 'dart:math';
+import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/distributions.dart';
-
-import '../models/observation.dart';
-import 'gamma.dart';
 
 abstract class Recipe {
   List<Observation> getObservations();

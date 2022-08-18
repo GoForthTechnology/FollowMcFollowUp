@@ -1,12 +1,12 @@
 
 import 'dart:math';
-import 'package:fmfu/screens/cycle_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/models/stickers.dart';
-import 'package:fmfu/utils/cycle_generation.dart';
-import 'package:fmfu/utils/cycle_rendering.dart';
+import 'package:fmfu/model/stickers.dart';
+import 'package:fmfu/logic/cycle_generation.dart';
+import 'package:fmfu/logic/cycle_rendering.dart';
+import 'package:fmfu/view_model/cycle_view_model.dart';
 
 class ChartPage extends StatefulWidget {
   const ChartPage({Key? key}) : super(key: key);

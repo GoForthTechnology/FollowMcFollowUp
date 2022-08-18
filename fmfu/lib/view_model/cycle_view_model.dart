@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fmfu/utils/cycle_generation.dart';
-import 'package:fmfu/utils/cycle_rendering.dart';
+import 'package:fmfu/logic/cycle_generation.dart';
+import 'package:fmfu/logic/cycle_rendering.dart';
 
 typedef Cycles = List<List<RenderedObservation>>;
 
