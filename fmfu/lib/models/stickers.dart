@@ -5,6 +5,13 @@ import 'package:flutter/material.dart';
 
 const Color _lightGreen = Color(0xFFE2FFCC);
 
+class StickerWithText {
+  final Sticker sticker;
+  final String? text;
+
+  StickerWithText(this.sticker, this.text);
+}
+
 enum Sticker {
   red,
   green,

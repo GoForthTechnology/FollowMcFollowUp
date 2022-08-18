@@ -18,6 +18,7 @@ class ChartPage extends StatefulWidget {
 }
 
 typedef Cycles = List<List<RenderedObservation>>;
+typedef Corrections = Map<int, Map<int, StickerWithText>>;
 
 class _ChartPageState extends State<ChartPage> {
 
@@ -29,6 +30,7 @@ class _ChartPageState extends State<ChartPage> {
   int buildUpLength = CycleRecipe.defaultBuildUpLength;
   int peakTypeLength = CycleRecipe.defaultPeakTypeLength;
   int postPeakLength = CycleRecipe.defaultPostPeakLength;
+  Corrections corrections = {};
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +219,13 @@ class _ChartPageState extends State<ChartPage> {
                     if (index == 0) {
                       return _createHeaderRow();
                     }
-                    return _createCycleRow(index-1, context, cycles);
+                    return _createCycleRow(index-1, context, cycles, corrections, (rowIndex, observationIndex, sticker) {
+                      setState(() {
+                        corrections.putIfAbsent(rowIndex, () => {});
+                        var correctionsRow = corrections[rowIndex]!;
+                        correctionsRow[observationIndex] = sticker;
+                      });
+                    });
                   },
                 ),
             )),
@@ -259,22 +267,22 @@ Widget _createHeaderRow() {
   );
 }
 
-Widget _createCycleRow(int rowIndex, BuildContext context, Cycles cycles) {
+Widget _createCycleRow(int rowIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText) updateCorrections) {
   List<Widget> sections = [];
   for (int i=0; i<nSectionsPerCycle; i++) {
-    sections.add(_createSection(rowIndex, i, context, cycles));
+    sections.add(_createSection(rowIndex, i, context, cycles, corrections, updateCorrections));
   }
   return Row(children: sections);
 }
 
-Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles) {
+Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText) updateCorrection) {
   return
     Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
       ),
       child: Row(
-        children: _entries(rowIndex, sectionIndex, context, cycles),
+        children: _entries(rowIndex, sectionIndex, context, cycles, corrections, updateCorrection),
       ),
     );
 }
@@ -283,7 +291,13 @@ void _onStickerSelect(Sticker? sticker) {
 
 }
 
-List<Widget> _entries(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles) {
+List<Widget> _entries(
+    int rowIndex,
+    int sectionIndex,
+    BuildContext context,
+    Cycles cycles,
+    Corrections corrections,
+    void Function(int, int, StickerWithText) updateCorrection) {
   List<Widget> stackedCells = [];
   for (int i=0; i<nEntriesPerSection; i++) {
     List<RenderedObservation> observations = cycles[rowIndex];
@@ -297,40 +311,51 @@ List<Widget> _entries(int rowIndex, int sectionIndex, BuildContext context, Cycl
         observation?.getStickerText(), () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Sticker Correction'),
-              content: _createStickerCorrectionContent(
-                    (sticker) {
-                      if (observation != null && observation.getSticker() == sticker) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Same sticker selected.')));
-                      }
-                    },
-                    (text) {
-                      if (observation != null && observation.getStickerText() == text) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Same text selected.')));
-                      }
-                    }),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'OK'),
-                child: const Text('OK'),
-              ),
-            ],
-            ),
+            builder: (BuildContext context) {
+              Sticker? selectedSticker;
+              String? selectedStickerText;
+              return StatefulBuilder(builder: (context, setState) {
+                return AlertDialog(
+                  title: const Text('Sticker Correction'),
+                  content: _createStickerCorrectionContent((sticker) {
+                    setState(() {
+                      print("Selected sticker: $sticker");
+                      selectedSticker = sticker;
+                    });
+                  }, (text) {
+                    setState(() {
+                      print("Selected text: $text");
+                      selectedStickerText = text;
+                    });
+                  }),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (selectedSticker == null) {
+                          return;
+                        }
+                        updateCorrection(rowIndex, observationIndex, StickerWithText(selectedSticker!, selectedStickerText));
+                        Navigator.pop(context, 'OK');
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              });
+            },
           );
         });
-    if (observation != null && Random().nextDouble() < 0.1) {
+    StickerWithText? correction = corrections[rowIndex]?[observationIndex];
+    if (observation != null && correction != null) {
       sticker = Stack(children: [
         sticker,
         Transform.rotate(
           angle: -pi / 12.0,
-          child: sticker,
+          child: _createSticker(correction.sticker, correction.text, () => {}),
         )
       ]);
     }
