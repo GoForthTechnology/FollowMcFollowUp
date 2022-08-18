@@ -140,7 +140,9 @@ List<Widget> _entries(
         sticker,
         Transform.rotate(
           angle: -pi / 12.0,
-          child: _createSticker(correction.sticker, correction.text, () => {}),
+          child: _createSticker(correction.sticker, correction.text, () => {
+
+          }),
         )
       ]);
     }
@@ -169,12 +171,20 @@ void Function() _showCorrectionDialog(BuildContext context, int rowIndex, int ob
             content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
               setState(() {
                 print("Selected sticker: $sticker");
-                selectedSticker = sticker;
+                if (selectedSticker == sticker) {
+                  selectedSticker = null;
+                } else {
+                  selectedSticker = sticker;
+                }
               });
             }, (text) {
               setState(() {
                 print("Selected text: $text");
-                selectedStickerText = text;
+                if (selectedStickerText == text) {
+                  selectedStickerText = null;
+                } else {
+                  selectedStickerText = text;
+                }
               });
             }),
             actions: <Widget>[
