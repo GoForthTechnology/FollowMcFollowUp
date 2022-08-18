@@ -1,8 +1,9 @@
 
 import 'dart:math';
+import 'package:fmfu/screens/cycle_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/models/observation.dart';
 import 'package:fmfu/models/stickers.dart';
 import 'package:fmfu/utils/cycle_generation.dart';
 import 'package:fmfu/utils/cycle_rendering.dart';
@@ -10,41 +11,17 @@ import 'package:fmfu/utils/cycle_rendering.dart';
 class ChartPage extends StatefulWidget {
   const ChartPage({Key? key}) : super(key: key);
 
-  static List<List<RenderedObservation>> cycles = List.generate(
-      50, (i) => renderObservations(CycleRecipe.standardRecipe.getObservations()));
-
   @override
   State<StatefulWidget> createState() => _ChartPageState();
 }
 
-typedef Cycles = List<List<RenderedObservation>>;
 typedef Corrections = Map<int, Map<int, StickerWithText>>;
 
 class _ChartPageState extends State<ChartPage> {
-
-  double unusualBleedingFrequency = CycleRecipe.defaultUnusualBleedingFrequency;
-  double prePeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
-  double postPeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
-  int flowLength = CycleRecipe.defaultFlowLength;
-  int preBuildupLength = CycleRecipe.defaultPreBuildupLength;
-  int buildUpLength = CycleRecipe.defaultBuildUpLength;
-  int peakTypeLength = CycleRecipe.defaultPeakTypeLength;
-  int postPeakLength = CycleRecipe.defaultPostPeakLength;
   Corrections corrections = {};
 
   @override
   Widget build(BuildContext context) {
-    CycleRecipe recipe = CycleRecipe.create(
-      unusualBleedingFrequency / 100,
-      prePeakMucusPatchFrequency / 100,
-      postPeakMucusPatchFrequency / 100,
-      flowLength,
-      preBuildupLength,
-      buildUpLength,
-      peakTypeLength,
-      postPeakLength,
-    );
-    var cycles = List.generate(50, (index) => renderObservations(recipe.getObservations()));
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -52,186 +29,37 @@ class _ChartPageState extends State<ChartPage> {
         title: const Text("Grid Page"),
       ),
       // TODO: figure out how to make horizontal scrolling work...
-      body: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-        ),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                Row(children: [
-                  const Text("Unusual Bleeding: "),
-                  Text((unusualBleedingFrequency / 100).toString()),
-                  Slider(
-                    value: unusualBleedingFrequency,
-                    min: 0,
-                    max: 100,
-                    divisions: 10,
-                    onChanged: (val) {
-                      setState(() {
-                        unusualBleedingFrequency = val;
-                      });
-                    },
-                  ),
-                  const Text("Pre-Peak Mucus Patch: "),
-                  Text((prePeakMucusPatchFrequency / 100).toString()),
-                  Slider(
-                    value: prePeakMucusPatchFrequency,
-                    min: 0,
-                    max: 100,
-                    divisions: 10,
-                    onChanged: (val) {
-                      setState(() {
-                        prePeakMucusPatchFrequency = val;
-                      });
-                    },
-                  ),
-                  const Text("Post-Peak Mucus Patch: "),
-                  Text((postPeakMucusPatchFrequency / 100).toString()),
-                  Slider(
-                    value: postPeakMucusPatchFrequency,
-                    min: 0,
-                    max: 100,
-                    divisions: 10,
-                    onChanged: (val) {
-                      setState(() {
-                        postPeakMucusPatchFrequency = val;
-                      });
-                    },
-                  ),
-                ]),
-                Row(
-                  children: [
-                    const Text("Flow Length: "),
-                    Text(flowLength.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          if (flowLength > 0) {
-                            flowLength--;
-                          }
-                        });
-                      }, child: const Text("-")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          flowLength++;
-                        });
-                      }, child: const Text("+")),
-                    ),
-                    const Text("Pre Buildup Length:"),
-                    Text(preBuildupLength.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          if (preBuildupLength > 0) {
-                            preBuildupLength--;
-                          }
-                        });
-                      }, child: const Text("-")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          preBuildupLength++;
-                        });
-                      }, child: const Text("+")),
-                    ),
-                    const Text("Buildup Length:"),
-                    Text(buildUpLength.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          if (buildUpLength > 0) {
-                            buildUpLength--;
-                          }
-                        });
-                      }, child: const Text("-")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          buildUpLength++;
-                        });
-                      }, child: const Text("+")),
-                    ),
-                    const Text("Peak Type Length:"),
-                    Text(peakTypeLength.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          if (peakTypeLength > 0) {
-                            peakTypeLength--;
-                          }
-                        });
-                      }, child: const Text("-")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        if (peakTypeLength == buildUpLength) {
-                          return;
-                        }
-                        setState(() {
-                          peakTypeLength++;
-                        });
-                      }, child: const Text("+")),
-                    ),
-                    const Text("Post Peak Length:"),
-                    Text(postPeakLength.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          if (postPeakLength > 0) {
-                            postPeakLength--;
-                          }
-                        });
-                      }, child: const Text("-")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        setState(() {
-                          postPeakLength++;
-                        });
-                      }, child: const Text("+")),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            Expanded(child: Padding(
+      body: Consumer<CycleViewModel>(
+        builder: (context, model, child) => Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+          ),
+          child: Column(
+            children: [
+              const ControlBar(),
+              Expanded(child: Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: ListView.builder(
-                  itemCount: cycles.length,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _createHeaderRow();
-                    }
-                    return _createCycleRow(index-1, context, cycles, corrections, (rowIndex, observationIndex, sticker) {
-                      setState(() {
-                        corrections.putIfAbsent(rowIndex, () => {});
-                        var correctionsRow = corrections[rowIndex]!;
-                        correctionsRow[observationIndex] = sticker;
+                  child: ListView.builder(
+                    itemCount: model.cycles.length,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return _createHeaderRow();
+                      }
+                      return _createCycleRow(index-1, context, model.cycles, corrections, (rowIndex, observationIndex, sticker) {
+                        setState(() {
+                          corrections.putIfAbsent(rowIndex, () => {});
+                          var correctionsRow = corrections[rowIndex]!;
+                          correctionsRow[observationIndex] = sticker;
+                        });
                       });
-                    });
-                  },
-                ),
-            )),
-          ],
+                    },
+                  ),
+              )),
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 }
@@ -285,10 +113,6 @@ Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycl
         children: _entries(rowIndex, sectionIndex, context, cycles, corrections, updateCorrection),
       ),
     );
-}
-
-void _onStickerSelect(Sticker? sticker) {
-
 }
 
 List<Widget> _entries(
@@ -441,3 +265,208 @@ Widget _createCell(Widget content, Color backgroundColor, void Function() onTap)
 Widget _padAllWith(double padding, Widget child) {
   return Padding(padding: EdgeInsets.all(padding), child: child);
 }
+
+class ControlBar extends StatefulWidget {
+  static ControlBarState of(BuildContext context) => context.findAncestorStateOfType<ControlBarState>()!;
+
+  const ControlBar({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => ControlBarState();
+}
+
+
+class ControlBarState extends State<ControlBar> {
+
+  double unusualBleedingFrequency = CycleRecipe.defaultUnusualBleedingFrequency;
+  double prePeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
+  double postPeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
+  int flowLength = CycleRecipe.defaultFlowLength;
+  int preBuildupLength = CycleRecipe.defaultPreBuildupLength;
+  int buildUpLength = CycleRecipe.defaultBuildUpLength;
+  int peakTypeLength = CycleRecipe.defaultPeakTypeLength;
+  int postPeakLength = CycleRecipe.defaultPostPeakLength;
+
+  CycleRecipe _getRecipe() {
+    return CycleRecipe.create(
+        unusualBleedingFrequency / 100,
+        prePeakMucusPatchFrequency / 100,
+        postPeakMucusPatchFrequency / 100,
+        flowLength,
+        preBuildupLength,
+        buildUpLength,
+        peakTypeLength,
+        postPeakLength);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CycleViewModel>(
+      builder: (context, model, child) => Column(
+      children: [
+        Row(children: [
+          const Text("Unusual Bleeding: "),
+          Text((unusualBleedingFrequency / 100).toString()),
+          Slider(
+            value: unusualBleedingFrequency,
+            min: 0,
+            max: 100,
+            divisions: 10,
+            onChanged: (val) {
+              setState(() {
+                unusualBleedingFrequency = val;
+                model.updateCycles(_getRecipe(), 50);
+              });
+            },
+          ),
+          const Text("Pre-Peak Mucus Patch: "),
+          Text((prePeakMucusPatchFrequency / 100).toString()),
+          Slider(
+            value: prePeakMucusPatchFrequency,
+            min: 0,
+            max: 100,
+            divisions: 10,
+            onChanged: (val) {
+              setState(() {
+                prePeakMucusPatchFrequency = val;
+                model.updateCycles(_getRecipe(), 50);
+              });
+            },
+          ),
+          const Text("Post-Peak Mucus Patch: "),
+          Text((postPeakMucusPatchFrequency / 100).toString()),
+          Slider(
+            value: postPeakMucusPatchFrequency,
+            min: 0,
+            max: 100,
+            divisions: 10,
+            onChanged: (val) {
+              setState(() {
+                postPeakMucusPatchFrequency = val;
+                model.updateCycles(_getRecipe(), 50);
+              });
+            },
+          ),
+        ]),
+        Row(
+          children: [
+            const Text("Flow Length: "),
+            Text(flowLength.toString()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  if (flowLength > 0) {
+                    flowLength--;
+                    model.updateCycles(_getRecipe(), 50);
+                  }
+                });
+              }, child: const Text("-")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  flowLength++;
+                  model.updateCycles(_getRecipe(), 50);
+                });
+              }, child: const Text("+")),
+            ),
+            const Text("Pre Buildup Length:"),
+            Text(preBuildupLength.toString()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  if (preBuildupLength > 0) {
+                    preBuildupLength--;
+                    model.updateCycles(_getRecipe(), 50);
+                  }
+                });
+              }, child: const Text("-")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  preBuildupLength++;
+                  model.updateCycles(_getRecipe(), 50);
+                });
+              }, child: const Text("+")),
+            ),
+            const Text("Buildup Length:"),
+            Text(buildUpLength.toString()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  if (buildUpLength > 0) {
+                    buildUpLength--;
+                    model.updateCycles(_getRecipe(), 50);
+                  }
+                });
+              }, child: const Text("-")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  buildUpLength++;
+                  model.updateCycles(_getRecipe(), 50);
+                });
+              }, child: const Text("+")),
+            ),
+            const Text("Peak Type Length:"),
+            Text(peakTypeLength.toString()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  if (peakTypeLength > 0) {
+                    peakTypeLength--;
+                    model.updateCycles(_getRecipe(), 50);
+                  }
+                });
+              }, child: const Text("-")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: ElevatedButton(onPressed: () {
+                if (peakTypeLength == buildUpLength) {
+                  return;
+                }
+                setState(() {
+                  peakTypeLength++;
+                  model.updateCycles(_getRecipe(), 50);
+                });
+              }, child: const Text("+")),
+            ),
+            const Text("Post Peak Length:"),
+            Text(postPeakLength.toString()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  if (postPeakLength > 0) {
+                    postPeakLength--;
+                    model.updateCycles(_getRecipe(), 50);
+                  }
+                });
+              }, child: const Text("-")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: ElevatedButton(onPressed: () {
+                setState(() {
+                  postPeakLength++;
+                  model.updateCycles(_getRecipe(), 50);
+                });
+              }, child: const Text("+")),
+            ),
+          ],
+        )
+      ],
+    ));
+  }
+}
+
