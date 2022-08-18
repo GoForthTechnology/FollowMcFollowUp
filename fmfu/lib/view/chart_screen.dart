@@ -132,47 +132,8 @@ List<Widget> _entries(
     }
     Widget sticker = _createSticker(
         observation?.getSticker(),
-        observation?.getStickerText(), () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              Sticker? selectedSticker;
-              String? selectedStickerText;
-              return StatefulBuilder(builder: (context, setState) {
-                return AlertDialog(
-                  title: const Text('Sticker Correction'),
-                  content: _createStickerCorrectionContent((sticker) {
-                    setState(() {
-                      print("Selected sticker: $sticker");
-                      selectedSticker = sticker;
-                    });
-                  }, (text) {
-                    setState(() {
-                      print("Selected text: $text");
-                      selectedStickerText = text;
-                    });
-                  }),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (selectedSticker == null) {
-                          return;
-                        }
-                        updateCorrection(rowIndex, observationIndex, StickerWithText(selectedSticker!, selectedStickerText));
-                        Navigator.pop(context, 'OK');
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                );
-              });
-            },
-          );
-        });
+        observation?.getStickerText(), _showCorrectionDialog(context, rowIndex, observationIndex, updateCorrection),
+    );
     StickerWithText? correction = corrections[rowIndex]?[observationIndex];
     if (observation != null && correction != null) {
       sticker = Stack(children: [
@@ -193,6 +154,50 @@ List<Widget> _entries(
     stackedCells.add(Column(children: [sticker, observationText]));
   }
   return stackedCells;
+}
+
+void Function() _showCorrectionDialog(BuildContext context, int rowIndex, int observationIndex, void Function(int, int, StickerWithText) updateCorrection) {
+  return () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        Sticker? selectedSticker;
+        String? selectedStickerText;
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Sticker Correction'),
+            content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
+              setState(() {
+                print("Selected sticker: $sticker");
+                selectedSticker = sticker;
+              });
+            }, (text) {
+              setState(() {
+                print("Selected text: $text");
+                selectedStickerText = text;
+              });
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (selectedSticker == null) {
+                    return;
+                  }
+                  updateCorrection(rowIndex, observationIndex, StickerWithText(selectedSticker!, selectedStickerText));
+                  Navigator.pop(context, 'OK');
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  };
 }
 
 Widget _createSticker(Sticker? sticker, String? stickerText, void Function() onTap) {
@@ -217,7 +222,7 @@ Widget _createSticker(Sticker? sticker, String? stickerText, void Function() onT
   return _createCell(content, stickerBackgroundColor, onTap);
 }
 
-Widget _createStickerCorrectionContent(void Function(Sticker?) onSelectSticker, void Function(String?) onSelectText) {
+Widget _createStickerCorrectionContent(Sticker? selectedSticker, String? selectedStickerText, void Function(Sticker?) onSelectSticker, void Function(String?) onSelectText) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
@@ -225,25 +230,51 @@ Widget _createStickerCorrectionContent(void Function(Sticker?) onSelectSticker, 
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _padAllWith(2, _createSticker(Sticker.red, "", () => onSelectSticker(Sticker.red))),
-          _padAllWith(2, _createSticker(Sticker.green, "", () => onSelectSticker(Sticker.green))),
-          _padAllWith(2, _createSticker(Sticker.greenBaby, "", () => onSelectSticker(Sticker.greenBaby))),
-          _padAllWith(2, _createSticker(Sticker.whiteBaby, "", () => onSelectSticker(Sticker.whiteBaby))),
+          _createDialogSticker(Sticker.red, selectedSticker, onSelectSticker),
+          _createDialogSticker(Sticker.green, selectedSticker, onSelectSticker),
+          _createDialogSticker(Sticker.greenBaby, selectedSticker, onSelectSticker),
+          _createDialogSticker(Sticker.whiteBaby, selectedSticker, onSelectSticker),
         ],
       ),
       const Padding(padding: EdgeInsets.all(10), child: Text("Select the correct text")),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _padAllWith(2, _createSticker(Sticker.white, "", () => onSelectText(""))),
-          _padAllWith(2, _createSticker(Sticker.white, "P", () => onSelectText("P"))),
-          _padAllWith(2, _createSticker(Sticker.white, "1", () => onSelectText("1"))),
-          _padAllWith(2, _createSticker(Sticker.white, "2", () => onSelectText("2"))),
-          _padAllWith(2, _createSticker(Sticker.white, "3", () => onSelectText("3"))),
+          _createDialogTextSticker("", selectedStickerText, onSelectText),
+          _createDialogTextSticker("P", selectedStickerText, onSelectText),
+          _createDialogTextSticker("1", selectedStickerText, onSelectText),
+          _createDialogTextSticker("2", selectedStickerText, onSelectText),
+          _createDialogTextSticker("3", selectedStickerText, onSelectText),
         ],
       ),
     ],
   );
+}
+
+Widget _createDialogSticker(Sticker sticker, Sticker? selectedSticker, void Function(Sticker?) onSelect) {
+  Widget child = _createSticker(sticker, "", () => onSelect(sticker));
+  if (selectedSticker == sticker) {
+    child = Container(
+      decoration: BoxDecoration(
+        border: Border.all(color:Colors.black),
+      ),
+      child: child,
+    );
+  }
+  return Padding(padding: const EdgeInsets.all(2), child: child);
+}
+
+Widget _createDialogTextSticker(String text, String? selectedText, void Function(String?) onSelect) {
+  Widget sticker = _createSticker(Sticker.white, text, () => onSelect(text));
+  if (selectedText == text) {
+    sticker = Container(
+      decoration: BoxDecoration(
+        border: Border.all(color:Colors.black),
+      ),
+      child: sticker,
+    );
+  }
+  return Padding(padding: const EdgeInsets.all(2), child: sticker);
 }
 
 Widget _createCell(Widget content, Color backgroundColor, void Function() onTap) {
@@ -260,10 +291,6 @@ Widget _createCell(Widget content, Color backgroundColor, void Function() onTap)
       child: content,
     ),
   );
-}
-
-Widget _padAllWith(double padding, Widget child) {
-  return Padding(padding: EdgeInsets.all(padding), child: child);
 }
 
 class ControlBar extends StatefulWidget {

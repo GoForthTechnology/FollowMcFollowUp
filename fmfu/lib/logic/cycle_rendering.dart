@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
-import 'package:fmfu/models/Instructions.dart';
+import 'package:fmfu/model/Instructions.dart';
 
 
 List<RenderedObservation> renderObservations(List<Observation> observations) {
