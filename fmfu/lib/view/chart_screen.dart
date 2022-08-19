@@ -347,7 +347,8 @@ class ControlBarState extends State<ControlBar> {
         preBuildupLength,
         buildUpLength,
         peakTypeLength,
-        postPeakLength);
+        postPeakLength,
+        askESQ);
   }
 
   @override
