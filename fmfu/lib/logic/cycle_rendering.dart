@@ -5,10 +5,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
-import 'package:fmfu/model/Instructions.dart';
+import 'package:fmfu/model/instructions.dart';
 
 
-List<RenderedObservation> renderObservations(List<Observation> observations) {
+List<RenderedObservation> renderObservations(List<Observation> observations, List<Instructions> activeInstructions) {
   int daysOfFlow = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;

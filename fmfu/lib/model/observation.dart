@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-
 class Observation {
   final Flow? flow;
   final DischargeSummary? dischargeSummary;
+  final bool essentiallyTheSame;
 
-  Observation(this.flow, this.dischargeSummary);
+  Observation(this.flow, this.dischargeSummary, {this.essentiallyTheSame = false});
 
   @override
   String toString() {

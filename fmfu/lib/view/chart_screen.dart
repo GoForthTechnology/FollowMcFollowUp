@@ -336,6 +336,7 @@ class ControlBarState extends State<ControlBar> {
   int buildUpLength = CycleRecipe.defaultBuildUpLength;
   int peakTypeLength = CycleRecipe.defaultPeakTypeLength;
   int postPeakLength = CycleRecipe.defaultPostPeakLength;
+  bool askESQ = false;
 
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(
@@ -513,6 +514,14 @@ class ControlBarState extends State<ControlBar> {
                 });
               }, child: const Text("+")),
             ),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Ask ESQ: "),
+            Switch(value: askESQ, onChanged: (value) {
+              askESQ = value;
+            }),
           ],
         )
       ],
