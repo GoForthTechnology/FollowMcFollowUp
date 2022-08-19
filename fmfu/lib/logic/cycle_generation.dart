@@ -42,7 +42,8 @@ class CycleRecipe extends Recipe {
       defaultPreBuildupLength,
       defaultBuildUpLength,
       defaultPeakTypeLength,
-      defaultPostPeakLength);
+      defaultPostPeakLength,
+      false);
 
   static CycleRecipe create(
       double unusualBleedingProbability,
@@ -52,7 +53,8 @@ class CycleRecipe extends Recipe {
       int preBuildUpLength,
       int buildUpLength,
       int peakTypeLength,
-      int postPeakLength) {
+      int postPeakLength,
+      bool askESQ) {
     if (unusualBleedingProbability < 0 || unusualBleedingProbability > 1) {
       throw Exception("Invalid unusualBleedingProbability $unusualBleedingProbability");
     }

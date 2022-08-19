@@ -13,6 +13,6 @@ class CycleViewModel with ChangeNotifier {
   }
 
   static Cycles getCycles(CycleRecipe  recipe, int numCycles) {
-    return List.generate(numCycles, (index) => renderObservations(recipe.getObservations()));
+    return List.generate(numCycles, (index) => renderObservations(recipe.getObservations(), []));
   }
 }
