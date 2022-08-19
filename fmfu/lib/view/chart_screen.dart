@@ -50,7 +50,11 @@ class _ChartPageState extends State<ChartPage> {
                         setState(() {
                           corrections.putIfAbsent(rowIndex, () => {});
                           var correctionsRow = corrections[rowIndex]!;
-                          correctionsRow[observationIndex] = sticker;
+                          if (sticker == null) {
+                            correctionsRow.remove(observationIndex);
+                          } else {
+                            correctionsRow[observationIndex] = sticker;
+                          }
                         });
                       });
                     },
@@ -95,7 +99,7 @@ Widget _createHeaderRow() {
   );
 }
 
-Widget _createCycleRow(int rowIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText) updateCorrections) {
+Widget _createCycleRow(int rowIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText?) updateCorrections) {
   List<Widget> sections = [];
   for (int i=0; i<nSectionsPerCycle; i++) {
     sections.add(_createSection(rowIndex, i, context, cycles, corrections, updateCorrections));
@@ -103,7 +107,7 @@ Widget _createCycleRow(int rowIndex, BuildContext context, Cycles cycles, Correc
   return Row(children: sections);
 }
 
-Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText) updateCorrection) {
+Widget _createSection(int rowIndex, int sectionIndex, BuildContext context, Cycles cycles, Corrections corrections, void Function(int, int, StickerWithText?) updateCorrection) {
   return
     Container(
       decoration: BoxDecoration(
@@ -121,7 +125,7 @@ List<Widget> _entries(
     BuildContext context,
     Cycles cycles,
     Corrections corrections,
-    void Function(int, int, StickerWithText) updateCorrection) {
+    void Function(int, int, StickerWithText?) updateCorrection) {
   List<Widget> stackedCells = [];
   for (int i=0; i<nEntriesPerSection; i++) {
     List<RenderedObservation> observations = cycles[rowIndex];
@@ -131,8 +135,9 @@ List<Widget> _entries(
       observation = observations[observationIndex];
     }
     Widget sticker = _createSticker(
-        observation?.getSticker(),
-        observation?.getStickerText(), _showCorrectionDialog(context, rowIndex, observationIndex, updateCorrection),
+      observation?.getSticker(),
+      observation?.getStickerText(),
+      _showCorrectionDialog(context, rowIndex, observationIndex, null, updateCorrection),
     );
     StickerWithText? correction = corrections[rowIndex]?[observationIndex];
     if (observation != null && correction != null) {
@@ -140,9 +145,11 @@ List<Widget> _entries(
         sticker,
         Transform.rotate(
           angle: -pi / 12.0,
-          child: _createSticker(correction.sticker, correction.text, () => {
-
-          }),
+          child: _createSticker(
+            correction.sticker,
+            correction.text,
+            _showCorrectionDialog(context, rowIndex, observationIndex, correction, updateCorrection),
+          ),
         )
       ]);
     }
@@ -158,13 +165,18 @@ List<Widget> _entries(
   return stackedCells;
 }
 
-void Function() _showCorrectionDialog(BuildContext context, int rowIndex, int observationIndex, void Function(int, int, StickerWithText) updateCorrection) {
+void Function() _showCorrectionDialog(
+    BuildContext context,
+    int rowIndex,
+    int observationIndex,
+    StickerWithText? existingCorrection,
+    void Function(int, int, StickerWithText?) updateCorrection) {
   return () {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        Sticker? selectedSticker;
-        String? selectedStickerText;
+        Sticker? selectedSticker = existingCorrection?.sticker;
+        String? selectedStickerText = existingCorrection?.text;
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             title: const Text('Sticker Correction'),
@@ -194,10 +206,11 @@ void Function() _showCorrectionDialog(BuildContext context, int rowIndex, int ob
               ),
               TextButton(
                 onPressed: () {
-                  if (selectedSticker == null) {
-                    return;
+                  StickerWithText? stickerWithText;
+                  if (selectedSticker != null) {
+                    stickerWithText = StickerWithText(selectedSticker!, selectedStickerText);
                   }
-                  updateCorrection(rowIndex, observationIndex, StickerWithText(selectedSticker!, selectedStickerText));
+                  updateCorrection(rowIndex, observationIndex, stickerWithText);
                   Navigator.pop(context, 'OK');
                 },
                 child: const Text('OK'),
