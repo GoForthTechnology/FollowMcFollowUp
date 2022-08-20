@@ -13,6 +13,7 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;
   CountsOfThree countsOfThree = CountsOfThree();
+  bool yesterdayWasEssentiallyTheSame = false;
 
   List<RenderedObservation> renderedObservations = [];
   for (int i=0; i < observations.length; i++) {
@@ -78,14 +79,29 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     if (isPeakDay) {
       countsOfThree.registerCountStart(CountOfThreeReason.peakDay, i);
     }
+
+    if (yesterdayWasEssentiallyTheSame && !(observation.essentiallyTheSame ?? false)) {
+      // TODO: re-enable this once I figure out what's up with stickering
+      //countsOfThree.registerCountStart(CountOfThreeReason.pointOfChange, i);
+    }
+
     List<Instruction> infertilityReasons = [];
-    bool hasSpecialInstructions = false;
     if (activeInstructions.contains(Instruction.k2) && isPostPeak) {
       infertilityReasons.add(Instruction.k2);
       // I REALLY don't like how this is done...
       if (!countsOfThree.inCountOfThree(CountOfThreeReason.peakDay, i)) {
         fertilityReasons.remove(Instruction.d2);
       }
+    }
+    if (activeInstructions.contains(Instruction.k1) && (observation.essentiallyTheSame ?? false)) {
+      infertilityReasons.add(Instruction.k1);
+      fertilityReasons.remove(Instruction.d2);
+      fertilityReasons.remove(Instruction.d3);
+      fertilityReasons.remove(Instruction.d4);
+      fertilityReasons.remove(Instruction.d5);
+      countsOfThree.clearCount(CountOfThreeReason.peakDay);
+      countsOfThree.clearCount(CountOfThreeReason.consecutiveDaysOfNonPeakMucus);
+      countsOfThree.clearCount(CountOfThreeReason.singleDayOfPeakMucus);
     }
 
     renderedObservations.add(RenderedObservation(
@@ -95,11 +111,12 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         observation.hasBleeding,
         observation.hasMucus,
         inFlow,
-        hasSpecialInstructions,
         fertilityReasons,
         infertilityReasons,
         observation.essentiallyTheSame,
     ));
+
+    yesterdayWasEssentiallyTheSame = observation.essentiallyTheSame ?? false;
   }
   return renderedObservations;
 }
@@ -111,12 +128,11 @@ class RenderedObservation {
   final bool hasBleeding;
   final bool hasMucus;
   final bool inFlow;
-  final bool hasSpecialInstructions;
   final bool? essentiallyTheSame;
   final List<Instruction> fertilityReasons;
   final List<Instruction> infertilityReasons;
 
-  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.hasSpecialInstructions, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame);
+  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame);
 
   String getObservationText() {
     String text = observationText;
@@ -184,6 +200,10 @@ class CountsOfThree {
 
   void registerCountStart(CountOfThreeReason reason, int i) {
     _countStarts[reason] = i;
+  }
+
+  void clearCount(CountOfThreeReason reason) {
+    _countStarts.remove(reason);
   }
 
   int getCountOfThree(int i) {
