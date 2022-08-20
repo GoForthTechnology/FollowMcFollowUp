@@ -154,7 +154,11 @@ List<Widget> _entries(
       ]);
     }
     Widget observationText = _createCell(
-        Text(observation == null ? "" : observation.observationText),
+        Text(
+          observation == null ? "" : observation.getObservationText(),
+          style: const TextStyle(fontSize: 10),
+          textAlign: TextAlign.center,
+        ),
         Colors.white, () {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Entry click: cycle #${rowIndex+1}')),
@@ -338,6 +342,8 @@ class ControlBarState extends State<ControlBar> {
   int peakTypeLength = CycleRecipe.defaultPeakTypeLength;
   int postPeakLength = CycleRecipe.defaultPostPeakLength;
   bool askESQ = false;
+  bool prePeakYellowStamps = false;
+  bool postPeakYellowStamps = false;
 
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(
@@ -355,6 +361,12 @@ class ControlBarState extends State<ControlBar> {
 
   @override
   Widget build(BuildContext context) {
+    void updateCycles(CycleViewModel model) {
+      model.updateCycles(
+          _getRecipe(),
+          askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
+          postPeakYellowStamps: postPeakYellowStamps);
+    }
     return Consumer<CycleViewModel>(
       builder: (context, model, child) => Column(
       children: [
@@ -369,7 +381,7 @@ class ControlBarState extends State<ControlBar> {
             onChanged: (val) {
               setState(() {
                 unusualBleedingFrequency = val;
-                model.updateCycles(_getRecipe(), 50);
+                updateCycles(model);
               });
             },
           ),
@@ -383,7 +395,7 @@ class ControlBarState extends State<ControlBar> {
             onChanged: (val) {
               setState(() {
                 prePeakMucusPatchFrequency = val;
-                model.updateCycles(_getRecipe(), 50);
+                updateCycles(model);
               });
             },
           ),
@@ -397,11 +409,11 @@ class ControlBarState extends State<ControlBar> {
             onChanged: (val) {
               setState(() {
                 prePeakPeakTypeFrequency = val;
-                model.updateCycles(_getRecipe(), 50);
+                updateCycles(model);
               });
             },
           ),
-          const Text("Post-Peak Mucus Patch: "),
+          const Text("Post-Peak Mucus: "),
           Text((postPeakMucusPatchFrequency / 100).toString()),
           Slider(
             value: postPeakMucusPatchFrequency,
@@ -411,7 +423,7 @@ class ControlBarState extends State<ControlBar> {
             onChanged: (val) {
               setState(() {
                 postPeakMucusPatchFrequency = val;
-                model.updateCycles(_getRecipe(), 50);
+                updateCycles(model);
               });
             },
           ),
@@ -426,7 +438,7 @@ class ControlBarState extends State<ControlBar> {
                 setState(() {
                   if (flowLength > 0) {
                     flowLength--;
-                    model.updateCycles(_getRecipe(), 50);
+                    updateCycles(model);
                   }
                 });
               }, child: const Text("-")),
@@ -436,7 +448,7 @@ class ControlBarState extends State<ControlBar> {
               child: ElevatedButton(onPressed: () {
                 setState(() {
                   flowLength++;
-                  model.updateCycles(_getRecipe(), 50);
+                  updateCycles(model);
                 });
               }, child: const Text("+")),
             ),
@@ -448,7 +460,7 @@ class ControlBarState extends State<ControlBar> {
                 setState(() {
                   if (preBuildupLength > 0) {
                     preBuildupLength--;
-                    model.updateCycles(_getRecipe(), 50);
+                    updateCycles(model);
                   }
                 });
               }, child: const Text("-")),
@@ -458,7 +470,7 @@ class ControlBarState extends State<ControlBar> {
               child: ElevatedButton(onPressed: () {
                 setState(() {
                   preBuildupLength++;
-                  model.updateCycles(_getRecipe(), 50);
+                  updateCycles(model);
                 });
               }, child: const Text("+")),
             ),
@@ -470,7 +482,7 @@ class ControlBarState extends State<ControlBar> {
                 setState(() {
                   if (buildUpLength > 0) {
                     buildUpLength--;
-                    model.updateCycles(_getRecipe(), 50);
+                    updateCycles(model);
                   }
                 });
               }, child: const Text("-")),
@@ -480,7 +492,7 @@ class ControlBarState extends State<ControlBar> {
               child: ElevatedButton(onPressed: () {
                 setState(() {
                   buildUpLength++;
-                  model.updateCycles(_getRecipe(), 50);
+                  updateCycles(model);
                 });
               }, child: const Text("+")),
             ),
@@ -492,7 +504,7 @@ class ControlBarState extends State<ControlBar> {
                 setState(() {
                   if (peakTypeLength > 0) {
                     peakTypeLength--;
-                    model.updateCycles(_getRecipe(), 50);
+                    updateCycles(model);
                   }
                 });
               }, child: const Text("-")),
@@ -505,7 +517,7 @@ class ControlBarState extends State<ControlBar> {
                 }
                 setState(() {
                   peakTypeLength++;
-                  model.updateCycles(_getRecipe(), 50);
+                  updateCycles(model);
                 });
               }, child: const Text("+")),
             ),
@@ -517,7 +529,7 @@ class ControlBarState extends State<ControlBar> {
                 setState(() {
                   if (postPeakLength > 0) {
                     postPeakLength--;
-                    model.updateCycles(_getRecipe(), 50);
+                    updateCycles(model);
                   }
                 });
               }, child: const Text("-")),
@@ -527,7 +539,7 @@ class ControlBarState extends State<ControlBar> {
               child: ElevatedButton(onPressed: () {
                 setState(() {
                   postPeakLength++;
-                  model.updateCycles(_getRecipe(), 50);
+                  updateCycles(model);
                 });
               }, child: const Text("+")),
             ),
@@ -537,7 +549,30 @@ class ControlBarState extends State<ControlBar> {
           children: [
             const Text("Ask ESQ: "),
             Switch(value: askESQ, onChanged: (value) {
-              askESQ = value;
+              setState(() {
+                askESQ = value;
+                if (!askESQ) {
+                  prePeakYellowStamps = false;
+                }
+                updateCycles(model);
+              });
+            }),
+            const Text("Pre-Peak Yellow Stamps: "),
+            Switch(value: prePeakYellowStamps, onChanged: (value) {
+              setState(() {
+                prePeakYellowStamps = value;
+                if (prePeakYellowStamps) {
+                  askESQ = true;
+                }
+                updateCycles(model);
+              });
+            }),
+            const Text("Post-Peak Yellow Stamps: "),
+            Switch(value: postPeakYellowStamps, onChanged: (value) {
+              setState(() {
+                postPeakYellowStamps = value;
+                updateCycles(model);
+              });
             }),
           ],
         )

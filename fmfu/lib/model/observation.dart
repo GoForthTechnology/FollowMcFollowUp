@@ -1,9 +1,9 @@
 class Observation {
   final Flow? flow;
   final DischargeSummary? dischargeSummary;
-  final bool essentiallyTheSame;
+  final bool? essentiallyTheSame;
 
-  Observation(this.flow, this.dischargeSummary, {this.essentiallyTheSame = false});
+  Observation(this.flow, this.dischargeSummary, {this.essentiallyTheSame});
 
   @override
   String toString() {

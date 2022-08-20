@@ -4,7 +4,7 @@ import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/distributions.dart';
 
 abstract class Recipe {
-  List<Observation> getObservations();
+  List<Observation> getObservations({bool askESQ = false});
 }
 
 class CycleRecipe extends Recipe {
@@ -18,17 +18,17 @@ class CycleRecipe extends Recipe {
   : _recipes = [flowRecipe, preBuildUpRecipe, buildUpRecipe, postPeakRecipe];
 
   @override
-  List<Observation> getObservations() {
+  List<Observation> getObservations({bool askESQ = false}) {
     List<Observation> observations = [];
     for (var recipe in _recipes) {
-      observations.addAll(recipe.getObservations());
+      observations.addAll(recipe.getObservations(askESQ: askESQ));
     }
     return observations;
   }
 
-  static double defaultUnusualBleedingFrequency = 20;
-  static double defaultMucusPatchFrequency = 20;
-  static double defaultPrePeakPeakTypeFrequency = 50;
+  static double defaultUnusualBleedingFrequency = 0;
+  static double defaultMucusPatchFrequency = 0;
+  static double defaultPrePeakPeakTypeFrequency = 0;
   static int defaultFlowLength = 5;
   static int defaultPreBuildupLength = 4;
   static int defaultBuildUpLength = 4;
@@ -85,11 +85,18 @@ class CycleRecipe extends Recipe {
     if (postPeakLength < 0) {
       throw Exception("Invalid postPeakLength $postPeakLength");
     }
+    var preBuildupDischargeGenerator = DischargeSummaryGenerator(
+      nonMucusDischargeSummary, [
+        AlternativeDischarge(nonPeakTypeDischargeSummary, prePeakMucusPatchProbability),
+        AlternativeDischarge(peakTypeDischargeSummary, prePeakPeakTypeProbability),
+      ],
+    );
     return CycleRecipe(
       FlowRecipe(
           NormalDistribution(flowLength, 1),
           Flow.heavy,
-          Flow.veryLight
+          Flow.veryLight,
+          preBuildupDischargeGenerator,
       ),
       PreBuildUpRecipe(
         NormalDistribution(preBuildUpLength, 1),
@@ -97,12 +104,7 @@ class CycleRecipe extends Recipe {
         UniformAnomalyGenerator(
           prePeakMucusPatchProbability,
         ),
-        DischargeSummaryGenerator(
-          // Non-peak
-          nonPeakTypeDischargeSummary, [
-            AlternativeDischarge(peakTypeDischargeSummary, prePeakPeakTypeProbability),
-        ],
-        ),
+        preBuildupDischargeGenerator,
         NormalAnomalyGenerator(
           NormalDistribution(1, 1),
           unusualBleedingProbability,
@@ -167,21 +169,24 @@ class CycleRecipe extends Recipe {
 class FlowRecipe extends Recipe {
   final NormalDistribution flowLength;
   final FlowIntensityDistribution _flowDistribution;
+  final DischargeSummaryGenerator _dischargeSummaryGenerator;
 
-  FlowRecipe(this.flowLength, Flow maxFlow, Flow minFlow) :
+  FlowRecipe(this.flowLength, Flow maxFlow, Flow minFlow, this._dischargeSummaryGenerator) :
         _flowDistribution = FlowIntensityDistribution(
             _eligibleFlows(maxFlow, minFlow), 2 + Random().nextDouble() * 3
         );
 
   @override
-  List<Observation> getObservations() {
+  List<Observation> getObservations({bool askESQ = false}) {
     List<Observation> observations = [];
     for (var flow in _flowDistribution.get(flowLength.get())) {
       DischargeSummary? dischargeSummary;
       if (flow.requiresDischargeSummary) {
-        dischargeSummary = DischargeSummary(DischargeType.dry, DischargeFrequency.once, []);
+        dischargeSummary = _dischargeSummaryGenerator.get();
       }
-      observations.add(Observation(flow, dischargeSummary));
+      bool hasMucus = dischargeSummary?.hasMucus ?? false;
+      bool? essentiallyTheSame = askESQ && hasMucus ? true : null;
+      observations.add(Observation(flow, dischargeSummary, essentiallyTheSame: essentiallyTheSame));
     }
     return observations;
   }
@@ -207,27 +212,106 @@ class FlowRecipe extends Recipe {
   }
 }
 
-class AlternativeDischarge {
-  final DischargeSummary summary;
-  final double probability;
+class PreBuildUpRecipe extends Recipe {
+  final NormalDistribution _length;
+  final DischargeSummaryGenerator _nonMucusDischargeGenerator;
+  final AnomalyGenerator _mucusPatchGenerator;
+  final DischargeSummaryGenerator _nonPeakMucusDischargeGenerator;
+  final AnomalyGenerator _abnormalBleedingGenerator;
 
-  AlternativeDischarge(this.summary, this.probability);
+  PreBuildUpRecipe(this._length, this._nonMucusDischargeGenerator, this._mucusPatchGenerator, this._nonPeakMucusDischargeGenerator, this._abnormalBleedingGenerator);
+
+  @override
+  List<Observation> getObservations({bool askESQ = false}) {
+    int periodLength = _length.get();
+    List<bool> mucusPatchField = _mucusPatchGenerator.generate(periodLength);
+    List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(periodLength);
+    List<Observation> observation = [];
+    for (int i=0; i<periodLength; i++) {
+      var dischargeSummary = mucusPatchField[i] ?
+          _nonPeakMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
+      var flow = abnormalBleedingField[i] ? Flow.light : null;
+      var essentiallyTheSame = dischargeSummary.hasMucus && askESQ ? true : null;
+      observation.add(Observation(flow, dischargeSummary, essentiallyTheSame: essentiallyTheSame));
+    }
+    return observation;
+  }
 }
 
-class DischargeSummaryGenerator {
-  final DischargeSummary _typicalDischarge;
-  final List<AlternativeDischarge> _alternatives;
+class BuildUpRecipe extends Recipe {
+  final NormalDistribution _length;
+  final NormalDistribution _peakTypeLength;
+  final DischargeSummaryGenerator _peakTypeDischargeGenerator;
+  final DischargeSummaryGenerator _nonPeakTypeDischargeGenerator;
 
-  DischargeSummaryGenerator(this._typicalDischarge, this._alternatives);
+  BuildUpRecipe(this._length, this._peakTypeLength, this._peakTypeDischargeGenerator, this._nonPeakTypeDischargeGenerator);
 
-
-  DischargeSummary get() {
-    for (var alternative in List.from(_alternatives)..shuffle()) {
-      if (Random().nextDouble() < alternative.probability) {
-        return alternative.summary;
-      }
+  @override
+  List<Observation> getObservations({bool askESQ = false}) {
+    List<Observation> observation = [];
+    int length = _length.get();
+    int nonPeakTypeLength = length - _peakTypeLength.get();
+    for (int i=0; i<length; i++) {
+      var dischargeSummary = observation.length < nonPeakTypeLength ?
+          _nonPeakTypeDischargeGenerator.get() : _peakTypeDischargeGenerator.get();
+      observation.add(Observation(null, dischargeSummary, essentiallyTheSame: askESQ ? false : null));
     }
-    return _typicalDischarge;
+    return observation;
+  }
+}
+
+class PostPeakRecipe extends Recipe {
+  final NormalDistribution _length;
+  final NormalDistribution _mucusLength;
+  final DischargeSummaryGenerator _nonPeakTypeMucusDischargeGenerator;
+  final DischargeSummaryGenerator _nonMucusDischargeGenerator;
+  final AnomalyGenerator _abnormalBleedingGenerator;
+  final AnomalyGenerator _mucusPatchGenerator;
+
+  PostPeakRecipe(this._length, this._mucusLength, this._nonPeakTypeMucusDischargeGenerator, this._nonMucusDischargeGenerator, this._abnormalBleedingGenerator, this._mucusPatchGenerator);
+
+  @override
+  List<Observation> getObservations({bool askESQ = false}) {
+    int postPeakLength = _length.get();
+    int mucusLength = _mucusLength.get();
+    int nonMucusLength = postPeakLength - mucusLength;
+
+    List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(nonMucusLength);
+    List<bool> mucusPatchField = _mucusPatchGenerator.generate(nonMucusLength);
+
+    List<Observation> observation = [];
+    for (int i=0; i<postPeakLength; i++) {
+      if (i < mucusLength) {
+        observation.add(Observation(null, _nonPeakTypeMucusDischargeGenerator.get()));
+        continue;
+      }
+      var flow = abnormalBleedingField[i-mucusLength] ? Flow.light : null;
+      var dischargeSummary = mucusPatchField[i-mucusLength] ?
+          _nonPeakTypeMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
+      observation.add(Observation(flow, dischargeSummary));
+    }
+    return observation;
+  }
+}
+
+class FlowIntensityDistribution {
+  static const int _distributionWidth = 12;
+  final GamaDistribution _gamaDistribution;
+  final List<Flow> _eligibleFlows;
+
+  // TODO: make scale and shape random to some degree
+  FlowIntensityDistribution(this._eligibleFlows, double shape) : _gamaDistribution = GamaDistribution(shape, -1/3*shape + 8/3);
+
+  List<Flow> get(int length) {
+    double stepFactor = 0.2 / (_eligibleFlows.length - 1);
+    List<Flow> flow = [];
+    for (int i=1; i<=length; i++) {
+      double x = i * _distributionWidth / length;
+      double gx = _gamaDistribution.cdf(x);
+      int index = _eligibleFlows.length - 1 - (gx / stepFactor).round();
+      flow.add(_eligibleFlows[index]);
+    }
+    return flow;
   }
 }
 
@@ -278,104 +362,26 @@ class NormalAnomalyGenerator extends AnomalyGenerator {
   }
 }
 
-class PreBuildUpRecipe extends Recipe {
-  final NormalDistribution _length;
-  final DischargeSummaryGenerator _nonMucusDischargeGenerator;
-  final AnomalyGenerator _mucusPatchGenerator;
-  final DischargeSummaryGenerator _nonPeakMucusDischargeGenerator;
-  final AnomalyGenerator _abnormalBleedingGenerator;
+class DischargeSummaryGenerator {
+  final DischargeSummary _typicalDischarge;
+  final List<AlternativeDischarge> _alternatives;
 
-  PreBuildUpRecipe(this._length, this._nonMucusDischargeGenerator, this._mucusPatchGenerator, this._nonPeakMucusDischargeGenerator, this._abnormalBleedingGenerator);
+  DischargeSummaryGenerator(this._typicalDischarge, this._alternatives);
 
-  @override
-  List<Observation> getObservations() {
-    int periodLength = _length.get();
-    List<bool> mucusPatchField = _mucusPatchGenerator.generate(periodLength);
-    List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(periodLength);
-    List<Observation> observation = [];
-    for (int i=0; i<periodLength; i++) {
-      var dischargeSummary = mucusPatchField[i] ?
-          _nonPeakMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
-      var flow = abnormalBleedingField[i] ? Flow.light : null;
-      observation.add(Observation(flow, dischargeSummary));
-    }
-    return observation;
-  }
-}
 
-class BuildUpRecipe extends Recipe {
-  final NormalDistribution _length;
-  final NormalDistribution _peakTypeLength;
-  final DischargeSummaryGenerator _peakTypeDischargeGenerator;
-  final DischargeSummaryGenerator _nonPeakTypeDischargeGenerator;
-
-  BuildUpRecipe(this._length, this._peakTypeLength, this._peakTypeDischargeGenerator, this._nonPeakTypeDischargeGenerator);
-
-  @override
-  List<Observation> getObservations() {
-    List<Observation> observation = [];
-    int length = _length.get();
-    int nonPeakTypeLength = length - _peakTypeLength.get();
-    for (int i=0; i<length; i++) {
-      var dischargeSummary = observation.length < nonPeakTypeLength ?
-          _nonPeakTypeDischargeGenerator.get() : _peakTypeDischargeGenerator.get();
-      observation.add(Observation(null, dischargeSummary));
-    }
-    return observation;
-  }
-}
-
-class PostPeakRecipe extends Recipe {
-  final NormalDistribution _length;
-  final NormalDistribution _mucusLength;
-  final DischargeSummaryGenerator _nonPeakTypeMucusDischargeGenerator;
-  final DischargeSummaryGenerator _nonMucusDischargeGenerator;
-  final AnomalyGenerator _abnormalBleedingGenerator;
-  final AnomalyGenerator _mucusPatchGenerator;
-
-  PostPeakRecipe(this._length, this._mucusLength, this._nonPeakTypeMucusDischargeGenerator, this._nonMucusDischargeGenerator, this._abnormalBleedingGenerator, this._mucusPatchGenerator);
-
-  @override
-  List<Observation> getObservations() {
-    int postPeakLength = _length.get();
-    int mucusLength = _mucusLength.get();
-    int nonMucusLength = postPeakLength - mucusLength;
-
-    List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(nonMucusLength);
-    List<bool> mucusPatchField = _mucusPatchGenerator.generate(nonMucusLength);
-
-    List<Observation> observation = [];
-    for (int i=0; i<postPeakLength; i++) {
-      if (i < mucusLength) {
-        observation.add(Observation(null, _nonPeakTypeMucusDischargeGenerator.get()));
-        continue;
+  DischargeSummary get() {
+    for (var alternative in List.from(_alternatives)..shuffle()) {
+      if (Random().nextDouble() < alternative.probability) {
+        return alternative.summary;
       }
-      var flow = abnormalBleedingField[i-mucusLength] ? Flow.light : null;
-      var dischargeSummary = mucusPatchField[i-mucusLength] ?
-          _nonPeakTypeMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
-      observation.add(Observation(flow, dischargeSummary));
     }
-    return observation;
+    return _typicalDischarge;
   }
 }
 
-class FlowIntensityDistribution {
-  static const int _distributionWidth = 12;
-  final GamaDistribution _gamaDistribution;
-  final List<Flow> _eligibleFlows;
+class AlternativeDischarge {
+  final DischargeSummary summary;
+  final double probability;
 
-  // TODO: make scale and shape random to some degree
-  FlowIntensityDistribution(this._eligibleFlows, double shape) : _gamaDistribution = GamaDistribution(shape, -1/3*shape + 8/3);
-
-  List<Flow> get(int length) {
-    double stepFactor = 0.2 / (_eligibleFlows.length - 1);
-    List<Flow> flow = [];
-    for (int i=1; i<=length; i++) {
-      double x = i * _distributionWidth / length;
-      double gx = _gamaDistribution.cdf(x);
-      int index = _eligibleFlows.length - 1 - (gx / stepFactor).round();
-      flow.add(_eligibleFlows[index]);
-    }
-    return flow;
-  }
+  AlternativeDischarge(this.summary, this.probability);
 }

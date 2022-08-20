@@ -8,7 +8,7 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/model/instructions.dart';
 
 
-List<RenderedObservation> renderObservations(List<Observation> observations, List<Instructions> activeInstructions) {
+List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions) {
   int daysOfFlow = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;
@@ -78,8 +78,15 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     if (isPeakDay) {
       countsOfThree.registerCountStart(CountOfThreeReason.peakDay, i);
     }
-    bool hasSpecialInstructions = false;
     List<Instruction> infertilityReasons = [];
+    bool hasSpecialInstructions = false;
+    if (activeInstructions.contains(Instruction.k2) && isPostPeak) {
+      infertilityReasons.add(Instruction.k2);
+      // I REALLY don't like how this is done...
+      if (!countsOfThree.inCountOfThree(CountOfThreeReason.peakDay, i)) {
+        fertilityReasons.remove(Instruction.d2);
+      }
+    }
 
     renderedObservations.add(RenderedObservation(
         observation.toString(),
@@ -90,7 +97,8 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         inFlow,
         hasSpecialInstructions,
         fertilityReasons,
-        infertilityReasons
+        infertilityReasons,
+        observation.essentiallyTheSame,
     ));
   }
   return renderedObservations;
@@ -104,10 +112,22 @@ class RenderedObservation {
   final bool hasMucus;
   final bool inFlow;
   final bool hasSpecialInstructions;
+  final bool? essentiallyTheSame;
   final List<Instruction> fertilityReasons;
   final List<Instruction> infertilityReasons;
 
-  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.hasSpecialInstructions, this.fertilityReasons, this.infertilityReasons);
+  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.hasSpecialInstructions, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame);
+
+  String getObservationText() {
+    String text = observationText;
+    if (essentiallyTheSame == null) {
+      return text;
+    }
+    if (essentiallyTheSame!) {
+      return "$text\nY";
+    }
+    return "$text\nN";
+  }
 
   String getStickerText() {
     if (hasBleeding) {
@@ -139,7 +159,7 @@ class RenderedObservation {
         return Sticker.red;
       } else {
         if (hasMucus) {
-          return hasInfertilityReasons ? Sticker.yellow : Sticker.whiteBaby;
+          return hasInfertilityReasons ? Sticker.yellowBaby : Sticker.whiteBaby;
         } else {
           return Sticker.greenBaby;
         }
