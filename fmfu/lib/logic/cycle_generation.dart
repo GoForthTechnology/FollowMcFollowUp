@@ -7,6 +7,10 @@ abstract class Recipe {
   List<Observation> getObservations({bool askESQ = false});
 }
 
+abstract class PostProcessor {
+  void process(List<Observation> observations);
+}
+
 class CycleRecipe extends Recipe {
   final List<Recipe> _recipes;
 
@@ -22,6 +26,9 @@ class CycleRecipe extends Recipe {
     List<Observation> observations = [];
     for (var recipe in _recipes) {
       observations.addAll(recipe.getObservations(askESQ: askESQ));
+    }
+    for (var processor in [ESQPostProcessor()]) {
+      processor.process(observations);
     }
     return observations;
   }
@@ -164,6 +171,20 @@ class CycleRecipe extends Recipe {
           DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
           0.5,
         )]);
+}
+
+class ESQPostProcessor extends PostProcessor {
+  @override
+  void process(List<Observation> observations) {
+    for (int i=0; i<observations.length; i++) {
+      var observation = observations[i];
+      if (observation.essentiallyTheSame == null) {
+        continue;
+      }
+      observations[i] = Observation(observation.flow, observation.dischargeSummary, essentiallyTheSame: null);
+      break;
+    }
+  }
 }
 
 class FlowRecipe extends Recipe {
