@@ -28,6 +28,7 @@ class CycleRecipe extends Recipe {
 
   static double defaultUnusualBleedingFrequency = 20;
   static double defaultMucusPatchFrequency = 20;
+  static double defaultPrePeakPeakTypeFrequency = 50;
   static int defaultFlowLength = 5;
   static int defaultPreBuildupLength = 4;
   static int defaultBuildUpLength = 4;
@@ -37,6 +38,7 @@ class CycleRecipe extends Recipe {
   static CycleRecipe standardRecipe = create(
       defaultUnusualBleedingFrequency / 100,
       defaultMucusPatchFrequency / 100,
+      defaultPrePeakPeakTypeFrequency / 100,
       defaultMucusPatchFrequency / 100,
       defaultFlowLength,
       defaultPreBuildupLength,
@@ -48,6 +50,7 @@ class CycleRecipe extends Recipe {
   static CycleRecipe create(
       double unusualBleedingProbability,
       double prePeakMucusPatchProbability,
+      double prePeakPeakTypeProbability,
       double postPeakMucusPatchProbability,
       int flowLength,
       int preBuildUpLength,
@@ -60,6 +63,9 @@ class CycleRecipe extends Recipe {
     }
     if (prePeakMucusPatchProbability < 0 || prePeakMucusPatchProbability > 1) {
       throw Exception("Invalid mucusPatchProbability $prePeakMucusPatchProbability");
+    }
+    if (prePeakPeakTypeProbability < 0 || prePeakPeakTypeProbability > 1) {
+      throw Exception("Invalid prePeakPeakTypeProbability $prePeakPeakTypeProbability");
     }
     if (postPeakMucusPatchProbability < 0 || postPeakMucusPatchProbability > 1) {
       throw Exception("Invalid mucusPatchProbability $postPeakMucusPatchProbability");
@@ -94,7 +100,7 @@ class CycleRecipe extends Recipe {
         DischargeSummaryGenerator(
           // Non-peak
           nonPeakTypeDischargeSummary, [
-            AlternativeDischarge(peakTypeDischargeSummary, 0.5),
+            AlternativeDischarge(peakTypeDischargeSummary, prePeakPeakTypeProbability),
         ],
         ),
         NormalAnomalyGenerator(
@@ -217,7 +223,7 @@ class DischargeSummaryGenerator {
 
   DischargeSummary get() {
     for (var alternative in List.from(_alternatives)..shuffle()) {
-      if (Random().nextDouble() >= alternative.probability) {
+      if (Random().nextDouble() < alternative.probability) {
         return alternative.summary;
       }
     }

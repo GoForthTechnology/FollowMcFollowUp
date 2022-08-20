@@ -330,6 +330,7 @@ class ControlBarState extends State<ControlBar> {
 
   double unusualBleedingFrequency = CycleRecipe.defaultUnusualBleedingFrequency;
   double prePeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
+  double prePeakPeakTypeFrequency = CycleRecipe.defaultPrePeakPeakTypeFrequency;
   double postPeakMucusPatchFrequency = CycleRecipe.defaultMucusPatchFrequency;
   int flowLength = CycleRecipe.defaultFlowLength;
   int preBuildupLength = CycleRecipe.defaultPreBuildupLength;
@@ -342,6 +343,7 @@ class ControlBarState extends State<ControlBar> {
     return CycleRecipe.create(
         unusualBleedingFrequency / 100,
         prePeakMucusPatchFrequency / 100,
+        prePeakPeakTypeFrequency / 100,
         postPeakMucusPatchFrequency / 100,
         flowLength,
         preBuildupLength,
@@ -381,6 +383,20 @@ class ControlBarState extends State<ControlBar> {
             onChanged: (val) {
               setState(() {
                 prePeakMucusPatchFrequency = val;
+                model.updateCycles(_getRecipe(), 50);
+              });
+            },
+          ),
+          const Text("Pre-Peak Peak Type Mucus: "),
+          Text((prePeakPeakTypeFrequency / 100).toString()),
+          Slider(
+            value: prePeakPeakTypeFrequency,
+            min: 0,
+            max: 100,
+            divisions: 10,
+            onChanged: (val) {
+              setState(() {
+                prePeakPeakTypeFrequency = val;
                 model.updateCycles(_getRecipe(), 50);
               });
             },
