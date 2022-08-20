@@ -385,7 +385,7 @@ class ControlBarState extends State<ControlBar> {
               });
             },
           ),
-          const Text("Pre-Peak Mucus Patch: "),
+          const Text("Pre-Peak Mucus: "),
           Text((prePeakMucusPatchFrequency / 100).toString()),
           Slider(
             value: prePeakMucusPatchFrequency,
