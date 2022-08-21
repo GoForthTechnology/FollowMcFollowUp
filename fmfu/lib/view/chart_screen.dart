@@ -27,6 +27,7 @@ class _ChartPageState extends State<ChartPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuilding CartPage");
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by

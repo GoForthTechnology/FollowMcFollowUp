@@ -11,6 +11,7 @@ class ChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuilding ChartWidget");
     return Padding(padding: const EdgeInsets.all(20), child: Container(
       child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,

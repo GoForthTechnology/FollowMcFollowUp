@@ -14,8 +14,7 @@ class CycleStatsState extends State<CycleStatsWidget> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child:  Padding(padding: EdgeInsets.only(left: 2), child: Column(
         children: [
           Row(children: [
             const Text("LPM: "),
@@ -25,12 +24,12 @@ class CycleStatsState extends State<CycleStatsWidget> {
             const Text("MCS: "),
             SizedBox(width: 40, height: 30, child: TextFormField())
           ]),
-          ElevatedButton(
+          Padding(padding: EdgeInsets.only(top: 4), child: ElevatedButton(
               onPressed: () {},
               child: const Text("Save"),
-          ),
+          )),
         ]
       ),
-    );
+    ));
   }
 }

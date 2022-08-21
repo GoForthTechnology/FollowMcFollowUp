@@ -44,6 +44,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuilding ControlBar");
     void updateCycles(ChartListViewModel model) {
       model.updateCycles(
           _getRecipe(),
