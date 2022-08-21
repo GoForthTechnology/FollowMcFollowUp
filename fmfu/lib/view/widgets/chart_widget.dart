@@ -15,6 +15,7 @@ class ChartWidget extends StatelessWidget {
       child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           titleWidget ?? Container(),
           _createHeaderRow(),

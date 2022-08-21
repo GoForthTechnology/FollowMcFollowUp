@@ -6,15 +6,17 @@ import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/chart_screen.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
+import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 
 class CycleWidget extends StatefulWidget {
   final List<RenderedObservation> observations;
+  final bool showStats;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
-  const CycleWidget({Key? key, required this.observations}) : super(key: key);
+  const CycleWidget({Key? key, required this.observations, this.showStats = true}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -28,6 +30,9 @@ class CycleWidgetState extends State<CycleWidget> {
     List<Widget> sections = [];
     for (int i=0; i<CycleWidget.nSectionsPerCycle; i++) {
       sections.add(_createSection(context, i));
+    }
+    if (widget.showStats) {
+      sections.add(const CycleStatsWidget());
     }
     return Row(children: sections);
   }
