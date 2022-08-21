@@ -50,8 +50,10 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
           askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
           postPeakYellowStamps: postPeakYellowStamps);
     }
-    return Consumer<ChartListViewModel>(
-        builder: (context, model, child) => Column(
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Consumer<ChartListViewModel>(
+            builder: (context, model, child) => Column(
           children: [
             Row(children: [
               const Text("Unusual Bleeding: "),
@@ -260,7 +262,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
               ],
             )
           ],
-        ));
+        )));
   }
 }
 

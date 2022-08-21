@@ -5,27 +5,23 @@ import 'package:fmfu/view_model/chart_list_view_model.dart';
 
 class ChartWidget extends StatelessWidget {
   final Cycles cycles;
+  final Widget? titleWidget;
 
-  const ChartWidget({Key? key, required this.cycles}) : super(key: key);
+  const ChartWidget({Key? key, required this.cycles, this.titleWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(padding: const EdgeInsets.all(20), child: Container(
+      child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-            ),
-          child: Column(
-            children: [
-              _createHeaderRow(),
-              ..._createCycleRows(),
-            ],
-          )),
+          titleWidget ?? Container(),
+          _createHeaderRow(),
+          ..._createCycleRows(),
           _createFooterRow(),
         ],
-      )));
+      ))));
   }
 
   Widget _createHeaderRow() {

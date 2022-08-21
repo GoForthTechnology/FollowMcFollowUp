@@ -43,15 +43,25 @@ class _ChartPageState extends State<ChartPage> {
           child: Column(
             children: [
               const ControlBarWidget(),
-              Expanded(child: Padding(
+              Expanded(child: Center(child: Padding(
                 padding: const EdgeInsets.only(top: 10),
                   child: ListView.builder(
+                    shrinkWrap: true,
                     itemCount: model.cycles.length,
                     itemBuilder: (context, index) {
-                      return ChartWidget(cycles: model.cycles[index]);
+                      return ChartWidget(
+                        titleWidget: Text(
+                            "Chart #${index+1}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        cycles: model.cycles[index],
+                      );
                     },
                   ),
-              )),
+              ))),
             ],
           ),
         ),
