@@ -1,6 +1,7 @@
 
 import 'dart:math';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
+import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/cycle_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
@@ -45,12 +46,9 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Padding(
                 padding: const EdgeInsets.only(top: 10),
                   child: ListView.builder(
-                    itemCount: model.cycles.length,
+                    itemCount: 1,
                     itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _createHeaderRow();
-                      }
-                      return CycleWidget(observations: model.cycles[index-1]);
+                      return ChartWidget(cycles: model.cycles);
                     },
                   ),
               )),
@@ -60,35 +58,4 @@ class _ChartPageState extends State<ChartPage> {
       )
     );
   }
-}
-
-const int nSectionsPerCycle = 5;
-const int nEntriesPerSection = 7;
-
-Widget _createHeaderRow() {
-  List<Widget> sections = [];
-  for (int i=0; i<nSectionsPerCycle; i++) {
-    List<Widget> entries = [];
-    for (int j=0; j<nEntriesPerSection; j++) {
-      int entryNum = i*nEntriesPerSection + j + 1;
-      entries.add(Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-        ),
-        alignment: Alignment.center,
-        height: 40,
-        width: 40,
-        child: Text("$entryNum"),
-      ));
-    }
-    sections.add(Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-      ),
-      child: Row(children: entries),
-    ));
-  }
-  return Row(
-    children: sections,
-  );
 }

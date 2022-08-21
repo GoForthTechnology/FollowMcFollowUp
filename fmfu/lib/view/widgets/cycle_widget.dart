@@ -23,7 +23,7 @@ class CycleWidgetState extends State<CycleWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> sections = [];
-    for (int i=0; i<nSectionsPerCycle; i++) {
+    for (int i=0; i<5; i++) {
       sections.add(_createSection(context, i));
     }
     return Row(children: sections);
@@ -42,8 +42,8 @@ class CycleWidgetState extends State<CycleWidget> {
 
   List<Widget> _createEntries(BuildContext context, int sectionIndex) {
     List<Widget> stackedCells = [];
-    for (int i=0; i<nEntriesPerSection; i++) {
-      int observationIndex = sectionIndex * nEntriesPerSection + i;
+    for (int i=0; i<7; i++) {
+      int observationIndex = sectionIndex * 7 + i;
       RenderedObservation? observation;
       if (observationIndex < widget.observations.length) {
         observation = widget.observations[observationIndex];
