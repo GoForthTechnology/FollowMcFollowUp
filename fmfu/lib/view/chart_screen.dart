@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
-import 'package:fmfu/view_model/cycle_view_model.dart';
+import 'package:fmfu/view_model/chart_list_view_model.dart';
 
 class ChartPage extends StatefulWidget {
   const ChartPage({Key? key}) : super(key: key);
@@ -34,7 +34,7 @@ class _ChartPageState extends State<ChartPage> {
         title: const Text("Grid Page"),
       ),
       // TODO: figure out how to make horizontal scrolling work...
-      body: Consumer<CycleViewModel>(
+      body: Consumer<ChartListViewModel>(
         builder: (context, model, child) => Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -46,9 +46,9 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Padding(
                 padding: const EdgeInsets.only(top: 10),
                   child: ListView.builder(
-                    itemCount: 1,
+                    itemCount: model.cycles.length,
                     itemBuilder: (context, index) {
-                      return ChartWidget(cycles: model.cycles);
+                      return ChartWidget(cycles: model.cycles[index]);
                     },
                   ),
               )),

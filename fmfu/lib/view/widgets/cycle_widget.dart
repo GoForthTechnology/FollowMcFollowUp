@@ -11,6 +11,9 @@ import 'package:fmfu/view/widgets/sticker_widget.dart';
 class CycleWidget extends StatefulWidget {
   final List<RenderedObservation> observations;
 
+  static const int nSectionsPerCycle = 5;
+  static const int nEntriesPerSection = 7;
+
   const CycleWidget({Key? key, required this.observations}) : super(key: key);
 
   @override
@@ -23,7 +26,7 @@ class CycleWidgetState extends State<CycleWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> sections = [];
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<CycleWidget.nSectionsPerCycle; i++) {
       sections.add(_createSection(context, i));
     }
     return Row(children: sections);
@@ -42,8 +45,8 @@ class CycleWidgetState extends State<CycleWidget> {
 
   List<Widget> _createEntries(BuildContext context, int sectionIndex) {
     List<Widget> stackedCells = [];
-    for (int i=0; i<7; i++) {
-      int observationIndex = sectionIndex * 7 + i;
+    for (int i=0; i<CycleWidget.nEntriesPerSection; i++) {
+      int observationIndex = sectionIndex * CycleWidget.nEntriesPerSection + i;
       RenderedObservation? observation;
       if (observationIndex < widget.observations.length) {
         observation = widget.observations[observationIndex];

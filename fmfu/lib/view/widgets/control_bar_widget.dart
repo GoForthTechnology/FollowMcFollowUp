@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
-import 'package:fmfu/view_model/cycle_view_model.dart';
+import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ControlBarWidget extends StatefulWidget {
@@ -44,13 +44,13 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    void updateCycles(CycleViewModel model) {
+    void updateCycles(ChartListViewModel model) {
       model.updateCycles(
           _getRecipe(),
           askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
           postPeakYellowStamps: postPeakYellowStamps);
     }
-    return Consumer<CycleViewModel>(
+    return Consumer<ChartListViewModel>(
         builder: (context, model, child) => Column(
           children: [
             Row(children: [

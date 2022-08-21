@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/chart_screen.dart';
-import 'package:fmfu/view_model/cycle_view_model.dart';
+import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: CycleViewModel()),
+        ChangeNotifierProvider.value(value: ChartListViewModel()),
       ], child: MaterialApp(
     title: 'Flutter Demo',
       theme: ThemeData(

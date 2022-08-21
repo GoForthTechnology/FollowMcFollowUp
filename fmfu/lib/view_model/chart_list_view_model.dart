@@ -5,8 +5,8 @@ import 'package:fmfu/model/instructions.dart';
 
 typedef Cycles = List<List<RenderedObservation>>;
 
-class CycleViewModel with ChangeNotifier {
-  Cycles cycles = getCycles(CycleRecipe.standardRecipe, 10, false, false, false);
+class ChartListViewModel with ChangeNotifier {
+  List<Cycles> cycles = getCycles(CycleRecipe.standardRecipe, 10, false, false, false);
 
   void updateCycles(
       CycleRecipe recipe, {
@@ -19,7 +19,7 @@ class CycleViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  static Cycles getCycles(CycleRecipe  recipe, int numCycles, bool askESQ, bool prePeakYellowStamps, bool postPeakYellowStamps) {
+  static List<Cycles> getCycles(CycleRecipe  recipe, int numCycles, bool askESQ, bool prePeakYellowStamps, bool postPeakYellowStamps) {
     List<Instruction> instructions = [];
     if (prePeakYellowStamps) {
       instructions.add(Instruction.k1);
@@ -27,6 +27,20 @@ class CycleViewModel with ChangeNotifier {
     if (postPeakYellowStamps) {
       instructions.add(Instruction.k2);
     }
-    return List.generate(numCycles, (index) => renderObservations(recipe.getObservations(askESQ: askESQ), instructions));
+    Cycles cycles = List.generate(numCycles, (index) => renderObservations(recipe.getObservations(askESQ: askESQ), instructions));
+    List<Cycles> out = [];
+    Cycles slice = [];
+    for (int i=0; i<cycles.length; i++) {
+      if (slice.length < 6) {
+        slice.add(cycles[i]);
+      } else {
+        out.add(List.of(slice));
+        slice.clear;
+      }
+    }
+    if (slice.isNotEmpty) {
+      out.add(List.of(slice));
+    }
+    return out;
   }
 }
