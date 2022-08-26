@@ -81,11 +81,41 @@ class CycleWidgetState extends State<CycleWidget> {
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.white,
-          onTap: () {},
+          onTap: (observation == null) ? () {} : _showEditDialog(context, observation),
       );
       stackedCells.add(Column(children: [sticker, observationText]));
     }
     return stackedCells;
+  }
+
+  void Function() _showEditDialog(
+      BuildContext context,
+      RenderedObservation observation) {
+    return () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Observation Edit'),
+              content: TextFormField(initialValue: observation.observationText),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'OK');
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          });
+        },
+      );
+    };
   }
 
   void Function() _showCorrectionDialog(
