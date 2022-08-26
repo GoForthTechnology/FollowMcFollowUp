@@ -9,13 +9,14 @@ import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 
 class CycleWidget extends StatefulWidget {
-  final Cycle cycle;
+  final Cycle? cycle;
   final bool showStats;
+  final int dayOffset;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
-  const CycleWidget({Key? key, required this.cycle, this.showStats = true}) : super(key: key);
+  const CycleWidget({Key? key, required this.cycle, this.showStats = true, this.dayOffset = 0}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -28,7 +29,7 @@ class CycleWidgetState extends State<CycleWidget> {
     for (int i=0; i<CycleWidget.nSectionsPerCycle; i++) {
       sections.add(_createSection(context, i));
     }
-    if (widget.showStats) {
+    if (widget.showStats && widget.dayOffset == 0) {
       sections.add(const CycleStatsWidget());
     }
     return Row(children: sections);
@@ -48,17 +49,18 @@ class CycleWidgetState extends State<CycleWidget> {
   List<Widget> _createEntries(BuildContext context, int sectionIndex) {
     List<Widget> stackedCells = [];
     for (int i=0; i<CycleWidget.nEntriesPerSection; i++) {
-      int observationIndex = sectionIndex * CycleWidget.nEntriesPerSection + i;
+      int observationIndex = sectionIndex * CycleWidget.nEntriesPerSection + i + widget.dayOffset;
       RenderedObservation? observation;
-      if (observationIndex < widget.cycle.observations.length) {
-        observation = widget.cycle.observations[observationIndex];
+      var hasCycle = widget.cycle != null;
+      if (hasCycle && observationIndex < widget.cycle!.observations.length) {
+        observation = widget.cycle!.observations[observationIndex];
       }
       Widget sticker = StickerWidget(
         sticker: observation?.getSticker(),
         stickerText: observation?.getStickerText(),
-        onTap: _showCorrectionDialog(context, observationIndex, null),
+        onTap: observation != null ? _showCorrectionDialog(context, observationIndex, null) : () {},
       );
-      StickerWithText? correction = widget.cycle.corrections[observationIndex];
+      StickerWithText? correction = widget.cycle?.corrections[observationIndex];
       if (observation != null && correction != null) {
         sticker = Stack(children: [
           sticker,
@@ -143,10 +145,13 @@ class CycleWidgetState extends State<CycleWidget> {
 
   void updateCorrections(int observationIndex, StickerWithText? correction) {
     setState(() {
+      if (widget.cycle == null) {
+        return;
+      }
       if (correction == null) {
-        widget.cycle.corrections.remove(observationIndex);
+        widget.cycle!.corrections.remove(observationIndex);
       } else {
-        widget.cycle.corrections[observationIndex] = correction;
+        widget.cycle!.corrections[observationIndex] = correction;
       }
     });
   }

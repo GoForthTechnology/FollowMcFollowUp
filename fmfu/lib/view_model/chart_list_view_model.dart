@@ -60,22 +60,29 @@ class ChartListViewModel with ChangeNotifier {
     List<Cycle> cycles = List.generate(numCycles, (index) => Cycle(
         renderObservations(recipe.getObservations(askESQ: askESQ), instructions), {}));
     print("Generated ${cycles.length} cycles");
+    List<CycleSlice> slices = [];
+    for (var cycle in cycles) {
+      for (var offset in cycle.getOffsets()) {
+        slices.add(CycleSlice(cycle, offset));
+      }
+    }
+    print("Generated ${slices.length} slices");
     List<Chart> out = [];
-    List<Cycle> slice = [];
-    for (int i=0; i<cycles.length; i++) {
-      if (slice.length < 6) {
-        slice.add(cycles[i]);
+    List<CycleSlice> batch = [];
+    for (var slice in slices) {
+      if (batch.length < 6) {
+        batch.add(slice);
       } else {
-        out.add(Chart(slice));
-        slice = [];
+        out.add(Chart(batch));
+        batch = [];
       }
     }
     print("Batched ${out.length} complete charts");
-    if (slice.isNotEmpty) {
-      while (slice.length < 6) {
-        slice.add(Cycle.empty());
+    if (batch.isNotEmpty) {
+      while (batch.length < 6) {
+        batch.add(CycleSlice(null, 0));
       }
-      out.add(Chart(slice));
+      out.add(Chart(batch));
     }
     print("Added partial charts");
     return out;

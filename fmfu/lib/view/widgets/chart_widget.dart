@@ -55,8 +55,8 @@ class ChartWidget extends StatelessWidget {
 
   List<Widget> _createCycleRows() {
     List<Widget> rows = [];
-    for (var cycle in chart.cycles) {
-      rows.add(CycleWidget(cycle: cycle));
+    for (var slice in chart.cycles) {
+      rows.add(CycleWidget(cycle: slice.cycle, dayOffset: slice.offset));
     }
     return rows;
   }
