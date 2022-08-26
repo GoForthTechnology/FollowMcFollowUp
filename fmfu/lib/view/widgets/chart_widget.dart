@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view/widgets/cycle_widget.dart';
-import 'package:fmfu/view_model/chart_list_view_model.dart';
 
 class ChartWidget extends StatelessWidget {
-  final Cycles cycles;
+  final Chart chart;
   final Widget? titleWidget;
 
-  const ChartWidget({Key? key, required this.cycles, this.titleWidget}) : super(key: key);
+  const ChartWidget({Key? key, required this.chart, this.titleWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +55,8 @@ class ChartWidget extends StatelessWidget {
 
   List<Widget> _createCycleRows() {
     List<Widget> rows = [];
-    for (var cycle in cycles) {
-      rows.add(CycleWidget(observations: cycle));
+    for (var cycle in chart.cycles) {
+      rows.add(CycleWidget(cycle: cycle));
     }
     return rows;
   }

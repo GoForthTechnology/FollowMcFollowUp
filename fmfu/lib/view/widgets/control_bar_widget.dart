@@ -27,6 +27,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   bool askESQ = false;
   bool prePeakYellowStamps = false;
   bool postPeakYellowStamps = false;
+  int toggles = 0;
 
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(
@@ -46,7 +47,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   Widget build(BuildContext context) {
     print("Rebuilding ControlBar");
     void updateCycles(ChartListViewModel model) {
-      model.updateCycles(
+      model.updateCharts(
           _getRecipe(),
           askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
           postPeakYellowStamps: postPeakYellowStamps);
