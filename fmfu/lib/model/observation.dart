@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
+
 class Observation {
   final Flow? flow;
   final DischargeSummary? dischargeSummary;
   final bool? essentiallyTheSame;
 
-  Observation(this.flow, this.dischargeSummary, {this.essentiallyTheSame});
+  Observation({this.flow, this.dischargeSummary, this.essentiallyTheSame});
 
   @override
   String toString() {
@@ -16,6 +18,20 @@ class Observation {
     }
     return parts.join(" ");
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is Observation
+        && other.flow == flow
+        && other.dischargeSummary == dischargeSummary
+        && other.essentiallyTheSame == essentiallyTheSame
+    ;
+  }
+
+  @override
+  int get hashCode => Object.hash(flow, dischargeSummary, essentiallyTheSame);
 
   bool get hasMucus {
     return dischargeSummary == null ? false : dischargeSummary!.hasMucus;
@@ -73,12 +89,26 @@ class DischargeSummary {
   final DischargeFrequency dischargeFrequency;
   final List<DischargeDescriptor> dischargeDescriptors;
 
-  DischargeSummary(this.dischargeType, this.dischargeFrequency, this.dischargeDescriptors);
+  DischargeSummary({required this.dischargeType, required this.dischargeFrequency, this.dischargeDescriptors = const []});
 
   @override
   String toString() {
     return "${dischargeType.code}${dischargeDescriptors.join("")} ${dischargeFrequency.code}";
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is DischargeSummary
+        && other.dischargeType == dischargeType
+        && other.dischargeFrequency == dischargeFrequency
+        && const ListEquality().equals(other.dischargeDescriptors, dischargeDescriptors);
+  }
+
+  @override
+  int get hashCode => Object.hash(dischargeType, dischargeFrequency, dischargeDescriptors);
+
 
   bool get hasBleeding {
     for (var dischargeDescriptor in dischargeDescriptors) {
@@ -108,6 +138,7 @@ class DischargeSummary {
   bool get hasMucus {
     return dischargeType.hasMucus;
   }
+
 }
 
 enum DischargeType {
@@ -180,6 +211,23 @@ enum DischargeType {
         return true;
     }
   }
+
+  bool get requiresDescriptors {
+    switch (this) {
+      case DischargeType.dry:
+      case DischargeType.wetWithoutLubrication:
+      case DischargeType.dampWithoutLubrication:
+      case DischargeType.shinyWithoutLubrication:
+      case DischargeType.wetWithLubrication:
+      case DischargeType.dampWithLubrication:
+      case DischargeType.shinyWithLubrication:
+        return false;
+      case DischargeType.sticky:
+      case DischargeType.tacky:
+      case DischargeType.stretchy:
+        return true;
+    }
+  }
 }
 
 enum DischargeFrequency {
@@ -205,8 +253,8 @@ enum DischargeFrequency {
 enum DischargeDescriptor {
   brown,
   red,
+  cloudyClear, // It's important this comes before "cloudy" for parsing
   cloudy,
-  cloudyClear,
   gummy,
   clear,
   lubricative,
@@ -233,6 +281,38 @@ enum DischargeDescriptor {
         return "P";
       case DischargeDescriptor.yellow:
         return "Y";
+    }
+  }
+
+  bool get requiresColor {
+    switch (this) {
+      case DischargeDescriptor.pasty:
+      case DischargeDescriptor.gummy:
+        return true;
+      case DischargeDescriptor.brown:
+      case DischargeDescriptor.red:
+      case DischargeDescriptor.cloudyClear:
+      case DischargeDescriptor.cloudy:
+      case DischargeDescriptor.clear:
+      case DischargeDescriptor.lubricative:
+      case DischargeDescriptor.yellow:
+        return false;
+    }
+  }
+
+  bool get isColor {
+    switch (this) {
+      case DischargeDescriptor.pasty:
+      case DischargeDescriptor.gummy:
+      case DischargeDescriptor.lubricative:
+        return false;
+      case DischargeDescriptor.brown:
+      case DischargeDescriptor.red:
+      case DischargeDescriptor.cloudyClear:
+      case DischargeDescriptor.cloudy:
+      case DischargeDescriptor.clear:
+      case DischargeDescriptor.yellow:
+        return true;
     }
   }
 

@@ -138,37 +138,60 @@ class CycleRecipe extends Recipe {
   }
 
   static final nonMucusDischargeSummary = DischargeSummary(
-      DischargeType.dry, DischargeFrequency.allDay, []);
+      dischargeType: DischargeType.dry,
+      dischargeFrequency: DischargeFrequency.allDay,
+  );
   static final nonMucusDischargeGenerator = DischargeSummaryGenerator(
       nonMucusDischargeSummary, [
         AlternativeDischarge(
-            DischargeSummary(DischargeType.shinyWithoutLubrication, DischargeFrequency.twice, []),
+            DischargeSummary(
+                dischargeType: DischargeType.shinyWithoutLubrication,
+                dischargeFrequency: DischargeFrequency.twice,
+            ),
             0.5,
         )
       ]);
 
   static final peakTypeDischargeSummary = DischargeSummary(
-      DischargeType.stretchy, DischargeFrequency.twice, [DischargeDescriptor.clear]);
+      dischargeType: DischargeType.stretchy,
+      dischargeFrequency: DischargeFrequency.twice,
+      dischargeDescriptors: [DischargeDescriptor.clear],
+  );
   static final peakTypeDischargeGenerator = DischargeSummaryGenerator(
       peakTypeDischargeSummary,
       [
         AlternativeDischarge(
-          DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.clear]),
+          DischargeSummary(
+              dischargeType: DischargeType.tacky,
+              dischargeFrequency: DischargeFrequency.once,
+              dischargeDescriptors: [DischargeDescriptor.clear],
+          ),
           0.5,
         ),
         AlternativeDischarge(
-          DischargeSummary(DischargeType.stretchy, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
+          DischargeSummary(
+              dischargeType: DischargeType.stretchy,
+              dischargeFrequency: DischargeFrequency.once,
+              dischargeDescriptors: [DischargeDescriptor.cloudy],
+          ),
           0.5,
         ),
       ],
   );
 
   static final nonPeakTypeDischargeSummary = DischargeSummary(
-      DischargeType.sticky, DischargeFrequency.twice, [DischargeDescriptor.cloudy]);
+      dischargeType: DischargeType.sticky,
+      dischargeFrequency: DischargeFrequency.twice,
+      dischargeDescriptors: [DischargeDescriptor.cloudy],
+  );
   static final nonPeakTypeDischargeGenerator = DischargeSummaryGenerator(
       nonPeakTypeDischargeSummary, [
         AlternativeDischarge(
-          DischargeSummary(DischargeType.tacky, DischargeFrequency.once, [DischargeDescriptor.cloudy]),
+          DischargeSummary(
+              dischargeType: DischargeType.tacky,
+              dischargeFrequency: DischargeFrequency.once,
+              dischargeDescriptors: [DischargeDescriptor.cloudy],
+          ),
           0.5,
         )]);
 }
@@ -181,7 +204,11 @@ class ESQPostProcessor extends PostProcessor {
       if (observation.essentiallyTheSame == null) {
         continue;
       }
-      observations[i] = Observation(observation.flow, observation.dischargeSummary, essentiallyTheSame: null);
+      observations[i] = Observation(
+          flow: observation.flow,
+          dischargeSummary: observation.dischargeSummary,
+          essentiallyTheSame: null,
+      );
       break;
     }
   }
@@ -207,7 +234,11 @@ class FlowRecipe extends Recipe {
       }
       bool hasMucus = dischargeSummary?.hasMucus ?? false;
       bool? essentiallyTheSame = askESQ && hasMucus ? true : null;
-      observations.add(Observation(flow, dischargeSummary, essentiallyTheSame: essentiallyTheSame));
+      observations.add(Observation(
+          flow: flow,
+          dischargeSummary: dischargeSummary,
+          essentiallyTheSame: essentiallyTheSame,
+      ));
     }
     return observations;
   }
@@ -253,7 +284,11 @@ class PreBuildUpRecipe extends Recipe {
           _nonPeakMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
       var flow = abnormalBleedingField[i] ? Flow.light : null;
       var essentiallyTheSame = dischargeSummary.hasMucus && askESQ ? true : null;
-      observation.add(Observation(flow, dischargeSummary, essentiallyTheSame: essentiallyTheSame));
+      observation.add(Observation(
+          flow: flow,
+          dischargeSummary: dischargeSummary,
+          essentiallyTheSame: essentiallyTheSame,
+      ));
     }
     return observation;
   }
@@ -275,7 +310,10 @@ class BuildUpRecipe extends Recipe {
     for (int i=0; i<length; i++) {
       var dischargeSummary = observation.length < nonPeakTypeLength ?
           _nonPeakTypeDischargeGenerator.get() : _peakTypeDischargeGenerator.get();
-      observation.add(Observation(null, dischargeSummary, essentiallyTheSame: askESQ ? false : null));
+      observation.add(Observation(
+          dischargeSummary: dischargeSummary,
+          essentiallyTheSame: askESQ ? false : null,
+      ));
     }
     return observation;
   }
@@ -303,13 +341,16 @@ class PostPeakRecipe extends Recipe {
     List<Observation> observation = [];
     for (int i=0; i<postPeakLength; i++) {
       if (i < mucusLength) {
-        observation.add(Observation(null, _nonPeakTypeMucusDischargeGenerator.get()));
+        observation.add(Observation(dischargeSummary: _nonPeakTypeMucusDischargeGenerator.get()));
         continue;
       }
       var flow = abnormalBleedingField[i-mucusLength] ? Flow.light : null;
       var dischargeSummary = mucusPatchField[i-mucusLength] ?
           _nonPeakTypeMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
-      observation.add(Observation(flow, dischargeSummary));
+      observation.add(Observation(
+          flow: flow,
+          dischargeSummary: dischargeSummary,
+      ));
     }
     return observation;
   }
