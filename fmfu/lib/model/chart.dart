@@ -1,4 +1,5 @@
 import 'package:fmfu/logic/cycle_rendering.dart';
+import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/stickers.dart';
 
 class Chart {
@@ -15,10 +16,12 @@ class CycleSlice {
 }
 
 class Cycle {
+  final index;
   final List<ChartEntry> entries;
   final Map<int, StickerWithText> corrections;
+  bool canRerender = true;
 
-  Cycle(this.entries, this.corrections);
+  Cycle(this.index, this.entries, this.corrections);
 
   List<int> getOffsets() {
     List<int> out = [];
@@ -30,13 +33,22 @@ class Cycle {
   }
 
   static Cycle empty() {
-    return Cycle([], {});
+    return Cycle(0, [], {});
   }
 }
 
 class ChartEntry {
-  String observationText;
+  final String observationText;
   final RenderedObservation? renderedObservation;
 
   ChartEntry({required this.observationText, this.renderedObservation});
+
+  bool isValidObservation() {
+    try {
+      parseObservation(observationText);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

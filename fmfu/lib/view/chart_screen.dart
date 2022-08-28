@@ -43,7 +43,7 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: ChartWidget(
-                  titleWidget: Padding(padding: EdgeInsets.only(bottom: 10), child: Row(
+                  titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
                     children: [
                       Text(
                         "Chart #${model.chartIndex+1}",

@@ -7,6 +7,8 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
+import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:provider/provider.dart';
 
 class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
@@ -76,13 +78,17 @@ class CycleWidgetState extends State<CycleWidget> {
           )
         ]);
       }
+      var textBackgroundColor = Colors.white;
+      if (!(entry?.isValidObservation() ?? true)) {
+        textBackgroundColor = const Color(0xFFEECDCD);
+      }
       Widget observationText = ChartCellWidget(
           content: Text(
             entry == null ? "" : entry.observationText,
             style: const TextStyle(fontSize: 10),
             textAlign: TextAlign.center,
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: textBackgroundColor,
           onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry),
       );
       stackedCells.add(Column(children: [sticker, observationText]));
@@ -102,26 +108,28 @@ class CycleWidgetState extends State<CycleWidget> {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: const Text('Observation Edit'),
-              content: Form(
-                key: formKey,
-                child: TextFormField(
-                  initialValue: entry.observationText,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    if (value == null) {
-                      throw Exception("Validation should have prevented saving a null value");
-                    }
-                    editChartEntry(entryIndex, value);
-                  },
-                )
-              ),
-              actions: <Widget>[
-                TextButton(onPressed: () => Navigator.pop(context, 'Cancel'),
+              content: Consumer<ChartListViewModel>(
+              builder: (context, model, child) => Form(
+                  key: formKey,
+                  child: TextFormField(
+                    initialValue: entry.observationText,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      if (value == null) {
+                        throw Exception("Validation should have prevented saving a null value");
+                      }
+                      model.editEntry(widget.cycle!.index, entryIndex, value);
+                    },
+                  )
+                )),
+                actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
                   child: const Text('Cancel'),
                 ),
                 TextButton(
@@ -194,13 +202,6 @@ class CycleWidgetState extends State<CycleWidget> {
         },
       );
     };
-  }
-
-  void editChartEntry(int entryIndex, String observationText) {
-    setState(() {
-      print("Editing $entryIndex to $observationText");
-      widget.cycle!.entries[entryIndex].observationText = observationText;
-    });
   }
 
   void updateCorrections(int entryIndex, StickerWithText? correction) {
