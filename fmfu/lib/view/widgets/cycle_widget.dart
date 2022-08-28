@@ -109,7 +109,7 @@ class CycleWidgetState extends State<CycleWidget> {
             return AlertDialog(
               title: const Text('Observation Edit'),
               content: Consumer<ChartListViewModel>(
-              builder: (context, model, child) => Form(
+                  builder: (context, model, child) => Form(
                   key: formKey,
                   child: TextFormField(
                     initialValue: entry.observationText,
@@ -126,8 +126,9 @@ class CycleWidgetState extends State<CycleWidget> {
                       model.editEntry(widget.cycle!.index, entryIndex, value);
                     },
                   )
-                )),
-                actions: <Widget>[
+                ),
+              ),
+              actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context, 'Cancel'),
                   child: const Text('Cancel'),
@@ -160,7 +161,8 @@ class CycleWidgetState extends State<CycleWidget> {
           Sticker? selectedSticker = existingCorrection?.sticker;
           String? selectedStickerText = existingCorrection?.text;
           return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
+            return Consumer<ChartListViewModel>(
+                builder: (context, model, child) => AlertDialog(
               title: const Text('Sticker Correction'),
               content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
                 setState(() {
@@ -191,30 +193,17 @@ class CycleWidgetState extends State<CycleWidget> {
                     if (selectedSticker != null) {
                       correction = StickerWithText(selectedSticker!, selectedStickerText);
                     }
-                    updateCorrections(entryIndex, correction);
+                    model.updateCorrections(widget.cycle!.index, entryIndex, correction);
                     Navigator.pop(context, 'OK');
                   },
                   child: const Text('OK'),
                 ),
               ],
-            );
+            ));
           });
         },
       );
     };
-  }
-
-  void updateCorrections(int entryIndex, StickerWithText? correction) {
-    setState(() {
-      if (widget.cycle == null) {
-        return;
-      }
-      if (correction == null) {
-        widget.cycle!.corrections.remove(entryIndex);
-      } else {
-        widget.cycle!.corrections[entryIndex] = correction;
-      }
-    });
   }
 
   Widget _createStickerCorrectionContent(Sticker? selectedSticker, String? selectedStickerText, void Function(Sticker?) onSelectSticker, void Function(String?) onSelectText) {

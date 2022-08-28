@@ -4,6 +4,7 @@ import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/instructions.dart';
+import 'package:fmfu/model/stickers.dart';
 
 class ChartListViewModel with ChangeNotifier {
   static final List<Instruction> _defaultInstructions = getActiveInstructions(false, false);
@@ -53,6 +54,20 @@ class ChartListViewModel with ChangeNotifier {
     charts = getCharts(recipe, numCycles, askESQ, activeInstructions);
     notifyListeners();
   }
+
+  void updateCorrections(int cycleIndex, int entryIndex, StickerWithText? correction) {
+    var cycle = _findCycle(cycleIndex);
+    if (cycle == null) {
+      throw Exception("Could not find cycle at index $cycleIndex");
+    }
+    if (correction == null) {
+      cycle.corrections.remove(entryIndex);
+    } else {
+      cycle.corrections[entryIndex] = correction;
+    }
+    notifyListeners();
+  }
+
 
   void editEntry(int cycleIndex, int entryIndex, String observationText) {
     var cycle = _findCycle(cycleIndex);
