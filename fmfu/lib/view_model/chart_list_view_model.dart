@@ -12,10 +12,16 @@ class ChartListViewModel with ChangeNotifier {
   List<Instruction> activeInstructions = _defaultInstructions;
   List<Chart> charts = getCharts(CycleRecipe.standardRecipe, 10, false, _defaultInstructions);
   bool showCycleControlBar = false;
+  bool editEnabled = false;
   int chartIndex = 0;
 
   void toggleControlBar() {
     showCycleControlBar = !showCycleControlBar;
+    notifyListeners();
+  }
+
+  void toggleEdit() {
+    editEnabled = !editEnabled;
     notifyListeners();
   }
 
@@ -68,6 +74,20 @@ class ChartListViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void editSticker(int cycleIndex, int entryIndex, StickerWithText? edit) {
+    var cycle = _findCycle(cycleIndex);
+    if (cycle == null) {
+      throw Exception("Could not find cycle at index $cycleIndex");
+    }
+    var existingEntry = cycle.entries[entryIndex];
+    cycle.entries[entryIndex] = ChartEntry(
+      observationText: existingEntry.observationText,
+      renderedObservation: existingEntry.renderedObservation,
+      manualSticker: edit,
+    );
+    print("Altering sticker for cycle $cycleIndex @ $entryIndex");
+    notifyListeners();
+  }
 
   void editEntry(int cycleIndex, int entryIndex, String observationText) {
     var cycle = _findCycle(cycleIndex);
@@ -84,6 +104,7 @@ class ChartListViewModel with ChangeNotifier {
         newEntries.add(ChartEntry(
           observationText: inputs[i],
           renderedObservation: renderedObservations[i],
+          //manualSticker: cycle.entries[i].manualSticker,
         ));
       }
       cycle.entries.clear();
@@ -94,6 +115,7 @@ class ChartListViewModel with ChangeNotifier {
       cycle.entries[entryIndex] = ChartEntry(
         observationText: observationText,
         renderedObservation: existingEntry.renderedObservation,
+        //manualSticker: cycle.entries[entryIndex].manualSticker,
       );
       print("Adding invalid entry to cycle $cycleIndex @ $entryIndex");
     }
@@ -128,7 +150,8 @@ class ChartListViewModel with ChangeNotifier {
       renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
           .map((observation) => ChartEntry(
               observationText: observation.observationText,
-              renderedObservation: observation))
+              renderedObservation: observation,
+      ))
           .toList(),
       {}));
     print("Generated ${cycles.length} cycles");

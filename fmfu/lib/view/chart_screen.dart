@@ -19,15 +19,18 @@ typedef Corrections = Map<int, Map<int, StickerWithText>>;
 class _ChartPageState extends State<ChartPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<ChartListViewModel>(builder: (context, model, child) => Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: const Text("Grid Page"),
         actions: [
+          IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
+            model.toggleEdit();
+          },),
           IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
-            Provider.of<ChartListViewModel>(context, listen: false).toggleControlBar();
-          },)
+            model.toggleControlBar();
+          },),
         ],
       ),
       // TODO: figure out how to make horizontal scrolling work...
@@ -43,10 +46,11 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: ChartWidget(
+                  editingEnabled: model.editEnabled,
                   titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
                     children: [
                       Text(
-                        "Chart #${model.chartIndex+1}",
+                        "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -69,6 +73,6 @@ class _ChartPageState extends State<ChartPage> {
           ),
         ),
       )
-    );
+    ));
   }
 }

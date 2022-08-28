@@ -4,27 +4,26 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 
 class StickerWidget extends StatelessWidget {
-  final Sticker? sticker;
-  final String? stickerText;
+  final StickerWithText? stickerWithText;
   final void Function() onTap;
 
-  const StickerWidget({Key? key, required this.sticker, this.stickerText, required this.onTap}) : super(key: key);
+  const StickerWidget({Key? key, required this.stickerWithText, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget content = Container();
     Color stickerBackgroundColor = Colors.white;
-    if (sticker != null) {
-      stickerBackgroundColor = sticker!.color;
+    if (stickerWithText != null) {
+      stickerBackgroundColor = stickerWithText!.sticker.color;
       content =  Stack(
         alignment: Alignment.center,
         children: [
           Text(
-            stickerText ?? "", textAlign: TextAlign.center,
+            stickerWithText!.text ?? "", textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Icon(
-            sticker!.showBaby ? Icons.child_care : null,
+            stickerWithText!.sticker.showBaby ? Icons.child_care : null,
             color: Colors.black12,
           )
         ],

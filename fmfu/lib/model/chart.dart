@@ -40,8 +40,9 @@ class Cycle {
 class ChartEntry {
   final String observationText;
   final RenderedObservation? renderedObservation;
+  final StickerWithText? manualSticker;
 
-  ChartEntry({required this.observationText, this.renderedObservation});
+  ChartEntry({required this.observationText, this.renderedObservation, this.manualSticker});
 
   bool isValidObservation() {
     try {

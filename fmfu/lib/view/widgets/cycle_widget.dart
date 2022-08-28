@@ -14,11 +14,12 @@ class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
   final bool showStats;
   final int dayOffset;
+  final bool editingEnabled;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
-  const CycleWidget({Key? key, required this.cycle, this.showStats = true, this.dayOffset = 0}) : super(key: key);
+  const CycleWidget({Key? key, required this.cycle, required this.editingEnabled, this.showStats = true, this.dayOffset = 0}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -59,20 +60,27 @@ class CycleWidgetState extends State<CycleWidget> {
         entry = widget.cycle?.entries[entryIndex];
         observation = entry?.renderedObservation;
       }
-      Widget sticker = StickerWidget(
-        sticker: observation?.getSticker(),
-        stickerText: observation?.getStickerText(),
+      StickerWithText? sticker = entry?.manualSticker;
+      if (sticker != null) {
+        print(sticker);
+      }
+      if (sticker == null && observation != null) {
+        sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
+      }
+      Widget stickerWidget = StickerWidget(
+        stickerWithText: sticker,
         onTap: observation != null ? _showCorrectionDialog(context, entryIndex, null) : () {},
       );
       StickerWithText? correction = widget.cycle?.corrections[entryIndex];
       if (observation != null && correction != null) {
-        sticker = Stack(children: [
-          sticker,
+        stickerWidget = Stack(children: [
+          stickerWidget,
           Transform.rotate(
             angle: -pi / 12.0,
             child: StickerWidget(
-              sticker: correction.sticker,
-              stickerText: correction.text,
+              stickerWithText: StickerWithText(
+                correction.sticker, correction.text,
+              ),
               onTap: _showCorrectionDialog(context, entryIndex, correction),
             ),
           )
@@ -91,7 +99,7 @@ class CycleWidgetState extends State<CycleWidget> {
           backgroundColor: textBackgroundColor,
           onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry),
       );
-      stackedCells.add(Column(children: [sticker, observationText]));
+      stackedCells.add(Column(children: [stickerWidget, observationText]));
     }
     return stackedCells;
   }
@@ -100,6 +108,9 @@ class CycleWidgetState extends State<CycleWidget> {
       BuildContext context,
       int entryIndex,
       ChartEntry entry) {
+    if (!widget.editingEnabled) {
+      return () {};
+    }
     return () {
       showDialog(
         context: context,
@@ -193,7 +204,11 @@ class CycleWidgetState extends State<CycleWidget> {
                     if (selectedSticker != null) {
                       correction = StickerWithText(selectedSticker!, selectedStickerText);
                     }
-                    model.updateCorrections(widget.cycle!.index, entryIndex, correction);
+                    if (!widget.editingEnabled) {
+                      model.updateCorrections(widget.cycle!.index, entryIndex, correction);
+                    } else {
+                      model.editSticker(widget.cycle!.index, entryIndex, correction);
+                    }
                     Navigator.pop(context, 'OK');
                   },
                   child: const Text('OK'),
@@ -236,7 +251,7 @@ class CycleWidgetState extends State<CycleWidget> {
   }
 
   Widget _createDialogSticker(Sticker sticker, Sticker? selectedSticker, void Function(Sticker?) onSelect) {
-    Widget child = StickerWidget(sticker: sticker, onTap: () => onSelect(sticker));
+    Widget child = StickerWidget(stickerWithText: StickerWithText(sticker, null), onTap: () => onSelect(sticker));
     if (selectedSticker == sticker) {
       child = Container(
         decoration: BoxDecoration(
@@ -249,7 +264,7 @@ class CycleWidgetState extends State<CycleWidget> {
   }
 
   Widget _createDialogTextSticker(String text, String? selectedText, void Function(String?) onSelect) {
-    Widget sticker = StickerWidget(sticker: Sticker.white, stickerText: text, onTap: () => onSelect(text));
+    Widget sticker = StickerWidget(stickerWithText: StickerWithText(Sticker.white, text), onTap: () => onSelect(text));
     if (selectedText == text) {
       sticker = Container(
         decoration: BoxDecoration(

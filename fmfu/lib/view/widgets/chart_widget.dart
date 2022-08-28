@@ -5,13 +5,13 @@ import 'package:fmfu/view/widgets/cycle_widget.dart';
 class ChartWidget extends StatelessWidget {
   final Chart chart;
   final Widget? titleWidget;
+  final bool editingEnabled;
 
-  const ChartWidget({Key? key, required this.chart, this.titleWidget}) : super(key: key);
+  const ChartWidget({Key? key, required this.chart, required this.editingEnabled, this.titleWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: const EdgeInsets.all(20), child: Container(
-      child: SingleChildScrollView(
+    return Padding(padding: const EdgeInsets.all(20), child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,7 +21,7 @@ class ChartWidget extends StatelessWidget {
           ..._createCycleRows(),
           _createFooterRow(),
         ],
-      ))));
+      )));
   }
 
   Widget _createHeaderRow() {
@@ -55,7 +55,7 @@ class ChartWidget extends StatelessWidget {
   List<Widget> _createCycleRows() {
     List<Widget> rows = [];
     for (var slice in chart.cycles) {
-      rows.add(CycleWidget(cycle: slice.cycle, dayOffset: slice.offset));
+      rows.add(CycleWidget(cycle: slice.cycle, editingEnabled: editingEnabled, dayOffset: slice.offset));
     }
     return rows;
   }
