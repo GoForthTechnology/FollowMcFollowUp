@@ -58,7 +58,12 @@ class ChartListViewModel with ChangeNotifier {
       instructions.add(Instruction.k2);
     }
     List<Cycle> cycles = List.generate(numCycles, (index) => Cycle(
-        renderObservations(recipe.getObservations(askESQ: askESQ), instructions), {}));
+        renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
+            .map((observation) => ChartEntry(
+                observationText: observation.observationText,
+                renderedObservation: observation))
+            .toList(),
+        {}));
     print("Generated ${cycles.length} cycles");
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {

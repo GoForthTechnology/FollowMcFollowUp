@@ -49,18 +49,20 @@ class CycleWidgetState extends State<CycleWidget> {
   List<Widget> _createEntries(BuildContext context, int sectionIndex) {
     List<Widget> stackedCells = [];
     for (int i=0; i<CycleWidget.nEntriesPerSection; i++) {
-      int observationIndex = sectionIndex * CycleWidget.nEntriesPerSection + i + widget.dayOffset;
+      int entryIndex = sectionIndex * CycleWidget.nEntriesPerSection + i + widget.dayOffset;
+      ChartEntry? entry;
       RenderedObservation? observation;
       var hasCycle = widget.cycle != null;
-      if (hasCycle && observationIndex < widget.cycle!.observations.length) {
-        observation = widget.cycle!.observations[observationIndex];
+      if (hasCycle && entryIndex < widget.cycle!.entries.length) {
+        entry = widget.cycle?.entries[entryIndex];
+        observation = entry?.renderedObservation;
       }
       Widget sticker = StickerWidget(
         sticker: observation?.getSticker(),
         stickerText: observation?.getStickerText(),
-        onTap: observation != null ? _showCorrectionDialog(context, observationIndex, null) : () {},
+        onTap: observation != null ? _showCorrectionDialog(context, entryIndex, null) : () {},
       );
-      StickerWithText? correction = widget.cycle?.corrections[observationIndex];
+      StickerWithText? correction = widget.cycle?.corrections[entryIndex];
       if (observation != null && correction != null) {
         sticker = Stack(children: [
           sticker,
@@ -69,19 +71,19 @@ class CycleWidgetState extends State<CycleWidget> {
             child: StickerWidget(
               sticker: correction.sticker,
               stickerText: correction.text,
-              onTap: _showCorrectionDialog(context, observationIndex, correction),
+              onTap: _showCorrectionDialog(context, entryIndex, correction),
             ),
           )
         ]);
       }
       Widget observationText = ChartCellWidget(
           content: Text(
-            observation == null ? "" : observation.getObservationText(),
+            entry == null ? "" : entry.observationText,
             style: const TextStyle(fontSize: 10),
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.white,
-          onTap: (observation == null) ? () {} : _showEditDialog(context, observation),
+          onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry),
       );
       stackedCells.add(Column(children: [sticker, observationText]));
     }
@@ -90,23 +92,44 @@ class CycleWidgetState extends State<CycleWidget> {
 
   void Function() _showEditDialog(
       BuildContext context,
-      RenderedObservation observation) {
+      int entryIndex,
+      ChartEntry entry) {
     return () {
       showDialog(
         context: context,
         builder: (BuildContext context) {
+          var formKey = GlobalKey<FormState>();
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: const Text('Observation Edit'),
-              content: TextFormField(initialValue: observation.observationText),
+              content: Form(
+                key: formKey,
+                child: TextFormField(
+                  initialValue: entry.observationText,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    if (value == null) {
+                      throw Exception("Validation should have prevented saving a null value");
+                    }
+                    editChartEntry(entryIndex, value);
+                  },
+                )
+              ),
               actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                TextButton(onPressed: () => Navigator.pop(context, 'Cancel'),
                   child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context, 'OK');
+                    if (formKey.currentState!.validate()) {
+                      formKey.currentState!.save();
+                      Navigator.pop(context, 'OK');
+                    }
                   },
                   child: const Text('OK'),
                 ),
@@ -120,7 +143,7 @@ class CycleWidgetState extends State<CycleWidget> {
 
   void Function() _showCorrectionDialog(
       BuildContext context,
-      int observationIndex,
+      int entryIndex,
       StickerWithText? existingCorrection) {
     return () {
       showDialog(
@@ -160,7 +183,7 @@ class CycleWidgetState extends State<CycleWidget> {
                     if (selectedSticker != null) {
                       correction = StickerWithText(selectedSticker!, selectedStickerText);
                     }
-                    updateCorrections(observationIndex, correction);
+                    updateCorrections(entryIndex, correction);
                     Navigator.pop(context, 'OK');
                   },
                   child: const Text('OK'),
@@ -173,15 +196,22 @@ class CycleWidgetState extends State<CycleWidget> {
     };
   }
 
-  void updateCorrections(int observationIndex, StickerWithText? correction) {
+  void editChartEntry(int entryIndex, String observationText) {
+    setState(() {
+      print("Editing $entryIndex to $observationText");
+      widget.cycle!.entries[entryIndex].observationText = observationText;
+    });
+  }
+
+  void updateCorrections(int entryIndex, StickerWithText? correction) {
     setState(() {
       if (widget.cycle == null) {
         return;
       }
       if (correction == null) {
-        widget.cycle!.corrections.remove(observationIndex);
+        widget.cycle!.corrections.remove(entryIndex);
       } else {
-        widget.cycle!.corrections[observationIndex] = correction;
+        widget.cycle!.corrections[entryIndex] = correction;
       }
     });
   }

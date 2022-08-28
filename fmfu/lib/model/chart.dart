@@ -15,14 +15,14 @@ class CycleSlice {
 }
 
 class Cycle {
-  final List<RenderedObservation> observations;
+  final List<ChartEntry> entries;
   final Map<int, StickerWithText> corrections;
 
-  Cycle(this.observations, this.corrections);
+  Cycle(this.entries, this.corrections);
 
   List<int> getOffsets() {
     List<int> out = [];
-    int nOffsets = (observations.length / 35).ceil();
+    int nOffsets = (entries.length / 35).ceil();
     for (int i=0; i < nOffsets; i++) {
       out.add(35 * i);
     }
@@ -32,4 +32,11 @@ class Cycle {
   static Cycle empty() {
     return Cycle([], {});
   }
+}
+
+class ChartEntry {
+  String observationText;
+  final RenderedObservation? renderedObservation;
+
+  ChartEntry({required this.observationText, this.renderedObservation});
 }
