@@ -8,7 +8,7 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 
 class ChartPage extends StatefulWidget {
-  const ChartPage({Key? key}) : super(key: key);
+  static const String routeName = "charts";
 
   @override
   State<StatefulWidget> createState() => _ChartPageState();
@@ -23,7 +23,7 @@ class _ChartPageState extends State<ChartPage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: const Text("Grid Page"),
+        title: const Text("Chart Editor"),
         actions: [
           IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
             model.toggleEdit();
