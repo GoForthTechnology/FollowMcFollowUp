@@ -32,8 +32,8 @@ class CycleWidgetState extends State<CycleWidget> {
     for (int i=0; i<CycleWidget.nSectionsPerCycle; i++) {
       sections.add(_createSection(context, i));
     }
-    if (widget.showStats && widget.dayOffset == 0 && !widget.editingEnabled) {
-      sections.add(const CycleStatsWidget());
+    if (widget.cycle != null && widget.showStats && widget.dayOffset == 0 && !widget.editingEnabled ) {
+      sections.add(CycleStatsWidget(cycle: widget.cycle!));
     }
     return Row(children: sections);
   }

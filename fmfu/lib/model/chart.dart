@@ -16,12 +16,13 @@ class CycleSlice {
 }
 
 class Cycle {
-  final index;
+  final int index;
   final List<ChartEntry> entries;
   final Map<int, StickerWithText> corrections;
   bool canRerender = true;
+  CycleStats cycleStats;
 
-  Cycle(this.index, this.entries, this.corrections);
+  Cycle(this.index, this.entries, this.corrections, {this.cycleStats = CycleStats.empty});
 
   List<int> getOffsets() {
     List<int> out = [];
@@ -34,6 +35,23 @@ class Cycle {
 
   static Cycle empty() {
     return Cycle(0, [], {});
+  }
+}
+
+class CycleStats {
+  final double? mucusCycleScore;
+  final int? lengthOfPostPeakPhase;
+
+  static const CycleStats empty = CycleStats(mucusCycleScore: null, lengthOfPostPeakPhase: null);
+
+  const CycleStats({required this.mucusCycleScore, required this.lengthOfPostPeakPhase});
+
+  CycleStats setMucusCycleScore(double? score) {
+    return CycleStats(mucusCycleScore: score, lengthOfPostPeakPhase: lengthOfPostPeakPhase);
+  }
+
+  CycleStats setLengthOfPostPeakPhase(int? length) {
+    return CycleStats(mucusCycleScore: mucusCycleScore, lengthOfPostPeakPhase: null);
   }
 }
 

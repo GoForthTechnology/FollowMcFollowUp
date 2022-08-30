@@ -74,6 +74,24 @@ class ChartListViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setLengthOfPostPeakPhase(int cycleIndex, int? length) {
+    var cycle = _findCycle(cycleIndex);
+    if (cycle == null) {
+      throw Exception("Could not find cycle at index $cycleIndex");
+    }
+    cycle.cycleStats = cycle.cycleStats.setLengthOfPostPeakPhase(length);
+    notifyListeners();
+  }
+
+  void setMucusCycleScore(int cycleIndex, double? score) {
+    var cycle = _findCycle(cycleIndex);
+    if (cycle == null) {
+      throw Exception("Could not find cycle at index $cycleIndex");
+    }
+    cycle.cycleStats = cycle.cycleStats.setMucusCycleScore(score);
+    notifyListeners();
+  }
+
   void editSticker(int cycleIndex, int entryIndex, StickerWithText? edit) {
     var cycle = _findCycle(cycleIndex);
     if (cycle == null) {
