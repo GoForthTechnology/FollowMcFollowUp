@@ -92,7 +92,7 @@ class CycleWidgetState extends State<CycleWidget> {
       }
       Widget observationText = ChartCellWidget(
           content: Text(
-            entry == null ? "" : entry.observationText,
+            entry == null ? "" : entry.renderedObservation?.getObservationText() ?? entry.observationText,
             style: const TextStyle(fontSize: 10),
             textAlign: TextAlign.center,
           ),
