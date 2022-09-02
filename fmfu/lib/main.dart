@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/chart_screen.dart';
+import 'package:fmfu/view/fupf_screen.dart';
 import 'package:fmfu/view/home_screen.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         ChartPage.routeName: (context) => ChartPage(),
+        FupFormScreen.routeName: (context) => FupFormScreen(),
       },
       ));
   }
