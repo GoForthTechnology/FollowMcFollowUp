@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/box_grid_widget.dart';
+import 'package:fmfu/view/widgets/fup_form_section_widget.dart';
 
 class FupFormScreen extends StatefulWidget {
   static const String routeName = "fupf";
@@ -37,73 +39,104 @@ class Page7 extends StatelessWidget {
       const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
       const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
       Padding(padding: const EdgeInsets.all(10), child: Expanded(child: Column(children: [
-        Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          title("A", "CHART REVIEWED WITH FCP/FCPI (X)", style: TextStyle(fontWeight: FontWeight.bold)),
-          Spacer(),
-          BoxGridWidget(
-            rows: [
-              GridRow("8A"),
-            ],
-          ),
-        ]),
-        IntrinsicHeight(child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Padding(padding: EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            title("B", "Peak Days correctly identified (1,2,X) \n The Peak Day was confidentally identified (Y,N,X)"),
-            title("C", "Correctly charts stamps"),
-            title("D", "Correctly charts recording system"),
-            title("", "RECORDING SYSTEM (VDRS) REVIEWED (X)", style: TextStyle(fontWeight: FontWeight.bold)),
-            title("E", "Charts at the end of teh day / Who does the charting? (M, W, B)"),
-            title("F", "Charts the most fertile sign of the day"),
-            title("G", "Charts the menstrual flow -- H, M, L, VL, B"),
-            title("H", "Charts brow/black bleeding as B"),
-            title("I", "Charts bleeding other than the period"),
-            title("J", "Charts dry/mucus on L, VL, and B days"),
-            title("K", "Charts all acts of intercourse -- I"),
-            title("L", "Charts discharge after intercourse on its merits"),
-            title("M", "Are barrier methods being used? (Y or N)"),
-            title("N", "Is coitus interruptus or withdrawal being used? (Y or N)"),
-            title("O", "Discuss concomitant use of barrier methods, coitus interruptus and withdrawal (X)"),
-          ])),
-          Spacer(),
-          BoxGridWidget(
-            rows: [
-              GridRow("8B", splitCells: true),
-              GridRow("8C"),
-              GridRow("8D"),
-              GridRow("", disabledCells: {2, 3, 4, 5, 6, 7}),
-              GridRow("8E", splitCells: true),
-              GridRow("8F"),
-              GridRow("8G"),
-              GridRow("8H"),
-              GridRow("8I"),
-              GridRow("8J"),
-              GridRow("8K"),
-              GridRow("8L"),
-              GridRow("8M", disabledCells: {0, 1}),
-              GridRow("8N", disabledCells: {0, 1}),
-              GridRow("8O", disabledCells: {0, 1}),
-            ],
+        FollowUpFormSectionWidget(items: [
+          FollowUpFormItem(
+            section: 8,
+            subSection: "A",
+            description: "CHART REVIEWED WITH FCP/FCPI (X)",
+            descriptionStyle: TextStyle(fontWeight: FontWeight.bold),
+            acceptableInputs: ["X"],
           )
-        ])),
-        Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            decoration: BoxDecoration(color: Colors.grey, border: Border.all(width: 2.0)),
-            child: Padding(padding: EdgeInsets.all(4), child: title("P", "SECTION 8: IS MANAGEMENT OF CHARTING NECESSARY? (Y or N)", style: TextStyle(fontWeight: FontWeight.bold))),
+        ]),
+        FollowUpFormSectionWidget(items: [
+          FollowUpFormItem(
+            section: 8,
+            subSection: "B",
+            description: "Peak Days correctly identified (1,2,X) \n The Peak Day was confidentally identified (Y,N,X)",
+            splitBoxes: true,
+            acceptableInputs: ["Y", "N", "X"],
           ),
-          Spacer(),
-          BoxGridWidget(
-            rows: [
-              GridRow("8A"),
-            ],
+          FollowUpFormItem(
+            section: 8,
+            subSection: "C",
+            description: "Correctly charts stamps",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "D",
+            description: "Correctly charts recording system",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "",
+            descriptionStyle: const TextStyle(fontWeight: FontWeight.bold),
+            description: "RECORDING SYSTEM (VDRS) REVIEWED (X)",
+            disabledCells: {2, 3, 4, 5, 6, 7},
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "E",
+            description: "Charts at the end of the day / Who does the charting? (M, W, B)",
+            splitBoxes: true,
+            acceptableInputs: ["M", "W", "B"],
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "F",
+            description: "Charts the most fertile sign of the day",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "G",
+            description: "Charts the menstrual flow -- H, M, L, VL, B",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "H",
+            description: "Charts brow/black bleeding as B",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "I",
+            description: "Charts bleeding other than the period",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "J",
+            description: "Charts dry/mucus on L, VL, and B days",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "K",
+            description: "Charts all acts of intercourse -- I",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "L",
+            description: "Charts discharge after intercourse on its merits",
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "M",
+            description: "Are barrier methods being used? (Y or N)",
+            disabledCells: {0, 1},
+            acceptableInputs: ["Y", "N"],
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "N",
+            description: "Is coitus interruptus or withdrawal being used? (Y or N)",
+            disabledCells: {0, 1},
+            acceptableInputs: ["Y", "N"],
+          ),
+          FollowUpFormItem(
+            section: 8,
+            subSection: "O",
+            description: "Discuss concomitant use of barrier methods, coitus interruptus and withdrawal (X)",
+            disabledCells: {0, 1},
           ),
         ]),
       ]))),
     ])));
-    /*return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          )),
-        ]),
-      ]))),
-    ])));*/
   }
-
 }

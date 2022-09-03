@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_item.dart';
 
 class BoxGridWidget extends StatelessWidget {
   final List<GridRow> rows;
@@ -46,11 +47,9 @@ class GridRow {
   final String rowLabel;
   final List<Widget> cells;
 
-  GridRow(this.rowLabel, {Set<int> disabledCells = const {}, bool splitCells = false})
-      : cells = List.generate(8, (index) => BoxWidget(
-    disabled: disabledCells.contains(index),
-    split: splitCells,
-  ));
+  GridRow(FollowUpFormItem item)
+      : cells = List.generate(8, (index) => BoxWidget(item, index, disabled: item.disabledCells.contains(index), split: item.splitBoxes)),
+    rowLabel = "${item.section}${item.subSection}";
 }
 
 class LegendCell extends StatelessWidget {
@@ -68,21 +67,34 @@ class LegendCell extends StatelessWidget {
 }
 
 class BoxWidget extends StatelessWidget {
+  final FollowUpFormItem item;
+  final int index;
   final bool disabled;
   final bool split;
-  const BoxWidget({Key? key, this.disabled = false, this.split = false}) : super(key: key);
 
-  static Row createRow({int length=8}) {
-    List<Widget> cells = [];
-    for (int i=0; i<length; i++) {
-      cells.add(const BoxWidget());
-    }
-    return Row(children: cells);
-  }
+  const BoxWidget(this.item, this.index, {Key? key, this.disabled = false, this.split = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(onTap: disabled ? null : () {
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Section: ${item.section}${item.subSection} - ${index + 1}"),
+          content: Row(children: [
+            DropdownButton<String>(
+              items: ["", ...item.acceptableInputs].map((input) => DropdownMenuItem(value: input, child: Text(input))).toList(),
+              onChanged: (Object? value) {  }
+            ),
+            if (split) const Text("split"),
+          ]),
+          actions: [
+            TextButton(onPressed: () {
+              Navigator.pop(context);
+            }, child: const Text("Ok"),),
+          ],
+        );
+      });
+    },child: Container(
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           color: disabled ? Colors.grey : Colors.white,
@@ -92,7 +104,7 @@ class BoxWidget extends StatelessWidget {
       child: split ? CustomPaint(
         painter: CellPainter(),
       ) : null,
-    );
+    ));
   }
 }
 
