@@ -78,21 +78,35 @@ class BoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(onTap: disabled ? null : () {
       showDialog(context: context, builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Section: ${item.section}${item.subSection} - ${index + 1}"),
-          content: Row(children: [
-            DropdownButton<String>(
-              items: ["", ...item.acceptableInputs].map((input) => DropdownMenuItem(value: input, child: Text(input))).toList(),
-              onChanged: (Object? value) {  }
-            ),
-            if (split) const Text("split"),
-          ]),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.pop(context);
-            }, child: const Text("Ok"),),
-          ],
-        );
+        String? selectedItem = null;
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(
+                "Section: ${item.section}${item.subSection} - ${index + 1}"),
+            content: IntrinsicHeight(child: Column(children: [
+              Padding(padding: EdgeInsets.only(bottom: 10),
+                  child: Text(item.description)),
+              Row(children: [
+                ...item.acceptableInputs.map((item) =>
+                    Padding(padding: EdgeInsets.all(2), child: ElevatedButton(
+                      onPressed: () => setState(() {
+                        selectedItem = item;
+                      }),
+                      child: Text(item),
+                    ))).toList(),
+              ]),
+              if (split) Row(children: [
+                const Text("split"),
+              ]),
+              if (selectedItem == "1") Text("Comment input here")
+            ])),
+            actions: [
+              TextButton(onPressed: () {
+                Navigator.pop(context);
+              }, child: const Text("Ok"),),
+            ],
+          );
+        });
       });
     },child: Container(
       decoration: BoxDecoration(
