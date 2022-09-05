@@ -12,7 +12,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
     List<Widget> titles = [];
     List<GridRow> rows = [];
     for (var item in items) {
-      titles.add(_title(item.subSection, item.description, style: item.descriptionStyle));
+      titles.add(_title(item.subSection, item.description(), style: item.style()));
       rows.add(GridRow(item));
     }
     return IntrinsicHeight(child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

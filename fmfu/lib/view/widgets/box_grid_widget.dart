@@ -74,6 +74,20 @@ class BoxWidget extends StatelessWidget {
 
   const BoxWidget(this.item, this.index, {Key? key, this.disabled = false, this.split = false}) : super(key: key);
 
+  List<Widget> getQuestionRows(Question question, Function(String?) onPressed) {
+    return [
+      Text(question.description),
+      Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: question.acceptableInputs.map((item) => Padding(padding: EdgeInsets.all(2), child: ElevatedButton(
+        onPressed: () => onPressed(item),
+        child: Text(item),
+      ))).toList())),
+    ];
+  }
+
+  List<Widget> getItemRows(FollowUpFormItem item, Function(String?) onPressed) {
+    return item.questions.map((q) => getQuestionRows(q, onPressed)).expand((e) => e).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(onTap: disabled ? null : () {
@@ -84,20 +98,11 @@ class BoxWidget extends StatelessWidget {
             title: Text(
                 "Section: ${item.section}${item.subSection} - ${index + 1}"),
             content: IntrinsicHeight(child: Column(children: [
-              Padding(padding: EdgeInsets.only(bottom: 10),
-                  child: Text(item.description)),
-              Row(children: [
-                ...item.acceptableInputs.map((item) =>
-                    Padding(padding: EdgeInsets.all(2), child: ElevatedButton(
-                      onPressed: () => setState(() {
-                        selectedItem = item;
-                      }),
-                      child: Text(item),
-                    ))).toList(),
-              ]),
-              if (split) Row(children: [
-                const Text("split"),
-              ]),
+              ...getItemRows(item, (item) {
+                setState(() {
+                  selectedItem = item;
+                });
+              }),
               if (selectedItem == "1") Text("Comment input here")
             ])),
             actions: [
