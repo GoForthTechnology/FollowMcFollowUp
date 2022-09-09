@@ -39,6 +39,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
       const Spacer(),
       BoxGridWidget(
         rows: rows,
+        includeColumnHeadings: indexOffset == 0,
       )
     ]));
   }

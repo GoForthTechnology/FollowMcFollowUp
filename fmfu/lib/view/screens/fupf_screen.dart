@@ -20,20 +20,291 @@ class _FupFormScreenState extends State<FupFormScreen> {
       appBar: AppBar(
         title: const Text("Follow Up Form"),
       ),
-      body: Page7(),
+      body: SingleChildScrollView(child: Row(children: [
+        Page6(),
+        Page7(),
+      ],)
+    ));
+  }
+}
+
+
+class Page6 extends AbstractPage {
+  Page6({Key? key}) : super(key: key, pageNum: 6, content: [
+    const Text("5) HEALTH AND HYGIENE REVIEW (X)", style: sectionHeadingStyle),
+    Padding(padding: const EdgeInsets.all(10), child: Column(
+      children: FollowUpFormSectionWidget.create(page6Items1),)),
+    const CommentSectionWidget(numRows: 10, comments: []),
+    const Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("6) PICTURE DICTIONARY PRESENTED -- TODO", style: sectionHeadingStyle)),
+    const Text("7) DEFINITIONS -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
+    const Text("(Code for this section: 1=Unsatisfactory knowledge  2=Satisfactory knowledge  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
+    Padding(padding: const EdgeInsets.all(10), child: Column(
+      children: FollowUpFormSectionWidget.create(page6Items2),)),
+  ]);
+}
+
+class Page7 extends AbstractPage {
+  Page7({Key? key}) : super(key: key, pageNum: 7, content: [
+    const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
+    const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
+    Padding(padding: const EdgeInsets.all(10), child: Column(
+      children: FollowUpFormSectionWidget.create(page7Items),)),
+    const CommentSectionWidget(numRows: 16, comments: []),
+  ]);
+}
+
+class Page8 extends AbstractPage {
+  const Page8({Key? key}) : super(key: key, pageNum: 8, content: const [
+    CommentSectionWidget(numRows: 31, comments: []),
+  ]);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+    ])));
+  }
+}
+
+abstract class AbstractPage extends StatelessWidget {
+  static const double pageWidth = 1000;
+
+  final int pageNum;
+  final List<Widget> content;
+
+  const AbstractPage({Key? key, required this.pageNum, required this.content}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<FollowUpFormComment> comments = [FollowUpFormComment(date: DateTime.now(), followUpNum: 1, sectionNum: 8, problem: "Some problem", planOfAction: "a really great plan")];
+    return SizedBox(height: 1300, width: pageWidth, child: Padding(padding: const EdgeInsets.all(20), child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _titleWidget(),
+        ...content,
+      ],
+    )));
+  }
+
+  Widget _titleWidget() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(color: Colors.black),
+      height: 40,
+      width: pageWidth,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Padding(padding: const EdgeInsets.only(left: 10, right: 10), child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(pageNum % 2 == 0 ? pageNum.toString() : "", style: pageTitleStyle,),
+          Text(
+            pageNum % 2 == 0 ? "CREIGHTON MODEL FertilityCARE System" : "Follow-Up Form",
+            style: pageTitleStyle,
+          ),
+          Text(pageNum % 2 == 1 ? pageNum.toString() : "", style: pageTitleStyle,),
+        ],
+      )),
     );
   }
 }
 
-Widget title(String code, String text, {TextStyle? style}) {
-  return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text("$code. ", style: const TextStyle(fontWeight: FontWeight.bold)),
-    Text(text, style: style),
-  ]);
-}
 
 const pageTitleStyle = TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold);
 const TextStyle sectionHeadingStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+const List<List<FollowUpFormItem>> page6Items1 = [
+  [
+    FollowUpFormItem(
+      section: 5,
+      subSection: "A",
+      questions: [
+        Question(
+          description: "Vagina is a self cleaning organ (X).",
+          acceptableInputs: ["X"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "B",
+      questions: [
+        Question(
+          description: "There is no need to douche (X)",
+          acceptableInputs: ["X"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "C",
+      questions: [
+        Question(
+          description: "Do you use tampons (1), pads (2), or minipads (3)?",
+          acceptableInputs: ["", "1", "2", "3"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "D",
+      questions: [
+        Question(
+          description: "Do you use scented tampons, pads or minipads (Y or N)?",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "E",
+      questions: [
+        Question(
+          description: "Do you use a menstrual cup? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "F",
+      questions: [
+        Question(
+          description: "Do you se scented or dyed toilet tissues? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "G",
+      questions: [
+        Question(
+          description: "Do you use fabric softeners in the dryer? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+  ],[
+    FollowUpFormItem(
+      section: 5,
+      subSection: "H",
+      questions: [
+        Question(
+          description: "Do you use other scented products (e.g. bubble bath, bath oil, etc.)? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "I",
+      questions: [
+        Question(
+          description: "Do you use all-cotton underwear? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "J",
+      questions: [
+        Question(
+          description: "Do you use cotton-crotch panty hose? (Y or N)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "K",
+      questions: [
+        Question(
+          description: "Do you do Breast Self-Exam on day 7 of cycle? (Y or N/X)",
+          acceptableInputs: ["Y", "N", "X"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "L",
+      questions: [
+        Question(
+          description: "Do you know when to get a mammogram? (Y or N/X)",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "M",
+      questions: [
+        Question(
+          description: "Proper use of tampons explained (if used) (X)",
+          acceptableInputs: ["X"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 5,
+      subSection: "N",
+      questions: [
+        Question(
+          description: "Review observations with use of menstrual cup (if used) (X)",
+          acceptableInputs: ["X"],
+        ),
+      ],
+    ),
+  ]
+];
+const List<List<FollowUpFormItem>> page6Items2 = [
+  [
+    FollowUpFormItem(
+      section: 7,
+      subSection: "A",
+      questions: [
+        Question(
+          description: "What is Peak-type mucus?",
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 7,
+      subSection: "B",
+      questions: [
+        Question(
+          description: "What is non-Peak-type mucus?",
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 7,
+      subSection: "C",
+      questions: [
+        Question(
+          description: "What is the Peak Day?",
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 7,
+      subSection: "D",
+      questions: [
+        Question(
+          description: "What is the pre-Peak phase of the cycle?",
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 7,
+      subSection: "E",
+      questions: [
+        Question(
+          description: "What is the post-Peak phase of the cycle?",
+        ),
+      ],
+    ),
+  ],
+];
 const List<List<FollowUpFormItem>> page7Items = [
   [
     FollowUpFormItem(
@@ -202,63 +473,3 @@ const List<List<FollowUpFormItem>> page7Items = [
   ]
 ];
 
-const double pageWidth = 1000;
-
-abstract class AbstractPage extends StatelessWidget {
-  final int pageNum;
-  final List<Widget> content;
-
-  const AbstractPage({Key? key, required this.pageNum, required this.content}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    List<FollowUpFormComment> comments = [FollowUpFormComment(date: DateTime.now(), followUpNum: 1, sectionNum: 8, problem: "Some problem", planOfAction: "a really great plan")];
-    return SizedBox(height: 2000, width: pageWidth, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _titleWidget(),
-      ...content,
-    ])));
-  }
-
-  Widget _titleWidget() {
-    return Container(
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(color: Colors.black),
-      height: 40,
-      width: pageWidth,
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Padding(padding: const EdgeInsets.only(left: 10, right: 10), child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(pageNum % 2 == 0 ? pageNum.toString() : "", style: pageTitleStyle,),
-          const Text(
-            "CREIGHTON MODEL FertilityCARE System",
-            style: pageTitleStyle,
-          ),
-          Text(pageNum % 2 == 1 ? pageNum.toString() : "", style: pageTitleStyle,),
-        ],
-      )),
-    );
-  }
-}
-
-class Page7 extends AbstractPage {
-  Page7({Key? key}) : super(key: key, pageNum: 7, content: [
-    const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
-    const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
-    Expanded(child: Padding(padding: const EdgeInsets.all(10), child: Column(
-      children: FollowUpFormSectionWidget.create(page7Items),))),
-    const CommentSectionWidget(numRows: 8, comments: []),
-  ]);
-}
-
-class Page8 extends AbstractPage {
-  const Page8({Key? key}) : super(key: key, pageNum: 8, content: const [
-    CommentSectionWidget(numRows: 31, comments: []),
-  ]);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-    ])));
-  }
-}

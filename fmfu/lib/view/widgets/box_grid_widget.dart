@@ -5,8 +5,9 @@ import 'package:fmfu/model/fup_form_item.dart';
 class BoxGridWidget extends StatelessWidget {
   final List<GridRow> rows;
   final int nColumns;
+  final bool includeColumnHeadings;
 
-  const BoxGridWidget({Key? key, required this.rows, this.nColumns = 8}) : super(key: key);
+  const BoxGridWidget({Key? key, required this.rows, this.nColumns = 8, required this.includeColumnHeadings}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
