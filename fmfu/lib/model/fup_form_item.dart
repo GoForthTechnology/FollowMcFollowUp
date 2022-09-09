@@ -7,15 +7,14 @@ class FollowUpFormItem {
   final String subSection;
   final List<Question> questions;
 
-  final bool splitBoxes;
   final Set<int> disabledCells;
 
-  FollowUpFormItem({
+  const FollowUpFormItem({
     required this.section,
     required this.subSection,
     required this.questions,
     this.disabledCells = const {},
-  }) : splitBoxes = questions.length > 1;
+  });
 
   String description() {
     return questions.map((q) => q.description).join("\n");
@@ -38,6 +37,6 @@ class Question {
   final TextStyle? style;
   final List<String> acceptableInputs;
 
-  Question({required this.description, this.style, this.acceptableInputs = defaultAcceptableInputs});
+  const Question({required this.description, this.style, this.acceptableInputs = defaultAcceptableInputs});
 
 }

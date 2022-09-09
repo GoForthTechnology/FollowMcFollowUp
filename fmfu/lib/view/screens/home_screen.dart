@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/view/chart_screen.dart';
-import 'package:fmfu/view/fupf_screen.dart';
+import 'package:fmfu/view/screens/chart_screen.dart';
+import 'package:fmfu/view/screens/fupf_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = "home";

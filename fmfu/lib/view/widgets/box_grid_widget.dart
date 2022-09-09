@@ -48,7 +48,7 @@ class GridRow {
   final List<Widget> cells;
 
   GridRow(FollowUpFormItem item, int itemIndex, void Function(BuildContext, int, int) showDialogFn)
-      : cells = List.generate(8, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index), split: item.splitBoxes)),
+      : cells = List.generate(8, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index))),
     rowLabel = "${item.section}${item.subSection}";
 }
 
@@ -103,9 +103,8 @@ class BoxWidget extends StatelessWidget {
   final int itemIndex;
   final int followUpIndex;
   final bool disabled;
-  final bool split;
 
-  const BoxWidget(this.showDialogFn, this.item, this.itemIndex, this.followUpIndex, {Key? key, this.disabled = false, this.split = false}) : super(key: key);
+  const BoxWidget(this.showDialogFn, this.item, this.itemIndex, this.followUpIndex, {Key? key, this.disabled = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +117,7 @@ class BoxWidget extends StatelessWidget {
       ),
       width: 30,
       height: 30,
-      child: split ? CustomPaint(
+      child: item.questions.length > 1 ? CustomPaint(
         painter: CellPainter(),
       ) : null,
     ));
