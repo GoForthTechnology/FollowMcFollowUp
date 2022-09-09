@@ -10,6 +10,8 @@ import 'package:fmfu/view_model/chart_list_view_model.dart';
 class ChartPage extends StatefulWidget {
   static const String routeName = "charts";
 
+  const ChartPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _ChartPageState();
 }

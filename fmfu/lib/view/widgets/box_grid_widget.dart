@@ -90,7 +90,7 @@ class CommentWidget extends StatelessWidget {
             const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
             Expanded(child: TextFormField(maxLines: null)),
           ]),
-          TextButton(onPressed: onRemoveComment, child: Text("Remove Comment")),
+          TextButton(onPressed: onRemoveComment, child: const Text("Remove Comment")),
         ],
       ),
     ));

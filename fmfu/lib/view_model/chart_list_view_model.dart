@@ -5,8 +5,9 @@ import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
+import 'package:loggy/loggy.dart';
 
-class ChartListViewModel with ChangeNotifier {
+class ChartListViewModel with ChangeNotifier, UiLoggy {
   static final List<Instruction> _defaultInstructions = getActiveInstructions(false, false);
 
   List<Instruction> activeInstructions = _defaultInstructions;
@@ -103,7 +104,7 @@ class ChartListViewModel with ChangeNotifier {
       renderedObservation: existingEntry.renderedObservation,
       manualSticker: edit,
     );
-    print("Altering sticker for cycle $cycleIndex @ $entryIndex");
+    loggy.info("Altering sticker for cycle $cycleIndex @ $entryIndex");
     notifyListeners();
   }
 
@@ -127,7 +128,7 @@ class ChartListViewModel with ChangeNotifier {
       }
       cycle.entries.clear();
       cycle.entries.addAll(newEntries);
-      print("Re-rendering cycle $cycleIndex");
+      loggy.info("Re-rendering cycle $cycleIndex");
     } catch (e) {
       var existingEntry = cycle.entries[entryIndex];
       cycle.entries[entryIndex] = ChartEntry(
@@ -135,7 +136,7 @@ class ChartListViewModel with ChangeNotifier {
         renderedObservation: existingEntry.renderedObservation,
         //manualSticker: cycle.entries[entryIndex].manualSticker,
       );
-      print("Adding invalid entry to cycle $cycleIndex @ $entryIndex");
+      loggy.info("Adding invalid entry to cycle $cycleIndex @ $entryIndex");
     }
     notifyListeners();
   }
@@ -172,14 +173,12 @@ class ChartListViewModel with ChangeNotifier {
       ))
           .toList(),
       {}));
-    print("Generated ${cycles.length} cycles");
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {
         slices.add(CycleSlice(cycle, offset));
       }
     }
-    print("Generated ${slices.length} slices");
     List<Chart> out = [];
     List<CycleSlice> batch = [];
     for (var slice in slices) {
@@ -190,14 +189,12 @@ class ChartListViewModel with ChangeNotifier {
         batch = [];
       }
     }
-    print("Batched ${out.length} complete charts");
     if (batch.isNotEmpty) {
       while (batch.length < 6) {
         batch.add(CycleSlice(null, 0));
       }
       out.add(Chart(batch));
     }
-    print("Added partial charts");
     return out;
   }
 }

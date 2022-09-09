@@ -39,6 +39,8 @@ dependencies:
     git:
       url: https://github.com/zlumyo/dart_numerics
       ref: b819be5c908f76f350772b510aec76c1705397e6
+  collection: ^1.16.0
+  loggy: ^2.0.1+1
 
 dev_dependencies:
   flutter_test:

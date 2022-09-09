@@ -3,9 +3,12 @@ import 'package:fmfu/view/chart_screen.dart';
 import 'package:fmfu/view/fupf_screen.dart';
 import 'package:fmfu/view/home_screen.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  Loggy.initLoggy();
+
   runApp(const MyApp());
 }
 
@@ -24,11 +27,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
       routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
-        ChartPage.routeName: (context) => ChartPage(),
-        FupFormScreen.routeName: (context) => FupFormScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        ChartPage.routeName: (context) => const ChartPage(),
+        FupFormScreen.routeName: (context) => const FupFormScreen(),
       },
       ));
   }

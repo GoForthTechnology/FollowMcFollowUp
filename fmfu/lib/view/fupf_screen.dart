@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_item.dart';
-import 'package:fmfu/view/widgets/box_grid_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_section_widget.dart';
 
 class FupFormScreen extends StatefulWidget {
   static const String routeName = "fupf";
+
+  const FupFormScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FupFormScreenState();
@@ -17,14 +18,14 @@ class _FupFormScreenState extends State<FupFormScreen> {
       appBar: AppBar(
         title: const Text("Follow Up Form"),
       ),
-      body: Page7(),
+      body: const Page7(),
     );
   }
 }
 
 Widget title(String code, String text, {TextStyle? style}) {
   return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text("$code. ", style: TextStyle(fontWeight: FontWeight.bold)),
+    Text("$code. ", style: const TextStyle(fontWeight: FontWeight.bold)),
     Text(text, style: style),
   ]);
 }

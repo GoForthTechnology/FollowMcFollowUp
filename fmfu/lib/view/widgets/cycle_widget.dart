@@ -61,9 +61,6 @@ class CycleWidgetState extends State<CycleWidget> {
         observation = entry?.renderedObservation;
       }
       StickerWithText? sticker = entry?.manualSticker;
-      if (sticker != null) {
-        print(sticker);
-      }
       if (sticker == null && observation != null) {
         sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
       }
@@ -177,7 +174,6 @@ class CycleWidgetState extends State<CycleWidget> {
               title: const Text('Sticker Correction'),
               content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
                 setState(() {
-                  print("Selected sticker: $sticker");
                   if (selectedSticker == sticker) {
                     selectedSticker = null;
                   } else {

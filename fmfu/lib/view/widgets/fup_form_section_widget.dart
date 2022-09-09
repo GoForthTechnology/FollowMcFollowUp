@@ -117,8 +117,8 @@ class FollowUpFormSectionWidget extends StatelessWidget {
           padding: const EdgeInsets.all(2),
           child: ElevatedButton(
             onPressed: () => onPressed(item == selectedItem ? null : item),
-            child: Text(item),
             style: item == selectedItem ? ElevatedButton.styleFrom(primary: Colors.pinkAccent) : ElevatedButton.styleFrom(primary: Colors.blueAccent),
+            child: Text(item),
           ),
         )).toList(),
       )),

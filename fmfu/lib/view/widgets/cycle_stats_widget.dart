@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +19,7 @@ class CycleStatsState extends State<CycleStatsWidget> {
   Widget build(BuildContext context) {
     return Consumer<ChartListViewModel>(builder: (context, model, child) => Form(
       key: _formKey,
-      child:  Padding(padding: EdgeInsets.only(left: 2), child: Column(
+      child:  Padding(padding: const EdgeInsets.only(left: 2), child: Column(
         children: [
           Row(children: [
             const Text("LPPP: "),
@@ -50,7 +49,7 @@ class CycleStatsState extends State<CycleStatsWidget> {
               },
             ))
           ]),
-          Padding(padding: EdgeInsets.only(top: 4), child: ElevatedButton(onPressed: () {
+          Padding(padding: const EdgeInsets.only(top: 4), child: ElevatedButton(onPressed: () {
 
           }, child: const Text("Save"), )),
         ]

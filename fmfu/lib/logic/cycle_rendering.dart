@@ -1,12 +1,7 @@
 
-
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/model/instructions.dart';
-
 
 List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions) {
   int daysOfFlow = 0;
@@ -164,8 +159,6 @@ class RenderedObservation {
     return "";
   }
 
-  static const Color _lightGreen = Color(0xFFE2FFCC);
-
   Sticker getSticker() {
     bool isFertile = fertilityReasons.isNotEmpty;
     bool hasInfertilityReasons = infertilityReasons.isNotEmpty;
@@ -226,7 +219,7 @@ class CountsOfThree {
   }
 
   bool inCountOfThree(CountOfThreeReason reason, int i) {
-    int? count = getCount(reason, i);
-    return count != null && count > 0 && count <= 3;
+    int count = getCount(reason, i);
+    return count > 0 && count <= 3;
   }
 }
