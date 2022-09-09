@@ -38,7 +38,7 @@ class Page7 extends StatelessWidget {
     return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
       const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
-      Padding(padding: const EdgeInsets.all(10), child: Expanded(child: Column(children: [
+      Expanded(child: Padding(padding: const EdgeInsets.all(10), child: Column(children: [
         FollowUpFormSectionWidget(items: [
           FollowUpFormItem(
             section: 8,

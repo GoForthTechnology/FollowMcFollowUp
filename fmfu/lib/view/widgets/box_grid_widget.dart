@@ -66,6 +66,31 @@ class LegendCell extends StatelessWidget {
   }
 }
 
+class CommentWidget extends StatelessWidget {
+  const CommentWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(child: Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(left: 4, right: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+      ),
+      child: Column(children: [
+        Row(children: [
+          const Text("Problem: ", style: TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: TextFormField(maxLines: null,)),
+        ]),
+        Row(children: [
+          const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: TextFormField(maxLines: null)),
+        ]),
+      ]),
+    ));
+  }
+}
+
 class BoxWidget extends StatelessWidget {
   final FollowUpFormItem item;
   final int index;
@@ -77,10 +102,16 @@ class BoxWidget extends StatelessWidget {
   List<Widget> getQuestionRows(Question question, Function(String?) onPressed) {
     return [
       Text(question.description),
-      Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: question.acceptableInputs.map((item) => Padding(padding: EdgeInsets.all(2), child: ElevatedButton(
-        onPressed: () => onPressed(item),
-        child: Text(item),
-      ))).toList())),
+      Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: question.acceptableInputs.map((item) => Padding(
+            padding: const EdgeInsets.all(2),
+            child: ElevatedButton(
+              onPressed: () => onPressed(item),
+              child: Text(item),
+            ),
+          )).toList(),
+      )),
     ];
   }
 
@@ -92,19 +123,27 @@ class BoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(onTap: disabled ? null : () {
       showDialog(context: context, builder: (BuildContext context) {
-        String? selectedItem = null;
+        String? selectedItem;
+        List<String> comments = [];
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             title: Text(
                 "Section: ${item.section}${item.subSection} - ${index + 1}"),
-            content: IntrinsicHeight(child: Column(children: [
+            content: IntrinsicHeight(child: SizedBox(width: 300, child: Column(children: [
               ...getItemRows(item, (item) {
                 setState(() {
                   selectedItem = item;
                 });
               }),
-              if (selectedItem == "1") Text("Comment input here")
-            ])),
+              // TODO: fix issue when too many comments are added
+              ...comments.map((comment) => const CommentWidget()).toList(),
+              Padding(padding: const EdgeInsets.all(2), child: ElevatedButton(
+                onPressed: () => setState(() {
+                  comments.add("");
+                }),
+                child: const Text("Add Comment"),
+              )),
+            ]))),
             actions: [
               TextButton(onPressed: () {
                 Navigator.pop(context);
