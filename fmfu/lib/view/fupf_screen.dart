@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/fup_form_section_widget.dart';
 
+import 'widgets/comment_section_widget.dart';
+
 class FupFormScreen extends StatefulWidget {
   static const String routeName = "fupf";
 
@@ -203,12 +205,14 @@ class Page7 extends StatelessWidget {
         ),
       ]
     ];
+    var headingStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
     return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
       const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
       Expanded(child: Padding(padding: const EdgeInsets.all(10), child: Column(
         children: FollowUpFormSectionWidget.create(itemGroups),
       ))),
+      const CommentSectionWidget(numRows: 8),
     ])));
   }
 }
