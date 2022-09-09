@@ -38,7 +38,7 @@ class CommentSectionWidget extends StatelessWidget {
   TableCell _headerCell(String text, TextStyle style) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.bottom,
-      child: Text(text, style: style),
+      child: Center(child: Text(text, style: style)),
     );
   }
 
