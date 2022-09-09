@@ -3,15 +3,32 @@ import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/box_grid_widget.dart';
 
 class FollowUpFormSectionWidget extends StatelessWidget {
-  List<FollowUpFormItem> items;
+  final List<FollowUpFormItem> items;
+  final int indexOffset;
+  final int nItems;
 
-  FollowUpFormSectionWidget({required this.items, Key? key}) : super(key: key);
+  const FollowUpFormSectionWidget({required this.items, required this.indexOffset, required this.nItems, Key? key}) : super(key: key);
+
+  static List<FollowUpFormSectionWidget> create(List<List<FollowUpFormItem>> itemGroups) {
+    List<FollowUpFormItem> items = itemGroups.expand((i) => i).toList();
+    List<FollowUpFormSectionWidget> widgets = [];
+    int indexOffset = 0;
+    for (var group in itemGroups) {
+      widgets.add(FollowUpFormSectionWidget(
+        items: items,
+        indexOffset: indexOffset,
+        nItems: group.length,
+      ));
+      indexOffset += group.length;
+    }
+    return widgets;
+  }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> titles = [];
     List<GridRow> rows = [];
-    for (int i=0; i < items.length; i++) {
+    for (int i=indexOffset; i < indexOffset + nItems; i++) {
       var item = items[i];
       titles.add(_title(item.subSection, item.description(), style: item.style()));
       rows.add(GridRow(item, i, _showInputDialog));
