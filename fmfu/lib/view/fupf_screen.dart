@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/fup_form_section_widget.dart';
 
@@ -205,13 +206,14 @@ class Page7 extends StatelessWidget {
         ),
       ]
     ];
+    List<FollowUpFormComment> comments = [FollowUpFormComment(date: DateTime.now(), followUpNum: 1, sectionNum: 8, problem: "Some problem", planOfAction: "a really great plan")];
     return SizedBox(height: 2000, width: 1000, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
       const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
       Expanded(child: Padding(padding: const EdgeInsets.all(10), child: Column(
         children: FollowUpFormSectionWidget.create(itemGroups),
       ))),
-      const CommentSectionWidget(numRows: 8),
+      CommentSectionWidget(numRows: 8, comments: comments),
     ])));
   }
 }

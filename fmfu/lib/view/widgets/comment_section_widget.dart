@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_comment.dart';
+import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
+
 
 class CommentSectionWidget extends StatelessWidget {
   final int numRows;
+  final List<FollowUpFormComment> comments;
 
-  const CommentSectionWidget({Key? key, required this.numRows}) : super(key: key);
+  const CommentSectionWidget({Key? key, required this.numRows, required this.comments}) : super(key: key);
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);
@@ -25,7 +30,7 @@ class CommentSectionWidget extends StatelessWidget {
           _headerCell("Situation/Problem", headingStyle),
           _headerCell("Plan of Action", headingStyle),
         ], ),
-        ...List.generate(numRows, (index) => _row()),
+        ...List.generate(numRows, (index) => _row(index)),
       ],
     );
   }
@@ -37,32 +42,81 @@ class CommentSectionWidget extends StatelessWidget {
     );
   }
 
-  TableRow _row() {
-    return TableRow(children: List.generate(4, (index) => _cell(index)));
+  TableRow _row(int rowIndex) {
+    var comment = rowIndex < 0 || rowIndex > comments.length - 1 ? null : comments[rowIndex];
+    return TableRow(children: List.generate(4, (columnIndex) => _cell(comment, columnIndex)));
   }
 
-  TableCell _cell(int index) {
+  TableCell _cell(FollowUpFormComment? comment, int columnIndex) {
     return TableCell(
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         child: SizedBox(
           height: 30,
           width: 40,
-          child: index == 1 ? CustomPaint(
-            painter: CellPainter(),
-          ) : const Text(""),
+          child: columnIndex == 1 ? CustomPaint(
+            painter: CellPainter(comment),
+          ) : Padding(padding: const EdgeInsets.all(4), child: Text(getText(comment, columnIndex))),
         )
       ),
     );
   }
 
+  static String getText(FollowUpFormComment? comment, int index) {
+    if (comment == null) {
+      return "";
+    }
+    if (index == 0) {
+      return DateFormat("yyyy-MM-dd").format(comment.date);
+    }
+    if (index == 1) {
+      return "";
+    }
+    if (index == 2) {
+      return comment.problem;
+    }
+    if (index == 3) {
+      return comment.planOfAction;
+    }
+    throw Exception();
+  }
 }
 
 class CellPainter extends CustomPainter {
+  final FollowUpFormComment? comment;
+
+  CellPainter(this.comment);
+
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()..color = Colors.black;
     canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), paint);
+
+    if (comment != null) {
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: comment!.followUpNum.toString(),
+        ),
+        textDirection: ui.TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, Offset(10, 0));
+
+      TextPainter sectionPainter = TextPainter(
+        text: TextSpan(
+          text: comment!.sectionNum.toString(),
+        ),
+        textDirection: ui.TextDirection.ltr,
+      );
+      sectionPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      sectionPainter.paint(canvas, Offset(size.width - 20, 10));
+    }
   }
 
   @override
