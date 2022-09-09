@@ -67,7 +67,9 @@ class LegendCell extends StatelessWidget {
 }
 
 class CommentWidget extends StatelessWidget {
-  const CommentWidget({Key? key}) : super(key: key);
+  final void Function()? onRemoveComment;
+
+  const CommentWidget({Key? key, required this.onRemoveComment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,16 +79,20 @@ class CommentWidget extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
       ),
-      child: Column(children: [
-        Row(children: [
-          const Text("Problem: ", style: TextStyle(fontWeight: FontWeight.bold)),
-          Expanded(child: TextFormField(maxLines: null,)),
-        ]),
-        Row(children: [
-          const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
-          Expanded(child: TextFormField(maxLines: null)),
-        ]),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(children: [
+            const Text("Problem: ", style: TextStyle(fontWeight: FontWeight.bold)),
+            Expanded(child: TextFormField(maxLines: null,)),
+          ]),
+          Row(children: [
+            const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
+            Expanded(child: TextFormField(maxLines: null)),
+          ]),
+          TextButton(onPressed: onRemoveComment, child: Text("Remove Comment")),
+        ],
+      ),
     ));
   }
 }
@@ -129,27 +135,35 @@ class BoxWidget extends StatelessWidget {
           return AlertDialog(
             title: Text(
                 "Section: ${item.section}${item.subSection} - ${index + 1}"),
-            content: IntrinsicHeight(child: SizedBox(width: 300, child: Column(children: [
+            // IntrinsicHeight to shrink the dialog around the column
+            // BoxConstraint to keep it from growing unbounded horizontally
+            content: IntrinsicHeight(child:ConstrainedBox(constraints: const BoxConstraints(minWidth: 250, maxWidth: 500), child: Column(children: [
               ...getItemRows(item, (item) {
                 setState(() {
                   selectedItem = item;
                 });
               }),
               // TODO: fix issue when too many comments are added
-              ...comments.map((comment) => const CommentWidget()).toList(),
-              Padding(padding: const EdgeInsets.all(2), child: ElevatedButton(
+              ...comments.map((comment) => CommentWidget(onRemoveComment: () => setState(() {
+                  comments.removeLast();
+                }),
+              )).toList(),
+              Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
                 onPressed: () => setState(() {
                   comments.add("");
                 }),
                 child: const Text("Add Comment"),
               )),
-            ]))),
-            actions: [
-              TextButton(onPressed: () {
-                Navigator.pop(context);
-              }, child: const Text("Ok"),),
-            ],
-          );
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(onPressed: () {}, child: const Text("Previous")),
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text("Close")),
+                  TextButton(onPressed: () {}, child: const Text("Next")),
+                ],
+              )
+            ])),
+          ));
         });
       });
     },child: Container(
