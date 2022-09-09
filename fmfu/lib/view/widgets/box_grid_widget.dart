@@ -47,8 +47,8 @@ class GridRow {
   final String rowLabel;
   final List<Widget> cells;
 
-  GridRow(FollowUpFormItem item)
-      : cells = List.generate(8, (index) => BoxWidget(item, index, disabled: item.disabledCells.contains(index), split: item.splitBoxes)),
+  GridRow(FollowUpFormItem item, int itemIndex, void Function(BuildContext, int, int) showDialogFn)
+      : cells = List.generate(8, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index), split: item.splitBoxes)),
     rowLabel = "${item.section}${item.subSection}";
 }
 
@@ -98,74 +98,19 @@ class CommentWidget extends StatelessWidget {
 }
 
 class BoxWidget extends StatelessWidget {
+  final void Function(BuildContext, int, int) showDialogFn;
   final FollowUpFormItem item;
-  final int index;
+  final int itemIndex;
+  final int followUpIndex;
   final bool disabled;
   final bool split;
 
-  const BoxWidget(this.item, this.index, {Key? key, this.disabled = false, this.split = false}) : super(key: key);
-
-  List<Widget> getQuestionRows(Question question, Function(String?) onPressed) {
-    return [
-      Text(question.description),
-      Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: question.acceptableInputs.map((item) => Padding(
-            padding: const EdgeInsets.all(2),
-            child: ElevatedButton(
-              onPressed: () => onPressed(item),
-              child: Text(item),
-            ),
-          )).toList(),
-      )),
-    ];
-  }
-
-  List<Widget> getItemRows(FollowUpFormItem item, Function(String?) onPressed) {
-    return item.questions.map((q) => getQuestionRows(q, onPressed)).expand((e) => e).toList();
-  }
+  const BoxWidget(this.showDialogFn, this.item, this.itemIndex, this.followUpIndex, {Key? key, this.disabled = false, this.split = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(onTap: disabled ? null : () {
-      showDialog(context: context, builder: (BuildContext context) {
-        String? selectedItem;
-        List<String> comments = [];
-        return StatefulBuilder(builder: (context, setState) {
-          return AlertDialog(
-            title: Text(
-                "Section: ${item.section}${item.subSection} - ${index + 1}"),
-            // IntrinsicHeight to shrink the dialog around the column
-            // BoxConstraint to keep it from growing unbounded horizontally
-            content: IntrinsicHeight(child:ConstrainedBox(constraints: const BoxConstraints(minWidth: 250, maxWidth: 500), child: Column(children: [
-              ...getItemRows(item, (item) {
-                setState(() {
-                  selectedItem = item;
-                });
-              }),
-              // TODO: fix issue when too many comments are added
-              ...comments.map((comment) => CommentWidget(onRemoveComment: () => setState(() {
-                  comments.removeLast();
-                }),
-              )).toList(),
-              Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
-                onPressed: () => setState(() {
-                  comments.add("");
-                }),
-                child: const Text("Add Comment"),
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(onPressed: () {}, child: const Text("Previous")),
-                  TextButton(onPressed: () => Navigator.pop(context), child: const Text("Close")),
-                  TextButton(onPressed: () {}, child: const Text("Next")),
-                ],
-              )
-            ])),
-          ));
-        });
-      });
+      showDialogFn(context, itemIndex, followUpIndex);
     },child: Container(
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
