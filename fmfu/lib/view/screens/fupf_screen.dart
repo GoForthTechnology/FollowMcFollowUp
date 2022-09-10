@@ -3,6 +3,7 @@ import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/comment_section_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_section_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FupFormScreen extends StatefulWidget {
   static const String routeName = "fupf";
@@ -31,13 +32,13 @@ class _FupFormScreenState extends State<FupFormScreen> {
 
 class Page6 extends AbstractPage {
   Page6({Key? key}) : super(key: key, pageNum: 6, content: [
-    const Text("5) HEALTH AND HYGIENE REVIEW (X)", style: sectionHeadingStyle),
+    const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page6Items1),)),
     const CommentSectionWidget(numRows: 10, comments: []),
     const Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("6) PICTURE DICTIONARY PRESENTED -- TODO", style: sectionHeadingStyle)),
     const Text("7) DEFINITIONS -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
-    const Text("(Code for this section: 1=Unsatisfactory knowledge  2=Satisfactory knowledge  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
+    const Text("(Code for this section: 1=Unsatisfactory knowledge  2=Satisfactory knowledge  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page6Items2),)),
   ]);
@@ -46,7 +47,7 @@ class Page6 extends AbstractPage {
 class Page7 extends AbstractPage {
   Page7({Key? key}) : super(key: key, pageNum: 7, content: [
     const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
-    const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Applicaiont  X=Reviewed - assessment not indicated  -- = Not Applicable)"),
+    const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
     const CommentSectionWidget(numRows: 16, comments: []),
@@ -118,8 +119,8 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "A",
       questions: [
         Question(
-          description: "Vagina is a self cleaning organ (X).",
-          acceptableInputs: ["X"],
+          description: "Vagina is a self cleaning organ (\u2714).",
+          acceptableInputs: ["\u2714"],
         ),
       ],
     ),
@@ -128,8 +129,8 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "B",
       questions: [
         Question(
-          description: "There is no need to douche (X)",
-          acceptableInputs: ["X"],
+          description: "There is no need to douche (\u2714)",
+          acceptableInputs: ["\u2714"],
         ),
       ],
     ),
@@ -219,8 +220,8 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "K",
       questions: [
         Question(
-          description: "Do you do Breast Self-Exam on day 7 of cycle? (Y or N/X)",
-          acceptableInputs: ["Y", "N", "X"],
+          description: "Do you do Breast Self-Exam on day 7 of cycle? (Y or N/\u2714)",
+          acceptableInputs: ["Y", "N", "\u2714"],
         ),
       ],
     ),
@@ -229,7 +230,7 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "L",
       questions: [
         Question(
-          description: "Do you know when to get a mammogram? (Y or N/X)",
+          description: "Do you know when to get a mammogram? (Y or N/\u2714)",
           acceptableInputs: ["Y", "N"],
         ),
       ],
@@ -239,8 +240,8 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "M",
       questions: [
         Question(
-          description: "Proper use of tampons explained (if used) (X)",
-          acceptableInputs: ["X"],
+          description: "Proper use of tampons explained (if used) (\u2714)",
+          acceptableInputs: ["\u2714"],
         ),
       ],
     ),
@@ -249,8 +250,8 @@ const List<List<FollowUpFormItem>> page6Items1 = [
       subSection: "N",
       questions: [
         Question(
-          description: "Review observations with use of menstrual cup (if used) (X)",
-          acceptableInputs: ["X"],
+          description: "Review observations with use of menstrual cup (if used) (\u2714)",
+          acceptableInputs: ["\u2714"],
         ),
       ],
     ),
@@ -312,9 +313,9 @@ const List<List<FollowUpFormItem>> page7Items = [
       subSection: "A",
       questions: [
         Question(
-          description: "CHART REVIEWED WITH FCP/FCPI (X)",
+          description: "CHART REVIEWED WITH FCP/FCPI (\u2714)",
           style: TextStyle(fontWeight: FontWeight.bold),
-          acceptableInputs: ["X"],
+          acceptableInputs: ["\u2714"],
         )
       ],
     )
@@ -324,11 +325,11 @@ const List<List<FollowUpFormItem>> page7Items = [
       subSection: "B",
       questions: [
         Question(
-          description: "Peak Days correctly identified (1,2,X)",
+          description: "Peak Days correctly identified (1,2,\u2714)",
         ),
         Question(
-          description: "The Peak Day was confidently identified (Y,N,X)",
-          acceptableInputs: ["Y", "N", "X"],
+          description: "The Peak Day was confidently identified (Y,N,\u2714)",
+          acceptableInputs: ["Y", "N", "\u2714"],
         ),
       ],
     ),
@@ -355,7 +356,7 @@ const List<List<FollowUpFormItem>> page7Items = [
       subSection: "",
       questions: [
         Question(
-          description: "RECORDING SYSTEM (VDRS) REVIEWED (X)",
+          description: "RECORDING SYSTEM (VDRS) REVIEWED (\u2714)",
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
@@ -465,7 +466,7 @@ const List<List<FollowUpFormItem>> page7Items = [
       subSection: "O",
       questions: [
         Question(
-          description: "Discuss concomitant use of barrier methods, coitus interruptus and withdrawal (X)",
+          description: "Discuss concomitant use of barrier methods, coitus interruptus and withdrawal (\u2714)",
         ),
       ],
       disabledCells: {0, 1},

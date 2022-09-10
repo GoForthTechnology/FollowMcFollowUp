@@ -3,6 +3,7 @@ import 'package:fmfu/view/screens/chart_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        textTheme: GoogleFonts.sourceSans3TextTheme(
+          Theme.of(context).textTheme,
+        ),
         primarySwatch: Colors.blue,
       ),
       home: const HomeScreen(),
