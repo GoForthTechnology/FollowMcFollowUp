@@ -35,7 +35,15 @@ class Page6 extends AbstractPage {
     const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page6Items1),)),
-    const CommentSectionWidget(numRows: 10, comments: []),
+    CommentSectionWidget(numRows: 10, comments: [
+      FollowUpFormComment(
+        date: DateTime.now(),
+        followUpNum: 1,
+        sectionNum: 5,
+        problem: "A totally not made up problem",
+        planOfAction: "A really great and awesome plan",
+      ),
+    ]),
     const Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("6) PICTURE DICTIONARY PRESENTED -- TODO", style: sectionHeadingStyle)),
     const Text("7) DEFINITIONS -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory knowledge  2=Satisfactory knowledge  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
@@ -50,7 +58,15 @@ class Page7 extends AbstractPage {
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
-    const CommentSectionWidget(numRows: 16, comments: []),
+    CommentSectionWidget(numRows: 16, comments: [
+      FollowUpFormComment(
+        date: DateTime.now(),
+        followUpNum: 1,
+        sectionNum: 8,
+        problem: "A totally not made up problem",
+        planOfAction: "A really great and awesome plan",
+      ),
+    ]),
   ]);
 }
 
