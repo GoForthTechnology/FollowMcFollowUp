@@ -5,6 +5,7 @@ class FollowUpFormItem {
 
   final int section;
   final String subSection;
+  final String? subSubSection;
   final List<Question> questions;
 
   final Set<int> disabledCells;
@@ -13,6 +14,7 @@ class FollowUpFormItem {
     required this.section,
     required this.subSection,
     required this.questions,
+    this.subSubSection,
     this.disabledCells = const {},
   });
 

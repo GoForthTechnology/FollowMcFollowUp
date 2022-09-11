@@ -6,8 +6,23 @@ class FollowUpFormSectionWidget extends StatelessWidget {
   final List<FollowUpFormItem> items;
   final int indexOffset;
   final int nItems;
+  final bool boxSection;
 
-  const FollowUpFormSectionWidget({required this.items, required this.indexOffset, required this.nItems, Key? key}) : super(key: key);
+  const FollowUpFormSectionWidget({required this.items, required this.indexOffset, required this.nItems, Key? key, this.boxSection = false}) : super(key: key);
+
+   static FollowUpFormSectionWidget createSingle(List<List<FollowUpFormItem>> itemGroups, {required int groupIndex, bool boxSection = false}) {
+    List<FollowUpFormItem> items = itemGroups.expand((i) => i).toList();
+    int indexOffset = 0;
+    for (int i=0; i<groupIndex; i++) {
+      indexOffset += itemGroups[i].length;
+    }
+    return FollowUpFormSectionWidget(
+      items: items,
+      indexOffset: indexOffset,
+      nItems: itemGroups[groupIndex].length,
+      boxSection: boxSection,
+    );
+  }
 
   static List<FollowUpFormSectionWidget> create(List<List<FollowUpFormItem>> itemGroups) {
     List<FollowUpFormItem> items = itemGroups.expand((i) => i).toList();
@@ -30,12 +45,30 @@ class FollowUpFormSectionWidget extends StatelessWidget {
     List<GridRow> rows = [];
     for (int i=indexOffset; i < indexOffset + nItems; i++) {
       var item = items[i];
-      titles.add(_title(item.subSection, item.description(), style: item.style()));
+      String code = item.subSection;
+      if (item.subSubSection != null) {
+        code = item.subSubSection!;
+      }
+      titles.add(_title(code, item.description(), style: item.style()));
       rows.add(GridRow(item, i, _showInputDialog));
     }
 
+    Widget titleWidget = Padding(padding: const EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: titles));
+    if (boxSection) {
+      titleWidget = Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+          ),
+          color: Colors.grey[300],
+        ),
+        child: Padding(padding: const EdgeInsets.all(4), child: titleWidget),
+      );
+    }
+
     return IntrinsicHeight(child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Padding(padding: const EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: titles)),
+      titleWidget,
       const Spacer(),
       BoxGridWidget(
         rows: rows,
@@ -133,7 +166,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
 
   Widget _title(String code, String text, {TextStyle? style}) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text("$code. ", style: const TextStyle(fontWeight: FontWeight.bold)),
+      if (code != "") Text("$code. ", style: const TextStyle(fontWeight: FontWeight.bold)),
       Text(text, style: style),
     ]);
   }

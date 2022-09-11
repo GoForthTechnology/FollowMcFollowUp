@@ -13,29 +13,33 @@ class BoxGridWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> gridRows = [];
 
-    List<Widget> columnHeadings = [];
-    for (int i=0; i<nColumns; i++) {
-      columnHeadings.add(LegendCell(text: (i+1).toString()));
+    if (includeColumnHeadings) {
+      List<Widget> columnHeadings = [];
+      for (int i=0; i<nColumns; i++) {
+        columnHeadings.add(LegendCell(text: (i+1).toString(), width: 30,));
+      }
+      gridRows.add(Row(children: columnHeadings));
     }
-    gridRows.add(Row(children: columnHeadings));
     gridRows.addAll(rows.map((r) => Row(children: r.cells)));
     Widget grid = Stack(clipBehavior: Clip.none, children: [
       Positioned(
         left: 5,
-        top: 35,
+        top: 5 + (includeColumnHeadings ? 30 : 0),
         child: Container(
           width: 30.0 * nColumns,
           height: 30.0 * rows.length,
           color: Colors.black,
         ),
       ),
-      Column(children: gridRows),
+      Column(crossAxisAlignment: CrossAxisAlignment.end, children: gridRows),
     ]);
 
     List<Widget> labels = [];
-    labels.add(const LegendCell(text: ""));
+    if (includeColumnHeadings) {
+      labels.add(const LegendCell(text: "", width: 40,));
+    }
     for (int i = 0; i < rows.length; i++) {
-      labels.add(LegendCell(text: rows[i].rowLabel));
+      labels.add(LegendCell(text: rows[i].rowLabel, width: 40,));
     }
     return Row(children: [
       Column(children: labels),
@@ -50,19 +54,27 @@ class GridRow {
 
   GridRow(FollowUpFormItem item, int itemIndex, void Function(BuildContext, int, int) showDialogFn)
       : cells = List.generate(8, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index))),
-    rowLabel = "${item.section}${item.subSection}";
+        rowLabel = createRowLabel(item);
+
+  static String createRowLabel(FollowUpFormItem item) {
+    if (item.subSection == "") {
+      return "";
+    }
+    return "${item.section}${item.subSection}${item.subSubSection ?? ""}";
+  }
 }
 
 class LegendCell extends StatelessWidget {
   final String text;
+  final double width;
 
-  const LegendCell({super.key, required this.text});
+  const LegendCell({super.key, required this.text, required this.width});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 30, height: 30,
-      child: Center(child: Text(text)),
+      width: width, height: 30,
+      child: Align(alignment: Alignment.center, child: Text(text)),
     );
   }
 }
@@ -114,7 +126,7 @@ class BoxWidget extends StatelessWidget {
     },child: Container(
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
-          color: disabled ? Colors.grey : Colors.white,
+          color: disabled ? Colors.grey[300] : Colors.white,
       ),
       width: 30,
       height: 30,
