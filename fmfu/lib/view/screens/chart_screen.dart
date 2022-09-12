@@ -70,6 +70,7 @@ class _ChartPageState extends State<ChartPage> {
                         onPressed: model.showNextButton() ? () => model.moveToNextChart() : null,
                         child: const Text("Next"),
                       )),
+                      if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
                     ],
                   )),
                   chart: model.charts[model.chartIndex],
