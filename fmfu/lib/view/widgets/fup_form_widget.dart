@@ -547,6 +547,7 @@ const List<List<FollowUpFormItem>> page7Items = [
       questions: [
         Question(
           description: "Peak Days correctly identified (1,2,\u2714)",
+          acceptableInputs: ["1", "2", "\u2714"]
         ),
         Question(
           description: "The Peak Day was confidently identified (Y,N,\u2714)",

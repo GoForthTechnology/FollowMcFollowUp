@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_entry.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/box_grid_widget.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
@@ -86,7 +87,6 @@ class FollowUpFormSectionWidget extends StatelessWidget {
     }
     FollowUpFormItem item = items[itemIndex];
     showDialog(context: context, builder: (BuildContext context) {
-      String? selectedItem;
       List<String> comments = [];
       return Consumer<FollowUpFormViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) {
         return AlertDialog(
@@ -95,12 +95,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
             // IntrinsicHeight to shrink the dialog around the column
             // BoxConstraint to keep it from growing unbounded horizontally
             content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500), child: Column(children: [
-              ..._getItemRows(context, item, selectedItem, (value, questionIndex) {
-                setState(() {
-                  model.update(item.entryId(questionIndex, followUpIndex), value);
-                  selectedItem = value;
-                });
-              }),
+              ..._getItemRows(context, model, item, followUpIndex),
               // TODO: fix issue when too many comments are added
               ...comments.map((comment) => CommentWidget(onRemoveComment: () => setState(() {
                 comments.removeLast();
@@ -146,7 +141,8 @@ class FollowUpFormSectionWidget extends StatelessWidget {
     }, child: const Text("Next"));
   }
 
-  List<Widget> _getQuestionRows(BuildContext context, Question question, int questionIndex, String? selectedItem, Function(String?, int) onPressed) {
+  List<Widget> _getQuestionRows(BuildContext context, FollowUpFormViewModel model, Question question, FollowUpFormEntryId id) {
+     String? selectedItem = model.get(id);
     return [
       Text(question.description),
       Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
@@ -154,7 +150,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
         children: question.acceptableInputs.map((item) => Padding(
           padding: const EdgeInsets.all(2),
           child: ElevatedButton(
-            onPressed: () => onPressed(item == selectedItem ? null : item, questionIndex),
+            onPressed: () => model.update(id, item == selectedItem ? null : item),
             style: item == selectedItem ? ElevatedButton.styleFrom(primary: Colors.pinkAccent) : ElevatedButton.styleFrom(primary: Colors.blueAccent),
             child: Text(item),
           ),
@@ -163,8 +159,11 @@ class FollowUpFormSectionWidget extends StatelessWidget {
     ];
   }
 
-  List<Widget> _getItemRows(BuildContext context, FollowUpFormItem item, String? selectedItem, Function(String?, int) onPressed) {
-    return item.questions.mapIndexed((i, q) => _getQuestionRows(context, q, i, selectedItem, onPressed)).expand((e) => e).toList();
+  List<Widget> _getItemRows(BuildContext context, FollowUpFormViewModel model, FollowUpFormItem item, int followUpIndex) {
+    return item.questions
+        .mapIndexed((i, q) => _getQuestionRows(context, model, q, item.entryId(i, followUpIndex)))
+        .expand((e) => e)
+        .toList();
   }
 
 

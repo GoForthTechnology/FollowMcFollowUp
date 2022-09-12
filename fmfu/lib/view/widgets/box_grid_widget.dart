@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui' as ui;
 
 class BoxGridWidget extends StatelessWidget {
   final List<GridRow> rows;
@@ -133,21 +135,57 @@ class BoxWidget extends StatelessWidget {
       width: 30,
       height: 30,
       child: item.questions.length > 1 ? CustomPaint(
-        painter: CellPainter(),
+        painter: CellPainter(
+          leftValue: model.get(item.entryId(0, followUpIndex)) ?? "",
+          rightValue: model.get(item.entryId(1, followUpIndex)) ?? "",
+        ),
       ) : Center(child: Text(model.get(item.entryId(0, followUpIndex)) ?? "")),
     )));
   }
 }
 
 class CellPainter extends CustomPainter {
+  final String leftValue;
+  final String rightValue;
+
+  CellPainter({required this.leftValue, required this.rightValue});
+
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()..color = Colors.black;
+    if (leftValue.isNotEmpty) {
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: leftValue,
+          style: GoogleFonts.sourceSans3(),
+        ),
+        textDirection: ui.TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, const Offset(5, 0));
+    }
+    if (rightValue.isNotEmpty) {
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: rightValue,
+          style: GoogleFonts.sourceSans3(),
+        ),
+        textDirection: ui.TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, const Offset(15, 10));
+    }
     canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }

@@ -6,7 +6,6 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
   Map<FollowUpFormEntryId, String> entries = {};
 
   String? get(FollowUpFormEntryId id) {
-    loggy.debug("Getting value for $id");
     if (!entries.containsKey(id)) {
       return null;
     }
