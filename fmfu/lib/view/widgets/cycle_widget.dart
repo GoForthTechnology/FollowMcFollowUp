@@ -15,11 +15,12 @@ class CycleWidget extends StatefulWidget {
   final bool showStats;
   final int dayOffset;
   final bool editingEnabled;
+  final bool showErrors;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
-  const CycleWidget({Key? key, required this.cycle, required this.editingEnabled, this.showStats = true, this.dayOffset = 0}) : super(key: key);
+  const CycleWidget({Key? key, required this.cycle, required this.editingEnabled, required this.showErrors, this.showStats = true, this.dayOffset = 0}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -84,12 +85,12 @@ class CycleWidgetState extends State<CycleWidget> {
         ]);
       }
       var textBackgroundColor = Colors.white;
-      if (!(entry?.isValidObservation() ?? true)) {
+      if (widget.showErrors && (entry?.hasErrors() ?? false)) {
         textBackgroundColor = const Color(0xFFEECDCD);
       }
       Widget observationText = ChartCellWidget(
           content: Text(
-            entry == null ? "" : entry.renderedObservation?.getObservationText() ?? entry.observationText,
+            entry == null ? "" : entry.observationText,
             style: const TextStyle(fontSize: 10),
             textAlign: TextAlign.center,
           ),

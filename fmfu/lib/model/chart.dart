@@ -70,4 +70,16 @@ class ChartEntry {
       return false;
     }
   }
+
+  bool isCorrectSticker() {
+    if (manualSticker == null || renderedObservation == null) {
+      return true;
+    }
+    var correctSticker = StickerWithText(renderedObservation!.getSticker(), renderedObservation!.getStickerText());
+    return manualSticker == correctSticker;
+  }
+
+  bool hasErrors() {
+    return !isCorrectSticker() || !isValidObservation();
+  }
 }

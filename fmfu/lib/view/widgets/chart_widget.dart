@@ -6,8 +6,9 @@ class ChartWidget extends StatelessWidget {
   final Chart chart;
   final Widget? titleWidget;
   final bool editingEnabled;
+  final bool showErrors;
 
-  const ChartWidget({Key? key, required this.chart, required this.editingEnabled, this.titleWidget}) : super(key: key);
+  const ChartWidget({Key? key, required this.chart, required this.editingEnabled, required this.showErrors, this.titleWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class ChartWidget extends StatelessWidget {
   List<Widget> _createCycleRows() {
     List<Widget> rows = [];
     for (var slice in chart.cycles) {
-      rows.add(CycleWidget(cycle: slice.cycle, editingEnabled: editingEnabled, dayOffset: slice.offset));
+      rows.add(CycleWidget(cycle: slice.cycle, editingEnabled: editingEnabled, showErrors: showErrors, dayOffset: slice.offset));
     }
     return rows;
   }

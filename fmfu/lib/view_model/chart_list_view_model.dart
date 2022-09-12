@@ -14,10 +14,16 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
   List<Chart> charts = getCharts(CycleRecipe.standardRecipe, 10, false, _defaultInstructions);
   bool showCycleControlBar = false;
   bool editEnabled = false;
+  bool showErrors = false;
   int chartIndex = 0;
 
   void toggleControlBar() {
     showCycleControlBar = !showCycleControlBar;
+    notifyListeners();
+  }
+
+  void toggleShowErrors() {
+    showErrors = !showErrors;
     notifyListeners();
   }
 
