@@ -27,7 +27,7 @@ class _ChartPageState extends State<ChartPage> {
         // the App.build method, and use it to set our appbar title.
         title: const Text("Chart Editor"),
         actions: [
-          IconButton(icon: Icon(model.editEnabled ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
+          IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
             model.toggleShowErrors();
           },),
           IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
@@ -71,6 +71,7 @@ class _ChartPageState extends State<ChartPage> {
                         child: const Text("Next"),
                       )),
                       if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
+                      if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
                     ],
                   )),
                   chart: model.charts[model.chartIndex],
