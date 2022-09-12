@@ -83,37 +83,6 @@ class LegendCell extends StatelessWidget {
   }
 }
 
-class CommentWidget extends StatelessWidget {
-  final void Function()? onRemoveComment;
-
-  const CommentWidget({Key? key, required this.onRemoveComment}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(child: Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.only(left: 4, right: 4),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(children: [
-            const Text("Problem: ", style: TextStyle(fontWeight: FontWeight.bold)),
-            Expanded(child: TextFormField(maxLines: null,)),
-          ]),
-          Row(children: [
-            const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
-            Expanded(child: TextFormField(maxLines: null)),
-          ]),
-          TextButton(onPressed: onRemoveComment, child: const Text("Remove Comment")),
-        ],
-      ),
-    ));
-  }
-}
-
 class BoxWidget extends StatelessWidget {
   final void Function(BuildContext, int, int) showDialogFn;
   final FollowUpFormItem item;
@@ -136,10 +105,10 @@ class BoxWidget extends StatelessWidget {
       height: 30,
       child: item.questions.length > 1 ? CustomPaint(
         painter: CellPainter(
-          leftValue: model.get(item.entryId(0, followUpIndex)) ?? "",
-          rightValue: model.get(item.entryId(1, followUpIndex)) ?? "",
+          leftValue: model.getEntry(item.entryId(0, followUpIndex)) ?? "",
+          rightValue: model.getEntry(item.entryId(1, followUpIndex)) ?? "",
         ),
-      ) : Center(child: Text(model.get(item.entryId(0, followUpIndex)) ?? "")),
+      ) : Center(child: Text(model.getEntry(item.entryId(0, followUpIndex)) ?? "")),
     )));
   }
 }

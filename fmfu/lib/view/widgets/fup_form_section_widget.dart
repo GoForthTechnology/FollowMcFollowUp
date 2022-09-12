@@ -6,6 +6,8 @@ import 'package:fmfu/view/widgets/box_grid_widget.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'fup_form_comment_widget.dart';
+
 class FollowUpFormSectionWidget extends StatelessWidget {
   final List<FollowUpFormItem> items;
   final int indexOffset;
@@ -97,9 +99,12 @@ class FollowUpFormSectionWidget extends StatelessWidget {
             content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500), child: Column(children: [
               ..._getItemRows(context, model, item, followUpIndex),
               // TODO: fix issue when too many comments are added
-              ...comments.map((comment) => CommentWidget(onRemoveComment: () => setState(() {
-                comments.removeLast();
-              }),
+              ...comments.map((comment) => CommentWidget(
+                item: item,
+                followUpIndex: followUpIndex,
+                onRemoveComment: () => setState(() {
+                  comments.removeLast();
+                }),
               )).toList(),
               Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
                 onPressed: () => setState(() {
@@ -142,7 +147,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
   }
 
   List<Widget> _getQuestionRows(BuildContext context, FollowUpFormViewModel model, Question question, FollowUpFormEntryId id) {
-     String? selectedItem = model.get(id);
+     String? selectedItem = model.getEntry(id);
     return [
       Text(question.description),
       Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
@@ -150,7 +155,7 @@ class FollowUpFormSectionWidget extends StatelessWidget {
         children: question.acceptableInputs.map((item) => Padding(
           padding: const EdgeInsets.all(2),
           child: ElevatedButton(
-            onPressed: () => model.update(id, item == selectedItem ? null : item),
+            onPressed: () => model.updateEntry(id, item == selectedItem ? null : item),
             style: item == selectedItem ? ElevatedButton.styleFrom(primary: Colors.pinkAccent) : ElevatedButton.styleFrom(primary: Colors.blueAccent),
             child: Text(item),
           ),
