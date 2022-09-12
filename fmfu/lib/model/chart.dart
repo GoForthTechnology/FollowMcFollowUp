@@ -18,11 +18,12 @@ class CycleSlice {
 class Cycle {
   final int index;
   final List<ChartEntry> entries;
-  final Map<int, StickerWithText> corrections;
+  final Map<int, StickerWithText> stickerCorrections;
+  final Map<int, String> observationCorrections;
   bool canRerender = true;
   CycleStats cycleStats;
 
-  Cycle(this.index, this.entries, this.corrections, {this.cycleStats = CycleStats.empty});
+  Cycle({required this.index, required this.entries, required this.stickerCorrections, required this.observationCorrections, this.cycleStats = CycleStats.empty});
 
   List<int> getOffsets() {
     List<int> out = [];
@@ -34,7 +35,7 @@ class Cycle {
   }
 
   static Cycle empty() {
-    return Cycle(0, [], {});
+    return Cycle(index: 0, entries: [], stickerCorrections: {}, observationCorrections: {});
   }
 }
 

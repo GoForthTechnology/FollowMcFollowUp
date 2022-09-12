@@ -8,6 +8,7 @@ import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
 class CycleWidget extends StatefulWidget {
@@ -26,7 +27,7 @@ class CycleWidget extends StatefulWidget {
   State<StatefulWidget> createState() => CycleWidgetState();
 }
 
-class CycleWidgetState extends State<CycleWidget> {
+class CycleWidgetState extends State<CycleWidget> with UiLoggy {
   @override
   Widget build(BuildContext context) {
     List<Widget> sections = [];
@@ -69,17 +70,17 @@ class CycleWidgetState extends State<CycleWidget> {
         stickerWithText: sticker,
         onTap: observation != null ? _showCorrectionDialog(context, entryIndex, null) : () {},
       );
-      StickerWithText? correction = widget.cycle?.corrections[entryIndex];
-      if (observation != null && correction != null) {
+      StickerWithText? stickerCorrection = widget.cycle?.stickerCorrections[entryIndex];
+      if (observation != null && stickerCorrection != null) {
         stickerWidget = Stack(children: [
           stickerWidget,
           Transform.rotate(
             angle: -pi / 12.0,
             child: StickerWidget(
               stickerWithText: StickerWithText(
-                correction.sticker, correction.text,
+                stickerCorrection.sticker, stickerCorrection.text,
               ),
-              onTap: _showCorrectionDialog(context, entryIndex, correction),
+              onTap: _showCorrectionDialog(context, entryIndex, stickerCorrection),
             ),
           )
         ]);
@@ -88,14 +89,30 @@ class CycleWidgetState extends State<CycleWidget> {
       if (widget.showErrors && (entry?.hasErrors() ?? false)) {
         textBackgroundColor = const Color(0xFFEECDCD);
       }
-      Widget observationText = ChartCellWidget(
-          content: Text(
-            entry == null ? "" : entry.observationText,
-            style: const TextStyle(fontSize: 10),
-            textAlign: TextAlign.center,
+      String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
+      bool hasObservationCorrection = observation != null && observationCorrection != null;
+      var content = RichText(text: TextSpan(
+        style: const TextStyle(fontSize: 10),
+        children: [
+          TextSpan(
+            text: entry == null ? "" : entry.observationText,
+            style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
           ),
-          backgroundColor: textBackgroundColor,
-          onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry),
+          if (hasObservationCorrection) TextSpan(
+            text: "\n$observationCorrection",
+            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 10),
+          ),
+        ],
+      ));
+      Widget observationText = ChartCellWidget(
+        content: content,
+        /*content: Text(
+          content,
+          style: const TextStyle(fontSize: 10),
+          textAlign: TextAlign.center,
+        ),*/
+        backgroundColor: textBackgroundColor,
+        onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry, observationCorrection),
       );
       stackedCells.add(Column(children: [stickerWidget, observationText]));
     }
@@ -105,55 +122,64 @@ class CycleWidgetState extends State<CycleWidget> {
   void Function() _showEditDialog(
       BuildContext context,
       int entryIndex,
-      ChartEntry entry) {
-    if (!widget.editingEnabled) {
-      return () {};
-    }
+      ChartEntry entry,
+      String? correction) {
     return () {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           var formKey = GlobalKey<FormState>();
-          return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Observation Edit'),
-              content: Consumer<ChartListViewModel>(
-                  builder: (context, model, child) => Form(
-                  key: formKey,
-                  child: TextFormField(
-                    initialValue: entry.observationText,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      if (value == null) {
-                        throw Exception("Validation should have prevented saving a null value");
-                      }
-                      model.editEntry(widget.cycle!.index, entryIndex, value);
-                    },
-                  )
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      formKey.currentState!.save();
-                      Navigator.pop(context, 'OK');
+          var cycleIndex = widget.cycle!.index;
+          return Consumer<ChartListViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) => AlertDialog(
+            title: Text(model.editEnabled ? "Edit Observation" : "Correct Observation"),
+            content: Form(
+              key: formKey,
+              child: TextFormField(
+                initialValue: model.editEnabled ? entry.observationText : correction ?? entry.observationText,
+                validator: (value) {
+                  if (!model.editEnabled && (value == null || value.isEmpty)) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  if (model.editEnabled) {
+                    if (value == null) {
+                      throw Exception(
+                          "Validation should have prevented saving a null value");
                     }
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          });
+                    loggy.debug("Editing entry to be $value for cycle #$cycleIndex, entry #$entryIndex");
+                    model.editEntry(cycleIndex, entryIndex, value);
+                  } else {
+                    loggy.debug("Updating observation correction to be $value for cycle #$cycleIndex, entry #$entryIndex");
+                    model.updateObservationCorrections(cycleIndex, entryIndex, value);
+                  }
+                },
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              if (!model.editEnabled && correction != null) TextButton(
+                onPressed: () {
+                  model.updateObservationCorrections(cycleIndex, entryIndex, null);
+                  Navigator.pop(context, 'CLEAR');
+                },
+                child: const Text('Clear'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    Navigator.pop(context, 'OK');
+                  }
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          )));
         },
       );
     };
@@ -202,7 +228,7 @@ class CycleWidgetState extends State<CycleWidget> {
                       correction = StickerWithText(selectedSticker!, selectedStickerText);
                     }
                     if (!widget.editingEnabled) {
-                      model.updateCorrections(widget.cycle!.index, entryIndex, correction);
+                      model.updateStickerCorrections(widget.cycle!.index, entryIndex, correction);
                     } else {
                       model.editSticker(widget.cycle!.index, entryIndex, correction);
                     }

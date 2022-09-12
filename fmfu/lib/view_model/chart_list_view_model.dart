@@ -68,15 +68,28 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     notifyListeners();
   }
 
-  void updateCorrections(int cycleIndex, int entryIndex, StickerWithText? correction) {
+  void updateStickerCorrections(int cycleIndex, int entryIndex, StickerWithText? correction) {
     var cycle = _findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
     if (correction == null) {
-      cycle.corrections.remove(entryIndex);
+      cycle.stickerCorrections.remove(entryIndex);
     } else {
-      cycle.corrections[entryIndex] = correction;
+      cycle.stickerCorrections[entryIndex] = correction;
+    }
+    notifyListeners();
+  }
+
+  void updateObservationCorrections(int cycleIndex, int entryIndex, String? correction) {
+    var cycle = _findCycle(cycleIndex);
+    if (cycle == null) {
+      throw Exception("Could not find cycle at index $cycleIndex");
+    }
+    if (correction == null) {
+      cycle.observationCorrections.remove(entryIndex);
+    } else {
+      cycle.observationCorrections[entryIndex] = correction;
     }
     notifyListeners();
   }
@@ -172,14 +185,16 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
 
   static List<Chart> getCharts(CycleRecipe  recipe, int numCycles, bool askESQ, List<Instruction> instructions) {
     List<Cycle> cycles = List.generate(numCycles, (index) => Cycle(
-      index,
-      renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
+      index: index,
+      entries: renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
           .map((observation) => ChartEntry(
               observationText: observation.observationText,
               renderedObservation: observation,
       ))
           .toList(),
-      {}));
+      stickerCorrections: {},
+      observationCorrections: {},
+    ));
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {
