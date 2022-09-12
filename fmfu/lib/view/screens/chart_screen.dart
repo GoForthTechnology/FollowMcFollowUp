@@ -1,6 +1,7 @@
 
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
+import 'package:fmfu/view/widgets/fup_form_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -36,6 +37,9 @@ class _ChartPageState extends State<ChartPage> {
           IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
             model.toggleControlBar();
           },),
+          IconButton(icon: const Icon(Icons.assignment, color: Colors.white), onPressed: () {
+            model.toggleShowFollowUpForm();
+          },),
         ],
       ),
       // TODO: figure out how to make horizontal scrolling work...
@@ -50,32 +54,35 @@ class _ChartPageState extends State<ChartPage> {
               if (model.showCycleControlBar) const ControlBarWidget(),
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: ChartWidget(
-                  editingEnabled: model.editEnabled,
-                  showErrors: model.showErrors,
-                  titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
-                    children: [
-                      Text(
-                        "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                child: Expanded(child: Column(children: [
+                  ChartWidget(
+                    editingEnabled: model.editEnabled,
+                    showErrors: model.showErrors,
+                    titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
+                      children: [
+                        Text(
+                          "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                        onPressed: model.showPreviousButton() ? () => model.moveToPreviousChart() : null,
-                        child: const Text("Previous"),
-                      )),
-                      Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                        onPressed: model.showNextButton() ? () => model.moveToNextChart() : null,
-                        child: const Text("Next"),
-                      )),
-                      if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
-                      if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
-                    ],
-                  )),
-                  chart: model.charts[model.chartIndex],
-                ),
+                        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+                          onPressed: model.showPreviousButton() ? () => model.moveToPreviousChart() : null,
+                          child: const Text("Previous"),
+                        )),
+                        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+                          onPressed: model.showNextButton() ? () => model.moveToNextChart() : null,
+                          child: const Text("Next"),
+                        )),
+                        if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
+                        if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
+                      ],
+                    )),
+                    chart: model.charts[model.chartIndex],
+                  ),
+                  if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
+                ],))
                ))),
             ],
           ),
