@@ -3,6 +3,7 @@ import 'package:fmfu/view/screens/chart_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: ChartListViewModel()),
+        ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
       ], child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',

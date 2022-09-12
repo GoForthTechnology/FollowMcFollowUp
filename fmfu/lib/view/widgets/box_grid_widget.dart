@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_item.dart';
+import 'package:fmfu/view_model/fup_form_view_model.dart';
+import 'package:provider/provider.dart';
 
 class BoxGridWidget extends StatelessWidget {
   final List<GridRow> rows;
@@ -123,7 +125,7 @@ class BoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(onTap: disabled ? null : () {
       showDialogFn(context, itemIndex, followUpIndex);
-    },child: Container(
+    },child: Consumer<FollowUpFormViewModel>(builder: (context, model, child) => Container(
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           color: disabled ? Colors.grey[300] : Colors.white,
@@ -132,8 +134,8 @@ class BoxWidget extends StatelessWidget {
       height: 30,
       child: item.questions.length > 1 ? CustomPaint(
         painter: CellPainter(),
-      ) : null,
-    ));
+      ) : Center(child: Text(model.get(item.entryId(0, followUpIndex)) ?? "")),
+    )));
   }
 }
 

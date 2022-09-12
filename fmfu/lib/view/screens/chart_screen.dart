@@ -54,7 +54,7 @@ class _ChartPageState extends State<ChartPage> {
               if (model.showCycleControlBar) const ControlBarWidget(),
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: Expanded(child: Column(children: [
+                child: Column(children: [
                   ChartWidget(
                     editingEnabled: model.editEnabled,
                     showErrors: model.showErrors,
@@ -83,7 +83,7 @@ class _ChartPageState extends State<ChartPage> {
                   ),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                 ],))
-               ))),
+               )),
             ],
           ),
         ),

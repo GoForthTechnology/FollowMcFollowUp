@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_entry.dart';
 
 class FollowUpFormItem {
 
@@ -17,6 +18,16 @@ class FollowUpFormItem {
     this.subSubSection,
     this.disabledCells = const {},
   });
+
+  FollowUpFormEntryId entryId(int questionIndex, int followUpNum) {
+    return FollowUpFormEntryId(
+      section: section,
+      subSection: subSection,
+      subSubSection: subSubSection,
+      questionIndex: questionIndex,
+      followUpIndex: followUpNum,
+    );
+  }
 
   String description() {
     return questions.map((q) => q.description).join("\n");
