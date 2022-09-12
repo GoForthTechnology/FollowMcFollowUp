@@ -119,6 +119,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
+    observationText = observationText.toUpperCase();
     try {
       var inputs = cycle.entries.map((e) => e.observationText).toList();
       inputs[entryIndex] = observationText;
