@@ -108,7 +108,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
         saveItems.addAll(commentWidgets);
         return AlertDialog(
             title: Text(
-                "${item.section}${item.subSection} - ${followUpIndex + 1}"),
+                "Follow Up #${followUpIndex + 1} -- ${item.section}${item.subSection}"),
             // IntrinsicHeight to shrink the dialog around the column
             // BoxConstraint to keep it from growing unbounded horizontally
             content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500), child: Column(children: [
