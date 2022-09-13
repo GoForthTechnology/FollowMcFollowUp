@@ -1,14 +1,18 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_entry.dart';
 import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view/widgets/box_grid_widget.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
+import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
 import 'fup_form_comment_widget.dart';
 
-class FollowUpFormSectionWidget extends StatelessWidget {
+class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
   final List<FollowUpFormItem> items;
   final int indexOffset;
   final int nItems;
@@ -88,9 +92,20 @@ class FollowUpFormSectionWidget extends StatelessWidget {
       return;
     }
     FollowUpFormItem item = items[itemIndex];
+    var saveItems = [];
     showDialog(context: context, builder: (BuildContext context) {
-      List<String> comments = [];
       return Consumer<FollowUpFormViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) {
+        var commentWidgets = model.getComments(BoxId(
+          section: item.section,
+          subSection: item.subSection,
+          subSubSection: item.subSubSection,
+          followUp: followUpIndex,
+        )).mapIndexed((i, comment) => CommentWidget(
+          item: item,
+          followUpIndex: followUpIndex,
+          commentIndex: i,
+        )).toList();
+        saveItems.addAll(commentWidgets);
         return AlertDialog(
             title: Text(
                 "${item.section}${item.subSection} - ${followUpIndex + 1}"),
@@ -99,16 +114,16 @@ class FollowUpFormSectionWidget extends StatelessWidget {
             content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500), child: Column(children: [
               ..._getItemRows(context, model, item, followUpIndex),
               // TODO: fix issue when too many comments are added
-              ...comments.map((comment) => CommentWidget(
-                item: item,
-                followUpIndex: followUpIndex,
-                onRemoveComment: () => setState(() {
-                  comments.removeLast();
-                }),
-              )).toList(),
+              ...commentWidgets,
               Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
                 onPressed: () => setState(() {
-                  comments.add("");
+                  var item = items[itemIndex];
+                  model.addComment(BoxId(
+                    followUp: followUpIndex,
+                    section: item.section,
+                    subSection: item.subSection,
+                    subSubSection: item.subSubSection,
+                  ));
                 }),
                 child: const Text("Add Comment"),
               )),
@@ -123,6 +138,11 @@ class FollowUpFormSectionWidget extends StatelessWidget {
             ])),
             ));
       }));
+    }).then((val) {
+      loggy.debug("Saving dialog state for $item on followUpIndex: $followUpIndex");
+      for (var item in saveItems) {
+        item.save();
+      }
     });
   }
 

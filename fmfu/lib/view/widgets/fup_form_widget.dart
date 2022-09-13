@@ -68,15 +68,7 @@ class Page6 extends AbstractPage {
       padding: const EdgeInsets.all(10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 1),
     ),
-    CommentSectionWidget(numRows: 10, comments: [
-      FollowUpFormComment(
-        date: DateTime.now(),
-        followUpNum: 1,
-        sectionNum: 5,
-        problem: "A totally not made up problem",
-        planOfAction: "A really great and awesome plan",
-      ),
-    ]),
+    const CommentSectionWidget(numRows: 10, comments: []),
     Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 2),
@@ -96,15 +88,7 @@ class Page7 extends AbstractPage {
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
-    CommentSectionWidget(numRows: 16, comments: [
-      FollowUpFormComment(
-        date: DateTime.now(),
-        followUpNum: 1,
-        sectionNum: 8,
-        problem: "A totally not made up problem",
-        planOfAction: "A really great and awesome plan",
-      ),
-    ]),
+    const CommentSectionWidget(numRows: 16, comments: []),
   ]);
 }
 
@@ -269,7 +253,6 @@ abstract class AbstractPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<FollowUpFormComment> comments = [FollowUpFormComment(date: DateTime.now(), followUpNum: 1, sectionNum: 8, problem: "Some problem", planOfAction: "a really great plan")];
     return SizedBox(height: 1300, width: pageWidth, child: Padding(padding: const EdgeInsets.all(20), child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

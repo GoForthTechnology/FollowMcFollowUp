@@ -95,7 +95,7 @@ class CellPainter extends CustomPainter {
     if (comment != null) {
       TextPainter textPainter = TextPainter(
         text: TextSpan(
-          text: comment!.followUpNum.toString(),
+          text: comment!.id.boxId.followUp.toString(),
         ),
         textDirection: ui.TextDirection.ltr,
       );
@@ -103,11 +103,11 @@ class CellPainter extends CustomPainter {
         minWidth: 0,
         maxWidth: size.width,
       );
-      textPainter.paint(canvas, Offset(10, 0));
+      textPainter.paint(canvas, const Offset(10, 0));
 
       TextPainter sectionPainter = TextPainter(
         text: TextSpan(
-          text: comment!.sectionNum.toString(),
+          text: comment!.id.boxId.section.toString(),
         ),
         textDirection: ui.TextDirection.ltr,
       );

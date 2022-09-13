@@ -5,7 +5,7 @@ import 'package:loggy/loggy.dart';
 
 class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
   Map<FollowUpFormEntryId, String> entries = {};
-  Map<int, List<FollowUpFormComment>> comments = {};
+  Map<BoxId, List<FollowUpFormComment>> comments = {};
 
   String? getEntry(FollowUpFormEntryId id) {
     if (!entries.containsKey(id)) {
@@ -24,7 +24,44 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
     notifyListeners();
   }
 
-  List<FollowUpFormComment> getComments(int sectionNum) {
-    return comments[sectionNum] ?? [];
+  List<FollowUpFormComment> getComments(BoxId id) {
+    return comments[id] ?? [];
+  }
+
+  FollowUpFormComment? getComment(CommentId commentId) {
+    return getComments(commentId.boxId)[commentId.index];
+  }
+
+  void addComment(BoxId id) {
+    var currentComments = comments[id] ?? [];
+    int index = currentComments.length;
+    comments[id] = currentComments + [FollowUpFormComment(
+      id: CommentId(boxId: id, index: index),
+      date: DateTime.now(),
+      problem: "",
+      planOfAction: "",
+    )];
+    loggy.info("Added comment for box: $id");
+    notifyListeners();
+  }
+
+  void updateCommentProblem(CommentId id, String problem) {
+    var comment = comments[id.boxId]![id.index];
+    comments[id.boxId]![id.index] = comment.updateProblem(problem);
+    loggy.info("Updating comment for $id from ${comment.problem} to $problem");
+    notifyListeners();
+  }
+
+  void updateCommentPlan(CommentId id, String plan) {
+    var comment = comments[id.boxId]![id.index];
+    comments[id.boxId]![id.index] = comment.updatePlanOfAction(plan);
+    loggy.info("Updating plan for $id from ${comment.planOfAction} to $plan");
+    notifyListeners();
+  }
+
+  void removeComment(CommentId id) {
+    comments[id.boxId]!.removeAt(id.index);
+    loggy.info("Removing comment: $id");
+    notifyListeners();
   }
 }
