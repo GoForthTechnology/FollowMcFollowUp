@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
+import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
+
+import 'package:provider/provider.dart';
 
 
 class CommentSectionWidget extends StatelessWidget {
   final int numRows;
-  final List<FollowUpFormComment> comments;
+  final int previousSection;
 
-  const CommentSectionWidget({Key? key, required this.numRows, required this.comments}) : super(key: key);
+  const CommentSectionWidget({Key? key, required this.numRows, required this.previousSection}) : super(key: key);
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);
@@ -16,7 +19,7 @@ class CommentSectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
-    return Table(
+    return Consumer<FollowUpFormViewModel>(builder: (context, model, child) => Table(
       columnWidths: const {
         0: FixedColumnWidth(90),
         1: FixedColumnWidth(60),
@@ -30,9 +33,9 @@ class CommentSectionWidget extends StatelessWidget {
           _headerCell("Situation/Problem", headingStyle),
           _headerCell("Plan of Action", headingStyle),
         ], ),
-        ...List.generate(numRows, (index) => _row(index)),
+        ...List.generate(numRows, (index) => _row(index, model.getCommentsForSection(previousSection))),
       ],
-    );
+    ));
   }
 
   TableCell _headerCell(String text, TextStyle style) {
@@ -42,7 +45,7 @@ class CommentSectionWidget extends StatelessWidget {
     );
   }
 
-  TableRow _row(int rowIndex) {
+  TableRow _row(int rowIndex, List<FollowUpFormComment> comments) {
     var comment = rowIndex < 0 || rowIndex > comments.length - 1 ? null : comments[rowIndex];
     return TableRow(children: List.generate(4, (columnIndex) => _cell(comment, columnIndex)));
   }

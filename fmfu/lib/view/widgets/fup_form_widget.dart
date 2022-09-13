@@ -53,7 +53,7 @@ class PagePair {
 
 final List<PagePair> pagePairs = [
   PagePair(Page6(), Page7()),
-  PagePair(const Page8(), Page9()),
+  PagePair(Page8(), Page9()),
   PagePair(Page10(), Page11()),
 ];
 
@@ -68,7 +68,7 @@ class Page6 extends AbstractPage {
       padding: const EdgeInsets.all(10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 1),
     ),
-    const CommentSectionWidget(numRows: 10, comments: []),
+    const CommentSectionWidget(numRows: 10, previousSection: 5),
     Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 2),
@@ -88,13 +88,13 @@ class Page7 extends AbstractPage {
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
-    const CommentSectionWidget(numRows: 16, comments: []),
+    const CommentSectionWidget(numRows: 16, previousSection: 8),
   ]);
 }
 
 class Page8 extends AbstractPage {
   const Page8({Key? key}) : super(key: key, pageNum: 8, content: const [
-    CommentSectionWidget(numRows: 32, comments: []),
+    CommentSectionWidget(numRows: 32, previousSection: 8),
   ]);
 }
 
@@ -152,7 +152,7 @@ class Page9 extends AbstractPage {
         FollowUpFormSectionWidget.createSingle(page9Items, groupIndex: page9Items.length - 1, boxSection: true),
       ],
     )),
-    const CommentSectionWidget(numRows: 6, comments: []),
+    const CommentSectionWidget(numRows: 6, previousSection: 9,),
   ]);
 }
 
@@ -166,7 +166,7 @@ class Page10 extends AbstractPage {
         FollowUpFormSectionWidget.createSingle(page10Items, groupIndex: 1, boxSection: true),
       ],
     )),
-    const CommentSectionWidget(numRows: 16, comments: []),
+    const CommentSectionWidget(numRows: 16, previousSection: 10),
   ]);
 }
 
