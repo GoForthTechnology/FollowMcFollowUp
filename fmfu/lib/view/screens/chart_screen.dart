@@ -37,7 +37,7 @@ class _ChartPageState extends State<ChartPage> {
           IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
             model.toggleControlBar();
           },),
-          IconButton(icon: const Icon(Icons.assignment, color: Colors.white), onPressed: () {
+          IconButton(icon: Icon(model.showFollowUpForm ? Icons.grid_off : Icons.grid_on, color: Colors.white), onPressed: () {
             model.toggleShowFollowUpForm();
           },),
           IconButton(icon: Icon(model.incrementalMode ? Icons.extension_off : Icons.extension, color: Colors.white), onPressed: () {
