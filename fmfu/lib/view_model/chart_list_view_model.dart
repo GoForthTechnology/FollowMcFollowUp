@@ -13,16 +13,22 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
 
   List<Instruction> activeInstructions = _defaultInstructions;
   List<ErrorScenario> errorScenarios = [];
-  List<Cycle> cycles = getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
+  List<Cycle> cycles = [];
   List<Chart> charts = [];
   bool showCycleControlBar = false;
   bool showFollowUpForm = false;
   bool editEnabled = false;
   bool showErrors = false;
+  bool incrementalMode = false;
   int chartIndex = 0;
 
   ChartListViewModel() {
-    charts.addAll(getCharts(cycles));
+    initCharts();
+  }
+
+  void initCharts() {
+    cycles = getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
+    charts = getCharts(cycles);
   }
 
   void toggleControlBar() {
@@ -32,6 +38,17 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
 
   void toggleShowFollowUpForm() {
     showFollowUpForm = !showFollowUpForm;
+    notifyListeners();
+  }
+
+  void toggleIncrementalMode() {
+    if (incrementalMode) {
+      initCharts();
+    } else {
+      cycles = [];
+      charts = getCharts(cycles);
+    }
+    incrementalMode = !incrementalMode;
     notifyListeners();
   }
 
@@ -77,8 +94,29 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
         bool postPeakYellowStamps = false,
         List<ErrorScenario> errorScenarios = const [],
       }) {
+    if (incrementalMode) {
+      return;
+    }
     activeInstructions = getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles = getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
+    charts = getCharts(cycles);
+    notifyListeners();
+  }
+
+  void addCycle(
+      CycleRecipe recipe, {
+        bool askESQ = false,
+        bool prePeakYellowStamps = false,
+        bool postPeakYellowStamps = false,
+        List<ErrorScenario> errorScenarios = const [],
+      }) {
+    loggy.info(askESQ);
+    if (!incrementalMode) {
+      loggy.error("addCycle only supported in incremental mode!");
+      return;
+    }
+    activeInstructions = getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
+    cycles.addAll(getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
     charts = getCharts(cycles);
     notifyListeners();
   }
@@ -250,7 +288,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
         batch = [];
       }
     }
-    if (batch.isNotEmpty) {
+    if (out.isEmpty || batch.isNotEmpty) {
       while (batch.length < 6) {
         batch.add(CycleSlice(null, 0));
       }

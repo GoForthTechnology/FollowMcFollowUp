@@ -296,6 +296,17 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                 }),
               ],
             ),
+            if (model.incrementalMode) Row(children: [
+              ElevatedButton(onPressed: () {
+                model.addCycle(
+                  _getRecipe(),
+                  errorScenarios: errorScenarios,
+                  askESQ: askESQ,
+                  prePeakYellowStamps: prePeakYellowStamps,
+                  postPeakYellowStamps: postPeakYellowStamps,
+                );
+              }, child: const Text("Add Cycle")),
+            ]),
           ],
         )));
   }

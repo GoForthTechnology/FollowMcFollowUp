@@ -40,6 +40,9 @@ class _ChartPageState extends State<ChartPage> {
           IconButton(icon: const Icon(Icons.assignment, color: Colors.white), onPressed: () {
             model.toggleShowFollowUpForm();
           },),
+          IconButton(icon: Icon(model.incrementalMode ? Icons.extension_off : Icons.extension, color: Colors.white), onPressed: () {
+            model.toggleIncrementalMode();
+          },),
         ],
       ),
       // TODO: figure out how to make horizontal scrolling work...
