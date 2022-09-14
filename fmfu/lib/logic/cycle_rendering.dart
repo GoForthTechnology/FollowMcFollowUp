@@ -29,15 +29,9 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     } else {
       consecutiveDaysOfPeakMucus = 0;
     }
-    if (observation.hasNonPeakTypeMucus) {
-      consecutiveDaysOfNonPeakMucus++;
-    } else {
-      consecutiveDaysOfNonPeakMucus = 0;
-    }
-
     if (!observation.hasNonPeakTypeMucus) {
       if (consecutiveDaysOfNonPeakMucus >= 3) {
-        countsOfThree.registerCountStart(CountOfThreeReason.consecutiveDaysOfNonPeakMucus, i);
+        countsOfThree.registerCountStart(CountOfThreeReason.consecutiveDaysOfNonPeakMucus, i - 1);
       }
       consecutiveDaysOfNonPeakMucus = 0;
     } else {
@@ -59,7 +53,9 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     if (!isPostPeak && (consecutiveDaysOfNonPeakMucus > 0 && consecutiveDaysOfNonPeakMucus < 3)) {
       fertilityReasons.add(Instruction.d3);
     }
-    if (!isPostPeak && consecutiveDaysOfNonPeakMucus >= 3) {
+    if (!isPostPeak && (
+        consecutiveDaysOfNonPeakMucus >= 3
+        || countsOfThree.inCountOfThree(CountOfThreeReason.consecutiveDaysOfNonPeakMucus, i))) {
       fertilityReasons.add(Instruction.d4);
     }
     if (!isPostPeak && observation.hasPeakTypeMucus) {
