@@ -30,7 +30,7 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
       consecutiveDaysOfPeakMucus = 0;
     }
     if (!observation.hasNonPeakTypeMucus) {
-      if (consecutiveDaysOfNonPeakMucus >= 3) {
+      if (!isPostPeak && consecutiveDaysOfNonPeakMucus >= 3) {
         countsOfThree.registerCountStart(CountOfThreeReason.consecutiveDaysOfNonPeakMucus, i - 1);
       }
       consecutiveDaysOfNonPeakMucus = 0;
