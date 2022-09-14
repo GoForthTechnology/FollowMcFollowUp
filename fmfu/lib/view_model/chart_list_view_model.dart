@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/logic/observation_parser.dart';
@@ -11,12 +12,18 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
   static final List<Instruction> _defaultInstructions = getActiveInstructions(false, false);
 
   List<Instruction> activeInstructions = _defaultInstructions;
-  List<Chart> charts = getCharts(CycleRecipe.standardRecipe, 10, false, _defaultInstructions);
+  List<ErrorScenario> errorScenarios = [];
+  List<Cycle> cycles = getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
+  List<Chart> charts = [];
   bool showCycleControlBar = false;
   bool showFollowUpForm = false;
   bool editEnabled = false;
   bool showErrors = false;
   int chartIndex = 0;
+
+  ChartListViewModel() {
+    charts.addAll(getCharts(cycles));
+  }
 
   void toggleControlBar() {
     showCycleControlBar = !showCycleControlBar;
@@ -68,9 +75,27 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
         bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
+        List<ErrorScenario> errorScenarios = const [],
       }) {
     activeInstructions = getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
-    charts = getCharts(recipe, numCycles, askESQ, activeInstructions);
+    cycles = getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
+    charts = getCharts(cycles);
+    notifyListeners();
+  }
+
+  void updateErrors(List<ErrorScenario> errorScenarios) {
+    List<Cycle> updatedCycles = [];
+    for (var cycle in cycles) {
+      updatedCycles.add(Cycle(
+        index: cycle.index,
+        observationCorrections: cycle.observationCorrections,
+        stickerCorrections: cycle.stickerCorrections,
+        entries: introduceErrors(cycle.entries, errorScenarios),
+      ));
+    }
+    cycles = updatedCycles;
+    charts = getCharts(cycles);
+    this.errorScenarios = errorScenarios;
     notifyListeners();
   }
 
@@ -189,18 +214,26 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     return instructions;
   }
 
-  static List<Chart> getCharts(CycleRecipe  recipe, int numCycles, bool askESQ, List<Instruction> instructions) {
-    List<Cycle> cycles = List.generate(numCycles, (index) => Cycle(
+  static List<Cycle> getCycles(
+      CycleRecipe  recipe,
+      int numCycles,
+      bool askESQ,
+      List<Instruction> instructions,
+      List<ErrorScenario> errorScenarios) {
+    return List.generate(numCycles, (index) => Cycle(
       index: index,
-      entries: renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
+      entries: introduceErrors(renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
           .map((observation) => ChartEntry(
-              observationText: observation.observationText,
-              renderedObservation: observation,
+        observationText: observation.observationText,
+        renderedObservation: observation,
       ))
-          .toList(),
+          .toList(), errorScenarios),
       stickerCorrections: {},
       observationCorrections: {},
     ));
+  }
+
+  static List<Chart> getCharts( List<Cycle> cycles) {
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {

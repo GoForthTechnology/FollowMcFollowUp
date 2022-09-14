@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   bool postPeakYellowStamps = false;
   int toggles = 0;
 
+  List<ErrorScenario> errorScenarios = [];
+
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(
         unusualBleedingFrequency / 100,
@@ -48,9 +51,12 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
     void updateCycles(ChartListViewModel model) {
       model.updateCharts(
           _getRecipe(),
+          errorScenarios: errorScenarios,
           askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
-          postPeakYellowStamps: postPeakYellowStamps);
+          postPeakYellowStamps: postPeakYellowStamps,
+      );
     }
+
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Consumer<ChartListViewModel>(
@@ -233,6 +239,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
             ),
             Row(
               children: [
+                const Text("Instruction Controls    ", style: TextStyle(fontWeight: FontWeight.bold),),
                 const Text("Ask ESQ: "),
                 Switch(value: askESQ, onChanged: (value) {
                   setState(() {
@@ -261,7 +268,34 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   });
                 }),
               ],
-            )
+            ),
+            Row(
+              children: [
+                const Text("Error Controls    ", style: TextStyle(fontWeight: FontWeight.bold),),
+                const Text("Forget D4: "),
+                Switch(value: errorScenarios.contains(ErrorScenario.forgetD4), onChanged: (value) {
+                  setState(() {
+                    if (value) {
+                      errorScenarios.add(ErrorScenario.forgetD4);
+                    } else {
+                      errorScenarios.remove(ErrorScenario.forgetD4);
+                    }
+                    model.updateErrors(errorScenarios);
+                  });
+                }),
+                const Text("Forget Observation on L, VL or B: "),
+                Switch(value: errorScenarios.contains(ErrorScenario.forgetObservationOnFlow), onChanged: (value) {
+                  setState(() {
+                    if (value) {
+                      errorScenarios.add(ErrorScenario.forgetObservationOnFlow);
+                    } else {
+                      errorScenarios.remove(ErrorScenario.forgetObservationOnFlow);
+                    }
+                    model.updateErrors(errorScenarios);
+                  });
+                }),
+              ],
+            ),
           ],
         )));
   }
