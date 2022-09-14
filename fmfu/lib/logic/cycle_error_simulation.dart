@@ -10,11 +10,10 @@ enum ErrorScenario {
 }
 
 List<ChartEntry> introduceErrors(List<ChartEntry> entries, List<ErrorScenario> scenarios) {
-  print("FOO ${scenarios.length}");
   List<ChartEntry> out = [];
   for (var entry in entries) {
     out.add(ChartEntry(
-      observationText: entry.renderedObservation?.observationText ?? "",
+      observationText: entry.renderedObservation?.getObservationText() ?? "",
       renderedObservation: entry.renderedObservation,
     ));
   }
@@ -64,7 +63,6 @@ List<ChartEntry> runForgetD4(List<ChartEntry> entries) {
   }
   for (int i=d4Index; i<=d4Index+3; i++) {
     var entry = entries[i];
-    int count = i-d4Index;
     if (!entry.renderedObservation!.hasMucus) {
       entries[i] = ChartEntry(
         observationText: entry.observationText,
