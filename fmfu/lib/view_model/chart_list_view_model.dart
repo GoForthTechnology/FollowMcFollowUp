@@ -9,7 +9,7 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 
 class ChartListViewModel with ChangeNotifier, UiLoggy {
-  static final List<Instruction> _defaultInstructions = getActiveInstructions(false, false);
+  static final List<Instruction> _defaultInstructions = _getActiveInstructions(false, false);
 
   List<Instruction> activeInstructions = _defaultInstructions;
   List<ErrorScenario> errorScenarios = [];
@@ -23,12 +23,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
   int chartIndex = 0;
 
   ChartListViewModel() {
-    initCharts();
-  }
-
-  void initCharts() {
-    cycles = getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
-    charts = getCharts(cycles);
+    _initCharts();
   }
 
   void toggleControlBar() {
@@ -43,10 +38,10 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
 
   void toggleIncrementalMode() {
     if (incrementalMode) {
-      initCharts();
+      _initCharts();
     } else {
       cycles = [];
-      charts = getCharts(cycles);
+      charts = _getCharts(cycles);
     }
     incrementalMode = !incrementalMode;
     notifyListeners();
@@ -97,9 +92,9 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     if (incrementalMode) {
       return;
     }
-    activeInstructions = getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
-    cycles = getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
-    charts = getCharts(cycles);
+    activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
+    cycles = _getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
+    charts = _getCharts(cycles);
     notifyListeners();
   }
 
@@ -115,9 +110,9 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
       loggy.error("addCycle only supported in incremental mode!");
       return;
     }
-    activeInstructions = getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
-    cycles.addAll(getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
-    charts = getCharts(cycles);
+    activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
+    cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
+    charts = _getCharts(cycles);
     notifyListeners();
   }
 
@@ -132,7 +127,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
       ));
     }
     cycles = updatedCycles;
-    charts = getCharts(cycles);
+    charts = _getCharts(cycles);
     this.errorScenarios = errorScenarios;
     notifyListeners();
   }
@@ -230,6 +225,11 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     notifyListeners();
   }
 
+  void _initCharts() {
+    cycles = _getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
+    charts = _getCharts(cycles);
+  }
+
   Cycle? _findCycle(int cycleIndex) {
     for (var chart in charts) {
       for (var cycle in chart.cycles) {
@@ -241,7 +241,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     return null;
   }
 
-  static List<Instruction> getActiveInstructions(bool prePeakYellowStamps, bool postPeakYellowStamps) {
+  static List<Instruction> _getActiveInstructions(bool prePeakYellowStamps, bool postPeakYellowStamps) {
     List<Instruction> instructions = [];
     if (prePeakYellowStamps) {
       instructions.add(Instruction.k1);
@@ -252,7 +252,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     return instructions;
   }
 
-  static List<Cycle> getCycles(
+  static List<Cycle> _getCycles(
       CycleRecipe  recipe,
       int numCycles,
       bool askESQ,
@@ -271,7 +271,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     ));
   }
 
-  static List<Chart> getCharts( List<Cycle> cycles) {
+  static List<Chart> _getCharts( List<Cycle> cycles) {
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {
