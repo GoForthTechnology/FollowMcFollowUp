@@ -33,38 +33,31 @@ class CycleRecipe extends Recipe {
     return observations;
   }
 
-  static double defaultUnusualBleedingFrequency = 0;
-  static double defaultMucusPatchFrequency = 0;
-  static double defaultPrePeakPeakTypeFrequency = 0;
-  static int defaultFlowLength = 5;
-  static int defaultPreBuildupLength = 4;
-  static int defaultBuildUpLength = 4;
-  static int defaultPeakTypeLength = 4;
-  static int defaultPostPeakLength = 12;
+  static const double defaultUnusualBleedingFrequency = 0;
+  static const double defaultMucusPatchFrequency = 0;
+  static const double defaultPrePeakPeakTypeFrequency = 0;
+  static const int defaultFlowLength = 5;
+  static const int defaultPreBuildupLength = 4;
+  static const int defaultBuildUpLength = 4;
+  static const int defaultPeakTypeLength = 4;
+  static const int defaultPostPeakLength = 12;
 
-  static CycleRecipe standardRecipe = create(
-      defaultUnusualBleedingFrequency / 100,
-      defaultMucusPatchFrequency / 100,
-      defaultPrePeakPeakTypeFrequency / 100,
-      defaultMucusPatchFrequency / 100,
-      defaultFlowLength,
-      defaultPreBuildupLength,
-      defaultBuildUpLength,
-      defaultPeakTypeLength,
-      defaultPostPeakLength,
-      false);
+  static const int defaultCycleLength = defaultFlowLength + defaultPreBuildupLength + defaultBuildUpLength + defaultPeakTypeLength + defaultPostPeakLength;
 
-  static CycleRecipe create(
-      double unusualBleedingProbability,
-      double prePeakMucusPatchProbability,
-      double prePeakPeakTypeProbability,
-      double postPeakMucusPatchProbability,
-      int flowLength,
-      int preBuildUpLength,
-      int buildUpLength,
-      int peakTypeLength,
-      int postPeakLength,
-      bool askESQ) {
+  static CycleRecipe standardRecipe = create();
+
+  static CycleRecipe create({
+      double unusualBleedingProbability = defaultUnusualBleedingFrequency / 100,
+      double prePeakMucusPatchProbability = defaultMucusPatchFrequency / 100,
+      double prePeakPeakTypeProbability = defaultPrePeakPeakTypeFrequency / 100,
+      double postPeakMucusPatchProbability = defaultMucusPatchFrequency / 100,
+      int flowLength = defaultFlowLength,
+      int preBuildUpLength = defaultPreBuildupLength,
+      int buildUpLength = defaultBuildUpLength,
+      int peakTypeLength = defaultPeakTypeLength,
+      int postPeakLength = defaultPostPeakLength,
+      bool askESQ = false,
+      double stdDev = 1}) {
     if (unusualBleedingProbability < 0 || unusualBleedingProbability > 1) {
       throw Exception("Invalid unusualBleedingProbability $unusualBleedingProbability");
     }
@@ -100,36 +93,36 @@ class CycleRecipe extends Recipe {
     );
     return CycleRecipe(
       FlowRecipe(
-          NormalDistribution(flowLength, 1),
+          NormalDistribution(flowLength, stdDev),
           Flow.heavy,
           Flow.veryLight,
           preBuildupDischargeGenerator,
       ),
       PreBuildUpRecipe(
-        NormalDistribution(preBuildUpLength, 1),
+        NormalDistribution(preBuildUpLength, stdDev),
         nonMucusDischargeGenerator,
         UniformAnomalyGenerator(
           prePeakMucusPatchProbability,
         ),
         preBuildupDischargeGenerator,
         NormalAnomalyGenerator(
-          NormalDistribution(1, 1),
+          NormalDistribution(1, stdDev),
           unusualBleedingProbability,
         ),
       ),
       BuildUpRecipe(
-        NormalDistribution(buildUpLength, 1),
-        NormalDistribution(peakTypeLength, 1),
+        NormalDistribution(buildUpLength, stdDev),
+        NormalDistribution(peakTypeLength, stdDev),
         peakTypeDischargeGenerator,
         nonPeakTypeDischargeGenerator,
       ),
       PostPeakRecipe(
-        NormalDistribution(postPeakLength, 1),
-        NormalDistribution(1, 1),
+        NormalDistribution(postPeakLength, stdDev),
+        NormalDistribution(1, stdDev),
         nonPeakTypeDischargeGenerator,
         nonMucusDischargeGenerator,
         NormalAnomalyGenerator(
-          NormalDistribution(1, 1),
+          NormalDistribution(1, stdDev),
           unusualBleedingProbability,
         ),
         UniformAnomalyGenerator(postPeakMucusPatchProbability),

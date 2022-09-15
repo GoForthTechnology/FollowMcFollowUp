@@ -34,16 +34,15 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(
-        unusualBleedingFrequency / 100,
-        prePeakMucusPatchFrequency / 100,
-        prePeakPeakTypeFrequency / 100,
-        postPeakMucusPatchFrequency / 100,
-        flowLength,
-        preBuildupLength,
-        buildUpLength,
-        peakTypeLength,
-        postPeakLength,
-        askESQ);
+      prePeakMucusPatchProbability: prePeakMucusPatchFrequency / 100,
+      prePeakPeakTypeProbability: prePeakPeakTypeFrequency / 100,
+      flowLength: flowLength,
+      preBuildUpLength: preBuildupLength,
+      buildUpLength: buildUpLength,
+      peakTypeLength: peakTypeLength,
+      postPeakLength: postPeakLength,
+      askESQ: askESQ,
+      unusualBleedingProbability: unusualBleedingFrequency / 100);
   }
 
   @override

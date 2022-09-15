@@ -102,5 +102,28 @@ void main() {
      expect(viewModel.charts[0].cycles.where(hasCycle).length, 6);
      expect(viewModel.charts[1].cycles.where(hasCycle).length, 5);
    });
+
+   test("Long cycles", () {
+     var viewModel = ChartListViewModel();
+     int nCycles = 5;
+     int targetCycleLength = 42;
+     int postPeakLength = targetCycleLength + CycleRecipe.defaultPostPeakLength - CycleRecipe.defaultCycleLength;
+
+     var recipe = CycleRecipe.create(postPeakLength: postPeakLength, stdDev: 0);
+     viewModel.updateCharts(recipe, numCycles: nCycles);
+
+     for (var cycle in viewModel.cycles) {
+       expect(cycle.entries.length, greaterThan(35));
+     }
+
+     bool hasCycle(CycleSlice slice) {
+       return slice.cycle != null;
+     }
+
+     expect(viewModel.cycles.length, nCycles);
+     expect(viewModel.charts.length, 2);
+     expect(viewModel.charts[0].cycles.where(hasCycle).length, 6);
+     expect(viewModel.charts[1].cycles.where(hasCycle).length, 4);
+   });
  });
 }
