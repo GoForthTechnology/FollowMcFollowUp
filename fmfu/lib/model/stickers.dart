@@ -17,7 +17,8 @@ enum Sticker {
   yellow,
   yellowBaby,
   white,
-  whiteBaby;
+  whiteBaby,
+  grey;
 
   Color get color {
     switch (this) {
@@ -33,6 +34,8 @@ enum Sticker {
       case Sticker.whiteBaby:
       case Sticker.white:
         return Colors.white;
+      case Sticker.grey:
+        return Colors.grey;
     }
   }
 
@@ -42,6 +45,7 @@ enum Sticker {
       case Sticker.green:
       case Sticker.yellow:
       case Sticker.white:
+      case Sticker.grey:
         return false;
       case Sticker.greenBaby:
       case Sticker.yellowBaby:

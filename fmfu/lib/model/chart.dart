@@ -63,6 +63,10 @@ class ChartEntry {
 
   ChartEntry({required this.observationText, this.renderedObservation, this.manualSticker});
 
+  static ChartEntry fromRenderedObservation(RenderedObservation renderedObservation) {
+    return ChartEntry(observationText: renderedObservation.observationText, renderedObservation: renderedObservation);
+  }
+
   bool isValidObservation() {
     try {
       parseObservation(observationText);
