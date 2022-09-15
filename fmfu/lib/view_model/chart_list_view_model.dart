@@ -285,7 +285,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
         batch.add(slice);
       } else {
         out.add(Chart(batch));
-        batch = [];
+        batch = [slice];
       }
     }
     if (out.isEmpty || batch.isNotEmpty) {

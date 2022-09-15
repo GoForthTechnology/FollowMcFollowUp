@@ -1,5 +1,6 @@
 
 import 'package:fmfu/logic/cycle_generation.dart';
+import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:test/test.dart';
 
@@ -83,6 +84,23 @@ void main() {
      viewModel.moveToPreviousChart();
      expect(viewModel.showNextButton(), true);
      expect(viewModel.showPreviousButton(), false);
+   });
+ });
+ group("Chart Updates", () {
+   test("Normal Cycle Length", () {
+     var viewModel = ChartListViewModel();
+     int nCharts = 2;
+     int nCycles = nCharts * 6 - 1;
+     viewModel.updateCharts(CycleRecipe.standardRecipe, numCycles: nCycles);
+
+     bool hasCycle(CycleSlice slice) {
+       return slice.cycle != null;
+     }
+
+     expect(viewModel.cycles.length, nCycles);
+     expect(viewModel.charts.length, nCharts);
+     expect(viewModel.charts[0].cycles.where(hasCycle).length, 6);
+     expect(viewModel.charts[1].cycles.where(hasCycle).length, 5);
    });
  });
 }
