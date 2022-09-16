@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
@@ -10,11 +11,19 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
   int consecutiveDaysOfPeakMucus = 0;
   CountsOfThree countsOfThree = CountsOfThree();
   bool yesterdayWasEssentiallyTheSame = false;
+  int pointOfChangeCount = 0;
 
   List<RenderedObservation> renderedObservations = [];
   for (int i=0; i < observations.length; i++) {
     var observation = observations[i];
     var isPostPeak = countsOfThree.getCount(CountOfThreeReason.peakDay, i) > 0;
+    var isPointOfChange = yesterdayWasEssentiallyTheSame && !(observation.essentiallyTheSame ?? false);
+    if (isPointOfChange) {
+      pointOfChangeCount++;
+      if (pointOfChangeCount % 2 == 0) {
+        countsOfThree.registerCountStart(CountOfThreeReason.pointOfChange, i);
+      }
+    }
 
     if (observation.flow != null) {
       daysOfFlow++;
@@ -30,13 +39,13 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     } else {
       consecutiveDaysOfPeakMucus = 0;
     }
-    if (!observation.hasNonPeakTypeMucus) {
-      if (!isPostPeak && consecutiveDaysOfNonPeakMucus >= 3) {
+    if (observation.hasNonPeakTypeMucus) {
+      consecutiveDaysOfNonPeakMucus++;
+    } else {
+      if (!observation.hasMucus && !isPostPeak && consecutiveDaysOfNonPeakMucus >= 3) {
         countsOfThree.registerCountStart(CountOfThreeReason.consecutiveDaysOfNonPeakMucus, i - 1);
       }
       consecutiveDaysOfNonPeakMucus = 0;
-    } else {
-      consecutiveDaysOfNonPeakMucus++;
     }
 
     if (observation.hasPeakTypeMucus) {
@@ -67,7 +76,7 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     }
 
     bool hasAnotherEntry = i+1 < observations.length;
-    bool isPeakDay = hasAnotherEntry && (consecutiveDaysOfPeakMucus > 0 && !observations[i+1].hasPeakTypeMucus);
+    bool isPeakDay = !isPointOfChange && hasAnotherEntry && (consecutiveDaysOfPeakMucus > 0 && !observations[i+1].hasPeakTypeMucus);
     if (isPeakDay) {
       countsOfThree.registerCountStart(CountOfThreeReason.peakDay, i);
     }
@@ -96,9 +105,10 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
       countsOfThree.clearCount(CountOfThreeReason.singleDayOfPeakMucus);
     }
 
+    var activeCountOfThreeReason = countsOfThree.getActiveReason(i);
     renderedObservations.add(RenderedObservation(
         observation.toString(),
-        countsOfThree.getCountOfThree(i),
+        countsOfThree.getCount(activeCountOfThreeReason, i),
         isPeakDay,
         observation.hasBleeding,
         observation.hasMucus,
@@ -106,6 +116,9 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         fertilityReasons,
         infertilityReasons,
         observation.essentiallyTheSame,
+        DebugInfo(
+          countOfThreeReason: activeCountOfThreeReason,
+        ),
     ));
 
     yesterdayWasEssentiallyTheSame = observation.essentiallyTheSame ?? false;
@@ -123,8 +136,13 @@ class RenderedObservation {
   final bool? essentiallyTheSame;
   final List<Instruction> fertilityReasons;
   final List<Instruction> infertilityReasons;
+  final DebugInfo _debugInfo;
 
-  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame);
+  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this._debugInfo);
+
+  String debugInfo() {
+    return "{debugInfo: $_debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
+  }
 
   String getObservationText() {
     String text = observationText;
@@ -176,6 +194,17 @@ class RenderedObservation {
   }
 }
 
+class DebugInfo {
+  final CountOfThreeReason? countOfThreeReason;
+
+  const DebugInfo({this.countOfThreeReason});
+
+  @override
+  String toString() {
+    return "{countOfThreeReason: $countOfThreeReason}";
+  }
+}
+
 enum CountOfThreeReason {
   unusualBleeding,
   peakDay,
@@ -196,18 +225,20 @@ class CountsOfThree {
     _countStarts.remove(reason);
   }
 
-  int getCountOfThree(int i) {
-    int out = 0;
-    for (var index in _countStarts.values) {
+  CountOfThreeReason? getActiveReason(int i) {
+    int minCount = 4;
+    CountOfThreeReason? reason;
+    _countStarts.forEach((key, index) {
       var count = i - index;
-      if (count <= 3 && count > out) {
-        out = count;
+      if (count > 0 && count < minCount) {
+        minCount = count;
+        reason = key;
       }
-    }
-    return out;
+    });
+    return reason;
   }
 
-  int getCount(CountOfThreeReason reason, int i) {
+  int getCount(CountOfThreeReason? reason, int i) {
     int? countStart = _countStarts[reason];
     if (countStart == null) {
       return 0;
