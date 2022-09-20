@@ -52,14 +52,74 @@ class PagePair {
 }
 
 final List<PagePair> pagePairs = [
+  PagePair(Page4(), Page5()),
   PagePair(Page6(), Page7()),
   PagePair(Page8(), Page9()),
   PagePair(Page10(), Page11()),
 ];
 
+class Page3 extends AbstractPage {
+  Page3({Key? key}) : super(key: key, pageNum: 4, content: [
+    const Text("4) OBSERVATIONS", style: sectionHeadingStyle),
+    const Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text("How do you check for the mucus?", style: subSectionHeadingStyle,),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(10),
+      child: FollowUpFormSectionWidget.createSingle(page3Items, groupIndex: 0),
+    ),
+  ]);
+}
+
+class Page4 extends AbstractPage {
+  Page4({Key? key}) : super(key: key, pageNum: 4, content: [
+    const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
+    const Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text("When do you check for the mucus?", style: subSectionHeadingStyle,),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(10),
+      child: FollowUpFormSectionWidget.createSingle(
+        page4Items, groupIndex: 0,
+        explanationSectionTitle: "Reason for Observational Routine Explained\n(First FU -- \u2714 when reviewed)",),
+    ),
+    const CommentSectionWidget(numRows: 17, previousSection: 4),
+  ]);
+}
+
+class Page5 extends AbstractPage {
+  Page5({Key? key}) : super(key: key, pageNum: 5, content: [
+    const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
+    const Padding(
+      padding: EdgeInsets.only(left: 20, top: 20),
+      child: Text("The Three Steps", style: subSectionHeadingStyle,),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(10),
+      child: FollowUpFormSectionWidget.createSingle(
+        page5Items, groupIndex: 0,
+        explanationSectionTitle: "Reason for Observational Routine Explained\n(First FU -- \u2714 when reviewed)",
+      ),
+    ),
+    const Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text("X. SPECIAL INSTRUCTIONS", style: subSectionHeadingStyle,),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(10),
+      child: FollowUpFormSectionWidget.createSingle(page5Items, groupIndex: 1),
+    ),
+    FollowUpFormSectionWidget.createSingle(page5Items, groupIndex: 2, boxSection: true),
+    const CommentSectionWidget(numRows: 16, previousSection: 4),
+  ]);
+}
+
 class Page6 extends AbstractPage {
   Page6({Key? key}) : super(key: key, pageNum: 6, content: [
     const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: sectionHeadingStyle),
+    // TODO: add principles explained column
     Padding(
       padding: const EdgeInsets.all(10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 0),
@@ -288,6 +348,302 @@ abstract class AbstractPage extends StatelessWidget {
 const pageTitleStyle = TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold);
 const TextStyle sectionHeadingStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 const TextStyle subSectionHeadingStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold);
+const List<List<FollowUpFormItem>> page3Items = [
+  [
+    FollowUpFormItem(
+      section: 4,
+      subSection: "A",
+      questions: [
+        Question(
+          description: "Do you use flat layers of tissue?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "B",
+      questions: [
+        Question(
+          description: "Do you ever use crumpled tissue?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "C",
+      questions: [
+        Question(
+          description: "Do you wipe from back to front (1) or ffrom front to back (2)",
+          acceptableInputs: ["1", "2"],
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "D",
+      questions: [
+        Question(
+          description: "Do you check from the urethra thru the the perineal body?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "E",
+      questions: [
+        Question(
+          description: "Do you always wipe until the mucus is gone?",
+        ),
+        Question(
+          description: "Until dry?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "F",
+      questions: [
+        Question(
+          description: "Do you ever do internal examinations to check for the mucus?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "G",
+      questions: [
+        Question(
+          description: "Do you ever check directly with your fingers?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "H",
+      questions: [
+        Question(
+          description: "Do you ever base your observations on what you may see on your underwear?",
+        )
+      ],
+    ),
+  ],
+];
+const List<List<FollowUpFormItem>> page4Items = [
+  [
+    FollowUpFormItem(
+      section: 4,
+      subSection: "I",
+      questions: [
+        Question(
+          description: "Do you check every time before urination?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "J",
+      questions: [
+        Question(
+          description: "Do you check every time after urination?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "K",
+      questions: [
+        Question(
+          description: "Do you check every time before a bowel movement?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "L",
+      questions: [
+        Question(
+          description: "Do you check every time after a bowel movement?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "M",
+      questions: [
+        Question(
+          description: "Is there ever a time when you go to the bathroom but do not check?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "N",
+      questions: [
+        Question(
+          description: "Do you check every time before going to bed?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "O",
+      questions: [
+        Question(
+          description: "Do you bear down every time before going to bed? (within 15 min.)",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "P",
+      questions: [
+        Question(
+          description: "Do you make a decision at each observation?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "Q",
+      questions: [
+        Question(
+          description: "Do you register that observation?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "R",
+      questions: [
+        Question(
+          description: "Do you ever discontinue your observations?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "S",
+      questions: [
+        Question(
+          description: "Do you ever get complacent about your observations?",
+        )
+      ],
+    ),
+  ],
+];
+const List<List<FollowUpFormItem>> page5Items = [
+  [
+    FollowUpFormItem(
+      section: 4,
+      subSection: "T",
+      questions: [
+        Question(
+          description: "Can you tell me what are the three steps in checking for the mucus?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "U",
+      questions: [
+        Question(
+          description: "Do you always determine the sensation when wiping before observing the tissue?",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "V",
+      questions: [
+        Question(
+          description: "Do you always finger test anything you see on the tissue? (including 2, 2W, 4)",
+        )
+      ],
+    ),
+    FollowUpFormItem(
+      section: 4,
+      subSection: "W",
+      questions: [
+        Question(
+          description: "What observations do you make when finger testing?",
+        )
+      ],
+    ),
+  ], [
+    FollowUpFormItem(
+      section: 4,
+      subSection: "X",
+      subSubSection: "1",
+      disabledCells: {1, 2, 3, 5, 6},
+      questions: [
+        Question(
+          description: "How often do you have a bowel movement? (# of times / day)",
+          acceptableInputs: [],
+        ),
+        Question(
+          description: "(# of days / week)",
+          acceptableInputs: [],
+        ),
+      ]),
+    FollowUpFormItem(
+        section: 4,
+        subSection: "X",
+        subSubSection: "2",
+        disabledCells: {1, 2, 3, 5, 6},
+        questions: [
+          Question(
+            description: "How often do you get up at night to urinate? (# of times)",
+            acceptableInputs: [],
+          ),
+          Question(
+            description: "Do you observe at that time? (Y, N, \u2714)",
+            acceptableInputs: ["Y", "N", "\u2714"],
+          ),
+        ]),
+    FollowUpFormItem(
+        section: 4,
+        subSection: "X",
+        subSubSection: "3",
+        disabledCells: {1, 2, 3, 5, 6},
+        questions: [
+          Question(
+            description: "Do you generally take baths(1), showers(2), or both(3)?",
+            acceptableInputs: ["1", "2", "3"],
+          ),
+          Question(
+            description: "Do you check before and after? (Y or N)",
+            acceptableInputs: ["Y", "N"],
+          ),
+        ]),
+    FollowUpFormItem(
+        section: 4,
+        subSection: "X",
+        subSubSection: "4",
+        disabledCells: {1, 2, 3, 5, 6},
+        questions: [
+          Question(
+            description: "How often do you go swimming? (# of times)",
+            acceptableInputs: [],
+          ),
+          Question(
+            description: "Do you check before and after? (Y, N, \u2714)",
+            acceptableInputs: ["Y", "N", "\u2714"],
+          ),
+        ]),
+  ], [
+    FollowUpFormItem(
+      section: 4,
+      subSection: "Y",
+      questions: [
+        Question(
+          description: "SECTION 4: IS MANAGEMENT OF OBSERVATIONS NECESSARY? (Y or N)",
+          style: TextStyle(fontWeight: FontWeight.bold),
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+  ]
+];
 const List<List<FollowUpFormItem>> page6Items = [
   [
     FollowUpFormItem(

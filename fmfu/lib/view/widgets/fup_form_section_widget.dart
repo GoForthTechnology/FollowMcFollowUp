@@ -17,10 +17,21 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
   final int indexOffset;
   final int nItems;
   final bool boxSection;
+  final String? explanationSectionTitle;
 
-  const FollowUpFormSectionWidget({required this.items, required this.indexOffset, required this.nItems, Key? key, this.boxSection = false}) : super(key: key);
+  const FollowUpFormSectionWidget({
+    Key? key,
+    required this.items,
+    required this.indexOffset,
+    required this.nItems,
+    this.boxSection = false,
+    this.explanationSectionTitle,
+  }) : super(key: key);
 
-   static FollowUpFormSectionWidget createSingle(List<List<FollowUpFormItem>> itemGroups, {required int groupIndex, bool boxSection = false}) {
+   static FollowUpFormSectionWidget createSingle(
+       List<List<FollowUpFormItem>> itemGroups, {
+         required int groupIndex, bool boxSection = false, String? explanationSectionTitle,
+       }) {
     List<FollowUpFormItem> items = itemGroups.expand((i) => i).toList();
     int indexOffset = 0;
     for (int i=0; i<groupIndex; i++) {
@@ -31,6 +42,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
       indexOffset: indexOffset,
       nItems: itemGroups[groupIndex].length,
       boxSection: boxSection,
+      explanationSectionTitle: explanationSectionTitle,
     );
   }
 
@@ -53,6 +65,8 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
   Widget build(BuildContext context) {
     List<Widget> titles = [];
     List<GridRow> rows = [];
+    List<GridRow> explanationRows = [];
+    bool includeExplanationSection = explanationSectionTitle != null;
     for (int i=indexOffset; i < indexOffset + nItems; i++) {
       var item = items[i];
       String code = item.subSection;
@@ -61,6 +75,9 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
       }
       titles.add(_title(code, item.description(), style: item.style()));
       rows.add(GridRow(item, i, _showInputDialog));
+      if (includeExplanationSection) {
+        explanationRows.add(GridRow(item, i, _showInputDialog, numColumns: 1));
+      }
     }
 
     Widget titleWidget = Padding(padding: const EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: titles));
@@ -76,15 +93,40 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
         child: Padding(padding: const EdgeInsets.all(4), child: titleWidget),
       );
     }
+    if (includeExplanationSection) {
+      titleWidget = Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: titleWidget,
+      );
+    }
 
-    return IntrinsicHeight(child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      titleWidget,
-      const Spacer(),
-      BoxGridWidget(
-        rows: rows,
-        includeColumnHeadings: indexOffset == 0,
-      )
-    ]));
+    return IntrinsicHeight(child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (includeExplanationSection) Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: RotatedBox(
+            quarterTurns: 3,
+            child: Text(explanationSectionTitle!),
+          ),
+        ),
+        if (includeExplanationSection) Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: BoxGridWidget(
+            rows: explanationRows,
+            headerRow: BoxGridWidget.explanationHeaderRow(),
+            includeRowLabels: false,
+            nColumns: 1,
+          ),
+        ),
+        titleWidget,
+        const Spacer(),
+        BoxGridWidget(
+          rows: rows,
+          headerRow: indexOffset == 0 ? BoxGridWidget.basicHeaderRow(8) : null,
+        )
+      ],
+    ));
   }
 
   void _showInputDialog(BuildContext context, int itemIndex, int followUpIndex) {

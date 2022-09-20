@@ -8,27 +8,42 @@ import 'dart:ui' as ui;
 
 class BoxGridWidget extends StatelessWidget {
   final List<GridRow> rows;
+  final Row? headerRow;
   final int nColumns;
-  final bool includeColumnHeadings;
+  final bool includeRowLabels;
 
-  const BoxGridWidget({Key? key, required this.rows, this.nColumns = 8, required this.includeColumnHeadings}) : super(key: key);
+  static Row? basicHeaderRow(int nColumns) {
+    List<Widget> columnHeadings = [];
+    for (int i=0; i<nColumns; i++) {
+      columnHeadings.add(LegendCell(text: (i+1).toString(), width: 30,));
+    }
+    return Row(children: columnHeadings);
+  }
+
+  static Row? explanationHeaderRow() {
+    return Row(children: const [LegendCell(text: "", width: 30)]);
+  }
+
+  const BoxGridWidget({
+    Key? key,
+    required this.headerRow,
+    required this.rows,
+    this.nColumns = 8,
+    this.includeRowLabels = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> gridRows = [];
 
-    if (includeColumnHeadings) {
-      List<Widget> columnHeadings = [];
-      for (int i=0; i<nColumns; i++) {
-        columnHeadings.add(LegendCell(text: (i+1).toString(), width: 30,));
-      }
-      gridRows.add(Row(children: columnHeadings));
+    if (headerRow != null) {
+      gridRows.add(headerRow!);
     }
     gridRows.addAll(rows.map((r) => Row(children: r.cells)));
     Widget grid = Stack(clipBehavior: Clip.none, children: [
       Positioned(
         left: 5,
-        top: 5 + (includeColumnHeadings ? 30 : 0),
+        top: 5 + (headerRow != null ? 30 : 0),
         child: Container(
           width: 30.0 * nColumns,
           height: 30.0 * rows.length,
@@ -39,11 +54,13 @@ class BoxGridWidget extends StatelessWidget {
     ]);
 
     List<Widget> labels = [];
-    if (includeColumnHeadings) {
-      labels.add(const LegendCell(text: "", width: 40,));
-    }
-    for (int i = 0; i < rows.length; i++) {
-      labels.add(LegendCell(text: rows[i].rowLabel, width: 40,));
+    if (includeRowLabels) {
+      if (headerRow != null) {
+        labels.add(const LegendCell(text: "", width: 40,));
+      }
+      for (int i = 0; i < rows.length; i++) {
+        labels.add(LegendCell(text: rows[i].rowLabel, width: 40,));
+      }
     }
     return Row(children: [
       Column(children: labels),
@@ -56,8 +73,8 @@ class GridRow {
   final String rowLabel;
   final List<Widget> cells;
 
-  GridRow(FollowUpFormItem item, int itemIndex, void Function(BuildContext, int, int) showDialogFn)
-      : cells = List.generate(8, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index))),
+  GridRow(FollowUpFormItem item, int itemIndex, void Function(BuildContext, int, int) showDialogFn, {int numColumns = 8})
+      : cells = List.generate(numColumns, (index) => BoxWidget(showDialogFn, item, itemIndex, index, disabled: item.disabledCells.contains(index))),
         rowLabel = createRowLabel(item);
 
   static String createRowLabel(FollowUpFormItem item) {
