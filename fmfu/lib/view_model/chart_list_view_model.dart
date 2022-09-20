@@ -271,7 +271,7 @@ class ChartListViewModel with ChangeNotifier, UiLoggy {
     ));
   }
 
-  static List<Chart> _getCharts( List<Cycle> cycles) {
+  static List<Chart> _getCharts(List<Cycle> cycles) {
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {

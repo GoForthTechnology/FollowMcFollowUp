@@ -23,7 +23,7 @@ class Cycle {
   bool canRerender = true;
   CycleStats cycleStats;
 
-  Cycle({required this.index, required this.entries, required this.stickerCorrections, required this.observationCorrections, this.cycleStats = CycleStats.empty});
+  Cycle({required this.index, required this.entries, this.stickerCorrections = const {}, this.observationCorrections = const {}, this.cycleStats = CycleStats.empty});
 
   List<int> getOffsets() {
     List<int> out = [];

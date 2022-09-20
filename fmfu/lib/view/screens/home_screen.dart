@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 
@@ -17,6 +18,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [
+          _button(context, "Chart Correcting", ChartCorrectingScreen.routeName),
           _button(context, "Chart Editor", ChartPage.routeName),
           _button(context, "FUP Form", FupFormScreen.routeName),
         ],

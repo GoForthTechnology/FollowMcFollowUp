@@ -5,6 +5,7 @@ import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
+import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
@@ -17,11 +18,20 @@ class CycleWidget extends StatefulWidget {
   final int dayOffset;
   final bool editingEnabled;
   final bool showErrors;
+  final SoloCell? soloCell;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
-  const CycleWidget({Key? key, required this.cycle, required this.editingEnabled, required this.showErrors, this.showStats = true, this.dayOffset = 0}) : super(key: key);
+  const CycleWidget({
+    required this.cycle,
+    this.editingEnabled = false,
+    this.showErrors = false,
+    this.showStats = true,
+    this.dayOffset = 0,
+    this.soloCell,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -58,13 +68,21 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       ChartEntry? entry;
       RenderedObservation? observation;
       var hasCycle = widget.cycle != null;
-      if (hasCycle && entryIndex < widget.cycle!.entries.length) {
+      var soloingCell = false;
+      if (widget.soloCell == null && hasCycle && entryIndex < widget.cycle!.entries.length) {
+        entry = widget.cycle?.entries[entryIndex];
+        observation = entry?.renderedObservation;
+      } else if (widget.soloCell != null && widget.soloCell!.entryIndex == entryIndex) {
+        soloingCell = true;
         entry = widget.cycle?.entries[entryIndex];
         observation = entry?.renderedObservation;
       }
       StickerWithText? sticker = entry?.manualSticker;
       if (sticker == null && observation != null) {
         sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
+      }
+      if (soloingCell && !widget.soloCell!.showSticker) {
+        sticker = null;
       }
       Widget stickerWidget = StickerWidget(
         stickerWithText: sticker,

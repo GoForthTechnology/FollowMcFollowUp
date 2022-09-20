@@ -7,8 +7,18 @@ class ChartWidget extends StatelessWidget {
   final Widget? titleWidget;
   final bool editingEnabled;
   final bool showErrors;
+  final bool showStats;
+  final SoloCell? soloCell;
 
-  const ChartWidget({Key? key, required this.chart, required this.editingEnabled, required this.showErrors, this.titleWidget}) : super(key: key);
+  const ChartWidget({
+    required this.chart,
+    this.editingEnabled = false,
+    this.showErrors = false,
+    this.showStats = false,
+    this.titleWidget,
+    this.soloCell,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +66,14 @@ class ChartWidget extends StatelessWidget {
   List<Widget> _createCycleRows() {
     List<Widget> rows = [];
     for (var slice in chart.cycles) {
-      rows.add(CycleWidget(cycle: slice.cycle, editingEnabled: editingEnabled, showErrors: showErrors, dayOffset: slice.offset));
+      rows.add(CycleWidget(
+        cycle: slice.cycle,
+        editingEnabled: editingEnabled,
+        showErrors: showErrors,
+        dayOffset: slice.offset,
+        showStats: showStats,
+        soloCell: soloCell,
+      ));
     }
     return rows;
   }
@@ -67,4 +84,16 @@ class ChartWidget extends StatelessWidget {
         child: Text("Use these signs: P = Peak, 123 = Fertile days following Peak, I = Intercourse"),
     );
   }
+}
+
+class SoloCell {
+  final int cycleIndex;
+  final int entryIndex;
+  final bool showSticker;
+
+  SoloCell({
+    required this.cycleIndex,
+    required this.entryIndex,
+    required this.showSticker,
+  });
 }

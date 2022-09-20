@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
+import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: ChartListViewModel()),
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
+        ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
       ], child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -38,6 +41,7 @@ class MyApp extends StatelessWidget {
         HomeScreen.routeName: (context) => const HomeScreen(),
         ChartPage.routeName: (context) => const ChartPage(),
         FupFormScreen.routeName: (context) => const FupFormScreen(),
+        ChartCorrectingScreen.routeName: (context) => const ChartCorrectingScreen(),
       },
       ));
   }
