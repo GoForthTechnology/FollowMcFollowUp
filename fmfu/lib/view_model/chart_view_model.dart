@@ -45,6 +45,28 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     notifyListeners();
   }
 
+  void swapLastCycle(
+      CycleRecipe recipe, {
+        bool askESQ = false,
+        bool prePeakYellowStamps = false,
+        bool postPeakYellowStamps = false,
+        List<ErrorScenario> errorScenarios = const [],
+      }) {
+    if (!incrementalMode) {
+      loggy.error("swapLastCycle only supported in incremental mode!");
+      return;
+    }
+    if (cycles.isEmpty) {
+      loggy.error("no cycle to swap!");
+      return;
+    }
+    activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
+    int lastIndex = cycles.length - 1;
+    cycles[lastIndex] = _getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios)[0];
+    charts = _getCharts(cycles);
+    notifyListeners();
+  }
+
   void addCycle(
       CycleRecipe recipe, {
         bool askESQ = false,
@@ -52,7 +74,6 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
         bool postPeakYellowStamps = false,
         List<ErrorScenario> errorScenarios = const [],
       }) {
-    loggy.info(askESQ);
     if (!incrementalMode) {
       loggy.error("addCycle only supported in incremental mode!");
       return;

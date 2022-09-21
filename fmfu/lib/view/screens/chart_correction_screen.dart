@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
+import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +22,9 @@ class ChartCorrectingScreen extends StatelessWidget {
         ],
       ),
       body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+        if (model.showCycleControlBar) ControlBarWidget(model: model),
         ChartWidget(
-          chart: model.chart,
+          chart: model.charts[0],
           soloCell: model.showFullCycle ? null : SoloCell(
             cycleIndex: 0,
             entryIndex: model.entryIndex,

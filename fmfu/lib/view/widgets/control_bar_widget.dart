@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ControlBarWidget extends StatefulWidget {
+  final ChartViewModel model;
+
   static ControlBarWidgetState of(BuildContext context) => context.findAncestorStateOfType<ControlBarWidgetState>()!;
 
-  const ControlBarWidget({Key? key}) : super(key: key);
+  const ControlBarWidget({Key? key, required this.model}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ControlBarWidgetState();
@@ -47,8 +50,8 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    void updateCycles(ChartListViewModel model) {
-      model.updateCharts(
+    void updateCycles() {
+      widget.model.updateCharts(
         _getRecipe(),
         errorScenarios: errorScenarios,
         askESQ: askESQ,
@@ -59,8 +62,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Consumer<ChartListViewModel>(
-            builder: (context, model, child) => Column(
+        child: Column(
           children: [
             Row(children: [
               const Text("Unusual Bleeding: "),
@@ -73,7 +75,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                 onChanged: (val) {
                   setState(() {
                     unusualBleedingFrequency = val;
-                    updateCycles(model);
+                    updateCycles();
                   });
                 },
               ),
@@ -87,7 +89,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                 onChanged: (val) {
                   setState(() {
                     prePeakMucusPatchFrequency = val;
-                    updateCycles(model);
+                    updateCycles();
                   });
                 },
               ),
@@ -101,7 +103,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                 onChanged: (val) {
                   setState(() {
                     prePeakPeakTypeFrequency = val;
-                    updateCycles(model);
+                    updateCycles();
                   });
                 },
               ),
@@ -115,7 +117,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                 onChanged: (val) {
                   setState(() {
                     postPeakMucusPatchFrequency = val;
-                    updateCycles(model);
+                    updateCycles();
                   });
                 },
               ),
@@ -130,7 +132,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     setState(() {
                       if (flowLength > 0) {
                         flowLength--;
-                        updateCycles(model);
+                        updateCycles();
                       }
                     });
                   }, child: const Text("-")),
@@ -140,7 +142,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   child: ElevatedButton(onPressed: () {
                     setState(() {
                       flowLength++;
-                      updateCycles(model);
+                      updateCycles();
                     });
                   }, child: const Text("+")),
                 ),
@@ -152,7 +154,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     setState(() {
                       if (preBuildupLength > 0) {
                         preBuildupLength--;
-                        updateCycles(model);
+                        updateCycles();
                       }
                     });
                   }, child: const Text("-")),
@@ -162,7 +164,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   child: ElevatedButton(onPressed: () {
                     setState(() {
                       preBuildupLength++;
-                      updateCycles(model);
+                      updateCycles();
                     });
                   }, child: const Text("+")),
                 ),
@@ -174,7 +176,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     setState(() {
                       if (buildUpLength > 0) {
                         buildUpLength--;
-                        updateCycles(model);
+                        updateCycles();
                       }
                     });
                   }, child: const Text("-")),
@@ -184,7 +186,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   child: ElevatedButton(onPressed: () {
                     setState(() {
                       buildUpLength++;
-                      updateCycles(model);
+                      updateCycles();
                     });
                   }, child: const Text("+")),
                 ),
@@ -196,7 +198,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     setState(() {
                       if (peakTypeLength > 0) {
                         peakTypeLength--;
-                        updateCycles(model);
+                        updateCycles();
                       }
                     });
                   }, child: const Text("-")),
@@ -209,7 +211,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     }
                     setState(() {
                       peakTypeLength++;
-                      updateCycles(model);
+                      updateCycles();
                     });
                   }, child: const Text("+")),
                 ),
@@ -221,7 +223,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     setState(() {
                       if (postPeakLength > 0) {
                         postPeakLength--;
-                        updateCycles(model);
+                        updateCycles();
                       }
                     });
                   }, child: const Text("-")),
@@ -231,7 +233,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   child: ElevatedButton(onPressed: () {
                     setState(() {
                       postPeakLength++;
-                      updateCycles(model);
+                      updateCycles();
                     });
                   }, child: const Text("+")),
                 ),
@@ -247,7 +249,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     if (!askESQ) {
                       prePeakYellowStamps = false;
                     }
-                    updateCycles(model);
+                    updateCycles();
                   });
                 }),
                 const Text("Pre-Peak Yellow Stamps: "),
@@ -257,14 +259,14 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     if (prePeakYellowStamps) {
                       askESQ = true;
                     }
-                    updateCycles(model);
+                    updateCycles();
                   });
                 }),
                 const Text("Post-Peak Yellow Stamps: "),
                 Switch(value: postPeakYellowStamps, onChanged: (value) {
                   setState(() {
                     postPeakYellowStamps = value;
-                    updateCycles(model);
+                    updateCycles();
                   });
                 }),
               ],
@@ -280,7 +282,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     } else {
                       errorScenarios.remove(ErrorScenario.forgetD4);
                     }
-                    model.updateErrors(errorScenarios);
+                    widget.model.updateErrors(errorScenarios);
                   });
                 }),
                 const Text("Forget Observation on L, VL or B: "),
@@ -291,14 +293,14 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                     } else {
                       errorScenarios.remove(ErrorScenario.forgetObservationOnFlow);
                     }
-                    model.updateErrors(errorScenarios);
+                    widget.model.updateErrors(errorScenarios);
                   });
                 }),
               ],
             ),
-            if (model.incrementalMode) Row(children: [
+            if (widget.model.incrementalMode) Row(children: [
               ElevatedButton(onPressed: () {
-                model.addCycle(
+                widget.model.addCycle(
                   _getRecipe(),
                   errorScenarios: errorScenarios,
                   askESQ: askESQ,
@@ -306,9 +308,18 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
                   postPeakYellowStamps: postPeakYellowStamps,
                 );
               }, child: const Text("Add Cycle")),
+              ElevatedButton(onPressed: () {
+                widget.model.swapLastCycle(
+                  _getRecipe(),
+                  errorScenarios: errorScenarios,
+                  askESQ: askESQ,
+                  prePeakYellowStamps: prePeakYellowStamps,
+                  postPeakYellowStamps: postPeakYellowStamps,
+                );
+              }, child: const Text("Swap Last Cycle")),
             ]),
           ],
-        )));
+        ));
   }
 }
 

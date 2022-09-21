@@ -54,7 +54,7 @@ class _ChartPageState extends State<ChartPage> {
           ),
           child: Column(
             children: [
-              if (model.showCycleControlBar) const ControlBarWidget(),
+              if (model.showCycleControlBar) ControlBarWidget(model: model),
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(children: [
@@ -82,7 +82,7 @@ class _ChartPageState extends State<ChartPage> {
                         if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
                       ],
                     )),
-                    chart: model._charts[model.chartIndex],
+                    chart: model.charts[model.chartIndex],
                   ),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                 ],))
