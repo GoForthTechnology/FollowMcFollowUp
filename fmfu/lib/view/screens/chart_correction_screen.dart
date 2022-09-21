@@ -14,8 +14,13 @@ class ChartCorrectingScreen extends StatelessWidget {
     return Consumer<ChartCorrectionViewModel>(builder: (context, model, child) => Scaffold(
       appBar: AppBar(
         title: const Text("Basic Chart Correcting"),
+        actions: [
+          IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+            model.toggleControlBar();
+          },),
+        ],
       ),
-      body: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+      body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
         ChartWidget(
           chart: model.chart,
           soloCell: model.showFullCycle ? null : SoloCell(
@@ -50,6 +55,6 @@ class ChartCorrectingScreen extends StatelessWidget {
           ])),
         ),
       ])
-    ));
+    )));
   }
 }

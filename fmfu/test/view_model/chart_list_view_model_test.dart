@@ -53,7 +53,6 @@ void main() {
    test("Toggle incremental mode", () {
      var viewModel = ChartListViewModel();
      expect(viewModel.incrementalMode, false);
-     expect(viewModel.cycles.isNotEmpty, true);
 
      viewModel.toggleIncrementalMode();
      expect(viewModel.incrementalMode, true);

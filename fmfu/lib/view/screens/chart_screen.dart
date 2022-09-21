@@ -82,7 +82,7 @@ class _ChartPageState extends State<ChartPage> {
                         if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
                       ],
                     )),
-                    chart: model.charts[model.chartIndex],
+                    chart: model._charts[model.chartIndex],
                   ),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                 ],))
