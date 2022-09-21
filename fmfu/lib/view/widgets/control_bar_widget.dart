@@ -49,10 +49,11 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   Widget build(BuildContext context) {
     void updateCycles(ChartListViewModel model) {
       model.updateCharts(
-          _getRecipe(),
-          errorScenarios: errorScenarios,
-          askESQ: askESQ, prePeakYellowStamps: prePeakYellowStamps,
-          postPeakYellowStamps: postPeakYellowStamps,
+        _getRecipe(),
+        errorScenarios: errorScenarios,
+        askESQ: askESQ,
+        prePeakYellowStamps: prePeakYellowStamps,
+        postPeakYellowStamps: postPeakYellowStamps,
       );
     }
 

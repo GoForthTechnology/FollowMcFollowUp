@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/chart.dart';
+import 'package:fmfu/view_model/chart_view_model.dart';
 
-class ChartCorrectionViewModel extends ChangeNotifier {
+class ChartCorrectionViewModel extends ChartViewModel {
   final Chart chart = getChart();
   int entryIndex = 0;
+  bool showCycleControlBar = false;
   bool showFullCycle = false;
   bool showSticker = true;
+
+  void toggleControlBar() {
+    showCycleControlBar = !showCycleControlBar;
+    notifyListeners();
+  }
 
   void toggleShowFullCycle() {
     showFullCycle = !showFullCycle;
