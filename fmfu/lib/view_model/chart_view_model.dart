@@ -11,11 +11,14 @@ import 'package:loggy/loggy.dart';
 class ChartViewModel with ChangeNotifier, GlobalLoggy {
   static final List<Instruction> _defaultInstructions = _getActiveInstructions(false, false);
 
+  final numCyclesPerChart;
   bool incrementalMode = false;
   List<Instruction> activeInstructions = _defaultInstructions;
   List<ErrorScenario> errorScenarios = [];
   List<Cycle> cycles = [];
   List<Chart> charts = [];
+
+  ChartViewModel(this.numCyclesPerChart);
 
   void toggleIncrementalMode() {
     if (incrementalMode) {
@@ -205,7 +208,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     ));
   }
 
-  static List<Chart> _getCharts(List<Cycle> cycles) {
+  List<Chart> _getCharts(List<Cycle> cycles) {
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {
@@ -215,7 +218,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     List<Chart> out = [];
     List<CycleSlice> batch = [];
     for (var slice in slices) {
-      if (batch.length < 6) {
+      if (batch.length < numCyclesPerChart) {
         batch.add(slice);
       } else {
         out.add(Chart(batch));
@@ -223,7 +226,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
       }
     }
     if (out.isEmpty || batch.isNotEmpty) {
-      while (batch.length < 6) {
+      while (batch.length < numCyclesPerChart) {
         batch.add(CycleSlice(null, 0));
       }
       out.add(Chart(batch));
@@ -232,7 +235,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
   }
 
   void _initCharts() {
-    cycles = _getCycles(CycleRecipe.standardRecipe, 10, false, _defaultInstructions, []);
+    cycles = _getCycles(CycleRecipe.create(), 10, false, _defaultInstructions, []);
     charts = _getCharts(cycles);
   }
 

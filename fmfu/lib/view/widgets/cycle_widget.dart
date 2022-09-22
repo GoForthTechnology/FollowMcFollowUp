@@ -146,58 +146,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          var formKey = GlobalKey<FormState>();
-          var cycleIndex = widget.cycle!.index;
-          return Consumer<ChartListViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) => AlertDialog(
-            title: Text(model.editEnabled ? "Edit Observation" : "Correct Observation"),
-            content: Form(
-              key: formKey,
-              child: TextFormField(
-                initialValue: model.editEnabled ? entry.observationText : correction ?? entry.observationText,
-                validator: (value) {
-                  if (!model.editEnabled && (value == null || value.isEmpty)) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  if (model.editEnabled) {
-                    if (value == null) {
-                      throw Exception(
-                          "Validation should have prevented saving a null value");
-                    }
-                    loggy.debug("Editing entry to be $value for cycle #$cycleIndex, entry #$entryIndex");
-                    model.editEntry(cycleIndex, entryIndex, value);
-                  } else {
-                    loggy.debug("Updating observation correction to be $value for cycle #$cycleIndex, entry #$entryIndex");
-                    model.updateObservationCorrections(cycleIndex, entryIndex, value);
-                  }
-                },
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: const Text('Cancel'),
-              ),
-              if (!model.editEnabled && correction != null) TextButton(
-                onPressed: () {
-                  model.updateObservationCorrections(cycleIndex, entryIndex, null);
-                  Navigator.pop(context, 'CLEAR');
-                },
-                child: const Text('Clear'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
-                    Navigator.pop(context, 'OK');
-                  }
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          )));
+          return ObservationEditDialog(cycle: widget.cycle!, entry: entry, entryIndex: entryIndex);
         },
       );
     };
@@ -211,55 +160,69 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          Sticker? selectedSticker = existingCorrection?.sticker;
-          String? selectedStickerText = existingCorrection?.text;
-          return StatefulBuilder(builder: (context, setState) {
-            return Consumer<ChartListViewModel>(
-                builder: (context, model, child) => AlertDialog(
-              title: const Text('Sticker Correction'),
-              content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
-                setState(() {
-                  if (selectedSticker == sticker) {
-                    selectedSticker = null;
-                  } else {
-                    selectedSticker = sticker;
-                  }
-                });
-              }, (text) {
-                setState(() {
-                  if (selectedStickerText == text) {
-                    selectedStickerText = null;
-                  } else {
-                    selectedStickerText = text;
-                  }
-                });
-              }),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    StickerWithText? correction;
-                    if (selectedSticker != null) {
-                      correction = StickerWithText(selectedSticker!, selectedStickerText);
-                    }
-                    if (!widget.editingEnabled) {
-                      model.updateStickerCorrections(widget.cycle!.index, entryIndex, correction);
-                    } else {
-                      model.editSticker(widget.cycle!.index, entryIndex, correction);
-                    }
-                    Navigator.pop(context, 'OK');
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            ));
-          });
+          return StickerCorrectionDialog(entryIndex: entryIndex, cycle: widget.cycle!, editingEnabled: widget.editingEnabled);
         },
       );
     };
+  }
+}
+
+class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
+  final Cycle cycle;
+  final int entryIndex;
+  final bool editingEnabled;
+  final StickerWithText? existingCorrection;
+
+  const StickerCorrectionDialog({Key? key, required this.entryIndex, this.existingCorrection, required this.cycle, required this.editingEnabled}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Sticker? selectedSticker = existingCorrection?.sticker;
+    String? selectedStickerText = existingCorrection?.text;
+    return StatefulBuilder(builder: (context, setState) {
+      return Consumer<ChartListViewModel>(
+          builder: (context, model, child) => AlertDialog(
+            title: const Text('Sticker Correction'),
+            content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
+              setState(() {
+                if (selectedSticker == sticker) {
+                  selectedSticker = null;
+                } else {
+                  selectedSticker = sticker;
+                }
+              });
+            }, (text) {
+              setState(() {
+                if (selectedStickerText == text) {
+                  selectedStickerText = null;
+                } else {
+                  selectedStickerText = text;
+                }
+              });
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  StickerWithText? correction;
+                  if (selectedSticker != null) {
+                    correction = StickerWithText(selectedSticker!, selectedStickerText);
+                  }
+                  if (!editingEnabled) {
+                    model.updateStickerCorrections(cycle.index, entryIndex, correction);
+                  } else {
+                    model.editSticker(cycle.index, entryIndex, correction);
+                  }
+                  Navigator.pop(context, 'OK');
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ));
+    });
   }
 
   Widget _createStickerCorrectionContent(Sticker? selectedSticker, String? selectedStickerText, void Function(Sticker?) onSelectSticker, void Function(String?) onSelectText) {
@@ -315,5 +278,70 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       );
     }
     return Padding(padding: const EdgeInsets.all(2), child: sticker);
+  }
+}
+
+class ObservationEditDialog extends StatelessWidget with UiLoggy {
+  final Cycle cycle;
+  final ChartEntry entry;
+  final int entryIndex;
+  final String? correction;
+
+  const ObservationEditDialog({super.key, required this.cycle, required this.entry, this.correction, required this.entryIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    var formKey = GlobalKey<FormState>();
+    var cycleIndex = cycle.index;
+    return Consumer<ChartListViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) => AlertDialog(
+      title: Text(model.editEnabled ? "Edit Observation" : "Correct Observation"),
+      content: Form(
+        key: formKey,
+        child: TextFormField(
+          initialValue: model.editEnabled ? entry.observationText : correction ?? entry.observationText,
+          validator: (value) {
+            if (!model.editEnabled && (value == null || value.isEmpty)) {
+              return 'Please enter some text';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            if (model.editEnabled) {
+              if (value == null) {
+                throw Exception(
+                    "Validation should have prevented saving a null value");
+              }
+              loggy.debug("Editing entry to be $value for cycle #$cycleIndex, entry #$entryIndex");
+              model.editEntry(cycleIndex, entryIndex, value);
+            } else {
+              loggy.debug("Updating observation correction to be $value for cycle #$cycleIndex, entry #$entryIndex");
+              model.updateObservationCorrections(cycleIndex, entryIndex, value);
+            }
+          },
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Cancel'),
+        ),
+        if (!model.editEnabled && correction != null) TextButton(
+          onPressed: () {
+            model.updateObservationCorrections(cycleIndex, entryIndex, null);
+            Navigator.pop(context, 'CLEAR');
+          },
+          child: const Text('Clear'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
+              Navigator.pop(context, 'OK');
+            }
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    )));
   }
 }

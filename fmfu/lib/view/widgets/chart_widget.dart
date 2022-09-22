@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view/widgets/cycle_widget.dart';
+import 'package:loggy/loggy.dart';
 
-class ChartWidget extends StatelessWidget {
+class ChartWidget extends StatelessWidget with UiLoggy {
   final Chart chart;
   final Widget? titleWidget;
   final bool editingEnabled;
   final bool showErrors;
   final bool showStats;
   final SoloCell? soloCell;
+  final bool includeFooter;
 
   const ChartWidget({
     required this.chart,
     this.editingEnabled = false,
     this.showErrors = false,
     this.showStats = false,
+    this.includeFooter = true,
     this.titleWidget,
     this.soloCell,
     Key? key,
@@ -30,7 +33,7 @@ class ChartWidget extends StatelessWidget {
           titleWidget ?? Container(),
           _createHeaderRow(),
           ..._createCycleRows(),
-          _createFooterRow(),
+          if (includeFooter) _createFooterRow(),
         ],
       )));
   }
@@ -75,6 +78,7 @@ class ChartWidget extends StatelessWidget {
         soloCell: soloCell,
       ));
     }
+    loggy.debug("Created ${rows.length} rows");
     return rows;
   }
 

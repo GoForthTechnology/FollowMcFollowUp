@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
-import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
-import 'package:provider/provider.dart';
 
 class ControlBarWidget extends StatefulWidget {
   final ChartViewModel model;

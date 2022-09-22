@@ -7,8 +7,9 @@ class ChartCorrectionViewModel extends ChartViewModel {
   bool showFullCycle = false;
   bool showSticker = true;
 
-  ChartCorrectionViewModel() {
+  ChartCorrectionViewModel() : super(1) {
     toggleIncrementalMode();
+    addCycle(CycleRecipe.create());
   }
 
   void toggleControlBar() {

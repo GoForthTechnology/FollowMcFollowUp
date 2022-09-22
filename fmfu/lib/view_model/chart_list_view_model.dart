@@ -9,7 +9,7 @@ class ChartListViewModel extends ChartViewModel {
   bool showErrors = false;
   int chartIndex = 0;
 
-  ChartListViewModel() {
+  ChartListViewModel() : super(6) {
     updateCharts(CycleRecipe.create(), numCycles: 12);
   }
 
