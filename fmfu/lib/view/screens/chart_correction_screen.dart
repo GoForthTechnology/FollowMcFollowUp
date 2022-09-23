@@ -50,6 +50,7 @@ class ChartCorrectingScreen extends StatelessWidget {
                   ),
                   Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
                     onPressed: model.showPreviousButton() ? () {
+                      exerciseModel.loadPreviousSelection(model.entryIndex);
                       model.previousEntry();
                     }: null,
                     child: const Text("Previous"),
