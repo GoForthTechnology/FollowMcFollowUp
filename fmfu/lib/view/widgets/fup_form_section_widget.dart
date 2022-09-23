@@ -97,7 +97,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
         child: Padding(padding: const EdgeInsets.all(4), child: titleWidget),
       );
     }
-    if (includeExplanationSection) {
+    if (includeExplanationSection && indexOffset == 0) {
       titleWidget = Padding(
         padding: const EdgeInsets.only(top: 30),
         child: titleWidget,
@@ -118,7 +118,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
           padding: const EdgeInsets.only(right: 10),
           child: BoxGridWidget(
             rows: explanationRows,
-            headerRow: BoxGridWidget.explanationHeaderRow(),
+            headerRow: indexOffset == 0 ? BoxGridWidget.explanationHeaderRow() : null,
             includeRowLabels: false,
             nColumns: 1,
           ),

@@ -40,6 +40,20 @@ class BoxGridWidget extends StatelessWidget {
       gridRows.add(headerRow!);
     }
     gridRows.addAll(rows.map((r) => Row(children: r.cells)));
+    Widget g = Column(children: gridRows.map((r) => Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          left: 5,
+          top: 5 + (headerRow != null ? 30 : 0),
+          child: Container(
+            width: 30.0,
+            height: 30.0,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    )).toList());
     Widget grid = Stack(clipBehavior: Clip.none, children: [
       Positioned(
         left: 5,
@@ -50,7 +64,7 @@ class BoxGridWidget extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      Column(crossAxisAlignment: CrossAxisAlignment.end, children: gridRows),
+      Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.end, children: gridRows),
     ]);
 
     List<Widget> labels = [];

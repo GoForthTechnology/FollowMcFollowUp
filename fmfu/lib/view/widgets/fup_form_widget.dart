@@ -94,25 +94,36 @@ class Page4 extends AbstractPage {
 class Page5 extends AbstractPage {
   Page5({Key? key}) : super(key: key, pageNum: 5, content: [
     const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
-    const Padding(
-      padding: EdgeInsets.only(left: 20, top: 20),
-      child: Text("The Three Steps", style: subSectionHeadingStyle,),
-    ),
-    Padding(
-      padding: const EdgeInsets.all(10),
-      child: FollowUpFormSectionWidget.createSingle(
-        page5Items, groupIndex: 0,
-        explanationSectionTitle: "Reason for Observational Routine Explained\n(First FU -- \u2714 when reviewed)",
+    Expanded(child: Row(children: [
+      const RotatedBox(
+        quarterTurns: 3,
+        child: Text("Reason for Observational Routine Explained\n(First FU -- \u2714 when reviewed)", textAlign: TextAlign.center,),
       ),
-    ),
-    const Padding(
-      padding: EdgeInsets.only(left: 20),
-      child: Text("X. SPECIAL INSTRUCTIONS", style: subSectionHeadingStyle,),
-    ),
-    Padding(
-      padding: const EdgeInsets.all(10),
-      child: FollowUpFormSectionWidget.createSingle(page5Items, groupIndex: 1),
-    ),
+      Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 20, top: 20),
+          child: Text("The Three Steps", style: subSectionHeadingStyle,),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: FollowUpFormSectionWidget.createSingle(
+            page5Items, groupIndex: 0,
+            explanationSectionTitle: "",
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("X. SPECIAL INSTRUCTIONS", style: subSectionHeadingStyle,),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: FollowUpFormSectionWidget.createSingle(
+            page5Items, groupIndex: 1,
+            explanationSectionTitle: "",
+          ),
+        ),
+      ])),
+    ])),
     FollowUpFormSectionWidget.createSingle(page5Items, groupIndex: 2, boxSection: true),
     const CommentSectionWidget(numRows: 16, previousSection: 4),
   ]);
@@ -130,7 +141,7 @@ class Page6 extends AbstractPage {
       padding: const EdgeInsets.all(10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 1),
     ),
-    const CommentSectionWidget(numRows: 10, previousSection: 5),
+    const CommentSectionWidget(numRows: 7, previousSection: 5),
     Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 2),
@@ -150,7 +161,7 @@ class Page7 extends AbstractPage {
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
-    const CommentSectionWidget(numRows: 16, previousSection: 8),
+    const CommentSectionWidget(numRows: 13, previousSection: 8),
   ]);
 }
 
@@ -426,7 +437,7 @@ abstract class AbstractPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: 1300, width: pageWidth, child: Padding(padding: const EdgeInsets.all(20), child: Column(
+    return SizedBox(height: 1150, width: pageWidth, child: Padding(padding: const EdgeInsets.all(20), child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
