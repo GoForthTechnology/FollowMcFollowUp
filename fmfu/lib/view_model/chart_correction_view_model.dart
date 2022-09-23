@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
 
 class ChartCorrectionViewModel extends ChartViewModel {
+  final _entryIndex = StreamController<int>.broadcast();
+
   int entryIndex = 0;
   bool showCycleControlBar = false;
   bool showFullCycle = false;
-  bool showSticker = true;
+  bool showSticker = false;
 
   ChartCorrectionViewModel() : super(1) {
     toggleIncrementalMode();
     addCycle(CycleRecipe.create());
   }
+
+  Stream<int> get entryIndexStream => _entryIndex.stream;
 
   void toggleControlBar() {
     showCycleControlBar = !showCycleControlBar;
@@ -28,12 +34,12 @@ class ChartCorrectionViewModel extends ChartViewModel {
   }
 
   void nextEntry() {
-    entryIndex++;
+    _entryIndex.add(entryIndex++);
     notifyListeners();
   }
 
   void previousEntry() {
-    entryIndex--;
+    _entryIndex.add(entryIndex--);
     notifyListeners();
   }
 

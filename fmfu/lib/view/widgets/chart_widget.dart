@@ -25,7 +25,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: const EdgeInsets.all(20), child: SingleChildScrollView(
+    return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
           ..._createCycleRows(),
           if (includeFooter) _createFooterRow(),
         ],
-      )));
+      ));
   }
 
   Widget _createHeaderRow() {

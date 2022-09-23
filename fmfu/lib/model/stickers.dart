@@ -35,7 +35,7 @@ enum Sticker {
       case Sticker.white:
         return Colors.white;
       case Sticker.grey:
-        return Colors.grey;
+        return Colors.grey[300]!;
     }
   }
 

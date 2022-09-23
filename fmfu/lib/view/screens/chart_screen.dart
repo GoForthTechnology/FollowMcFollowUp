@@ -58,7 +58,7 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(children: [
-                  ChartWidget(
+                  Padding(padding: const EdgeInsets.all(20), child: ChartWidget(
                     editingEnabled: model.editEnabled,
                     showErrors: model.showErrors,
                     titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
@@ -83,7 +83,7 @@ class _ChartPageState extends State<ChartPage> {
                       ],
                     )),
                     chart: model.charts[model.chartIndex],
-                  ),
+                  )),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                 ],))
                )),

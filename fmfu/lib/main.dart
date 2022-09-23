@@ -5,6 +5,7 @@ import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ChartListViewModel()),
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
         ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
+        ChangeNotifierProvider.value(value: ExerciseViewModel()),
       ], child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
