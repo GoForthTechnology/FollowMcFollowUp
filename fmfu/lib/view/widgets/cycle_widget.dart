@@ -103,7 +103,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
     }
     if (soloingCell && !widget.soloCell!.showSticker) {
-      sticker = null;
+      sticker = StickerWithText(Sticker.grey, "?");
     }
     Widget stickerWidget = StickerWidget(
       stickerWithText: sticker,
@@ -230,10 +230,11 @@ class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
 }
 
 class StickerSelectionRow extends StatelessWidget {
+  final bool includeYellow;
   final Sticker? selectedSticker;
   final void Function(Sticker?) onSelect;
 
-  const StickerSelectionRow({super.key, this.selectedSticker, required this.onSelect});
+  const StickerSelectionRow({super.key, this.selectedSticker, required this.onSelect, this.includeYellow = false});
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +245,8 @@ class StickerSelectionRow extends StatelessWidget {
         _createDialogSticker(Sticker.green, selectedSticker, onSelect),
         _createDialogSticker(Sticker.greenBaby, selectedSticker, onSelect),
         _createDialogSticker(Sticker.whiteBaby, selectedSticker, onSelect),
+        if (includeYellow) _createDialogSticker(Sticker.yellow, selectedSticker, onSelect),
+        if (includeYellow) _createDialogSticker(Sticker.yellowBaby, selectedSticker, onSelect),
       ],
     );
   }

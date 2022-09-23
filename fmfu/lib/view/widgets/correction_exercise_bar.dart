@@ -14,6 +14,7 @@ class CorrectionExerciseBar extends StatelessWidget {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) => Row(children: [
       const Text("Select a Sticker: "),
       StickerSelectionRow(
+        includeYellow: true,
         selectedSticker: exerciseModel.currentStickerSelection,
         onSelect: exerciseModel.updateStickerSelection,
       ),
