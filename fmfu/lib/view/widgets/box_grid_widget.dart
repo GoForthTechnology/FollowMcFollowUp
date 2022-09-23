@@ -81,7 +81,7 @@ class GridRow {
     if (item.subSection == "") {
       return "";
     }
-    return "${item.section}${item.subSection}${item.subSubSection ?? ""}";
+    return "${item.section}${item.superSection ?? ""}${item.subSection}${item.subSubSection ?? ""}";
   }
 }
 

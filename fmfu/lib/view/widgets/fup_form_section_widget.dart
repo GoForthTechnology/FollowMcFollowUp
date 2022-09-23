@@ -80,7 +80,11 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
       }
     }
 
-    Widget titleWidget = Padding(padding: const EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: titles));
+    Widget titleWidget = Padding(padding: const EdgeInsets.only(top: 5), child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: titles,
+    ));
     if (boxSection) {
       titleWidget = Container(
         decoration: BoxDecoration(
@@ -119,7 +123,10 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
             nColumns: 1,
           ),
         ),
-        titleWidget,
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 550),
+          child: titleWidget,
+        ),
         const Spacer(),
         BoxGridWidget(
           rows: rows,
@@ -237,7 +244,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
   Widget _title(String code, String text, {TextStyle? style}) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (code != "") Text("$code. ", style: const TextStyle(fontWeight: FontWeight.bold)),
-      Text(text, style: style),
+      Expanded(child: Text(text, style: style, maxLines: 2, softWrap: true)),
     ]);
   }
 }

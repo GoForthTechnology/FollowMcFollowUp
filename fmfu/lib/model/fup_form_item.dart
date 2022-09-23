@@ -5,6 +5,7 @@ import 'package:fmfu/model/fup_form_entry.dart';
 class FollowUpFormItem {
 
   final int section;
+  final String? superSection;
   final String subSection;
   final String? subSubSection;
   final List<Question> questions;
@@ -15,6 +16,7 @@ class FollowUpFormItem {
     required this.section,
     required this.subSection,
     required this.questions,
+    this.superSection,
     this.subSubSection,
     this.disabledCells = const {},
   });
@@ -22,6 +24,7 @@ class FollowUpFormItem {
   FollowUpFormEntryId entryId(int questionIndex, int followUpNum) {
     return FollowUpFormEntryId(
       section: section,
+      superSection: superSection,
       subSection: subSection,
       subSubSection: subSubSection,
       questionIndex: questionIndex,
@@ -51,5 +54,4 @@ class Question {
   final List<String> acceptableInputs;
 
   const Question({required this.description, this.style, this.acceptableInputs = defaultAcceptableInputs});
-
 }

@@ -9,11 +9,9 @@ enum Instruction {
   d1, d2, d3, d4, d5, d6,
   e1, e2, e3, e4, e5, e6, e7,
   f, g1, g2, g3, h,
-  // TODO: i
+  i1, i2, i3, i4,
   j, k1, k2, k3, k4, k5, k6,
-  // TODO: l
-  m,
-  // TODO: n, o
+  l, m, n, o
   ;
 
   String get description {
@@ -60,6 +58,14 @@ enum Instruction {
         return "When anticipating double Peak, keep to the end of infertile days and continue good observations";
       case Instruction.h:
         return "When in doubt, consider yourself of peak fertility and count 3";
+      case Instruction.i1:
+        return "Avoid genital contact until good mucus is present";
+      case Instruction.i2:
+        return "Use days of greatest quantity and quality and first two days afterward";
+      case Instruction.i3:
+        return "Record the amount of stretch of the mucus (1\", 2\", 3\", etc.)";
+      case Instruction.i4:
+        return "Record abdominal pain (AP), right abdominal pain (RAP), and left abdominal pain (LAP)";
       case Instruction.j:
         return "Essential samness quesiton -- Is today essentially the same as yesterday? -- yes or no";
       case Instruction.k1:
@@ -74,8 +80,14 @@ enum Instruction {
         return "Discontinue use when period starts";
       case Instruction.k6:
         return "Discontinue pre-Peak Y.S. in regular cycles when mucus cycle < 9 days";
+      case Instruction.l:
+        return "If totally breastfeeding, first 56 days after birth of baby are infertile.";
       case Instruction.m:
         return "End of day instructions apply through the first normal menstrual cycle";
+      case Instruction.n:
+        return "End of day instructions apply through the first normal menstrual cycle.";
+      case Instruction.o:
+        return "Continue charting for the duration of the pregnancy";
     }
   }
 }

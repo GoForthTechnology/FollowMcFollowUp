@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_item.dart';
+import 'package:fmfu/model/instructions.dart';
 
 import 'comment_section_widget.dart';
 import 'fup_form_section_widget.dart';
@@ -54,8 +55,9 @@ class PagePair {
 final List<PagePair> pagePairs = [
   PagePair(Page4(), Page5()),
   PagePair(Page6(), Page7()),
-  PagePair(Page8(), Page9()),
+  PagePair(const Page8(), Page9()),
   PagePair(Page10(), Page11()),
+  PagePair(Page22(), Page23()),
 ];
 
 class Page3 extends AbstractPage {
@@ -300,6 +302,117 @@ class Page11 extends AbstractPage {
         FollowUpFormSectionWidget.createSingle(page11Items, groupIndex: 7, boxSection: true),
       ],
     )),
+  ]);
+}
+
+class Page22 extends AbstractPage {
+  Page22({Key? key}) : super(key: key, pageNum: 22, content: [
+    const Text("14) INSTRUCTIONS -- LIST AND INTEGRATION (\u2714 OR --)", style: sectionHeadingStyle),
+    Padding(padding: const EdgeInsets.all(10), child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Text("I. LIST", style: sectionHeadingStyle,),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 0),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("D. Days of fertility (Select to achieve pregnancy)"),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 1),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("E. Days of infertility (Select to avoid pregnancy)"),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 2),
+        ),
+        Padding( // F
+          padding: const EdgeInsets.only(left: 20),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 3),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("G. \"Double\" Peak"),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 4),
+        ),
+        Padding( // H
+          padding: const EdgeInsets.only(left: 20),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 5),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("I. Special Fertility Instructions (Subfertility clients only)"),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page22Items, groupIndex: 6),
+        ),
+      ],
+    ))
+  ]);
+}
+
+class Page23 extends AbstractPage {
+  Page23({Key? key}) : super(key: key, pageNum: 23, content: [
+    const Text("14) INSTRUCTIONS -- Cont'd", style: sectionHeadingStyle),
+    Padding(padding: const EdgeInsets.all(10), child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 0),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("K. Yellow Stamp Instructions"),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 1),
+        ),
+        Padding( // F
+          padding: const EdgeInsets.only(left: 20),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 2),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("Some random extra questions...", style: TextStyle(fontStyle: FontStyle.italic),),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 3),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 4, boxSection: true),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Text("II. INSTRUCTION INTEGRATION (Y or N)", style: sectionHeadingStyle,),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 5),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          child: FollowUpFormSectionWidget.createSingle(page23Items, groupIndex: 6, boxSection: true),
+        ),
+        const CommentSectionWidget(numRows: 5, previousSection: 14),
+      ],
+    ))
   ]);
 }
 
@@ -1078,7 +1191,7 @@ const List<List<FollowUpFormItem>> page9Items = [
       disabledCells: {0, 4, 6, 7},
       questions: [
         Question(
-          description: "Do you ever notice arousal fluid? (Y or N)\n(If yes, record her description in comments section)",
+          description: "Do you ever notice arousal fluid? (Y or N) (If yes, record her description in comments section)",
           acceptableInputs: ["Y", "N"],
         ),
       ],
@@ -1124,7 +1237,7 @@ const List<List<FollowUpFormItem>> page9Items = [
       disabledCells: {0, 4, 6, 7},
       questions: [
         Question(
-          description: "Employ seminal fluid instruction in order to prevent confusion, bladder infections, and the discomfort\nof an additional discharge",
+          description: "Employ seminal fluid instruction in order to prevent confusion, bladder infections, and the discomfort of an additional discharge",
         ),
       ],
     ),
@@ -1147,7 +1260,7 @@ const List<List<FollowUpFormItem>> page9Items = [
       disabledCells: {0},
       questions: [
         Question(
-          description: "Bear down and do several Kegel's exercises in an alternating fashion\nExplain Kegel's exercises (\u2714)",
+          description: "Bear down and do several Kegel's exercises in an alternating fashion Explain Kegel's exercises (\u2714)",
         ),
       ],
     ),
@@ -1196,7 +1309,7 @@ const List<List<FollowUpFormItem>> page9Items = [
       disabledCells: {0, 1},
       questions: [
         Question(
-          description: "Do you see a discharge the next day? (Y or N)\nIf yes, describe discharge, frequency and POA in comments",
+          description: "Do you see a discharge the next day? (Y or N) If yes, describe discharge, frequency and POA in comments",
           acceptableInputs: ["Y", "N"],
         ),
       ],
@@ -1398,7 +1511,7 @@ const List<List<FollowUpFormItem>> page11Items = [
       disabledCells: {0, 1, 5, 6, 7},
       questions: [
         Question(
-          description: "Can be physical or emotional, positive or negative (e.g. sickness, strenuous activity, change of job,\nmoving, bereavement, major decisions, holidays, relatives visiting, travel, weddings, exams, etc.)",
+          description: "Can be physical or emotional, positive or negative (e.g. sickness, strenuous activity, change of job, moving, bereavement, major decisions, holidays, relatives visiting, travel, weddings, exams, etc.)",
         ),
       ],
     ),
@@ -1555,7 +1668,7 @@ const List<List<FollowUpFormItem>> page11Items = [
       disabledCells: {0, 1, 5, 6, 7},
       questions: [
         Question(
-          description: "Are you under stress now or anticipating any stressful time in the near future? (Y or N)\n(If yes, comment required)",
+          description: "Are you under stress now or anticipating any stressful time in the near future? (Y or N) (If yes, comment required)",
           acceptableInputs: ["Y", "N"],
         ),
       ],
@@ -1568,8 +1681,527 @@ const List<List<FollowUpFormItem>> page11Items = [
           Question(
             description: "SECTION 11: IS MANAGEMENT OF SPECIAL CIRCUMSTANCES NECESSARY? (Y or N)",
             acceptableInputs: ["Y", "N"],
-            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ]),
+  ]
+];
+
+final List<List<FollowUpFormItem>> page22Items = [
+  [ // 0
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "A",
+      questions: [
+        Question(
+          description: Instruction.a.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "B",
+      questions: [
+        Question(
+          description: Instruction.b.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "C",
+      questions: [
+        Question(
+          description: Instruction.c.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ],[ // 1
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: Instruction.d1.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: Instruction.d2.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "3",
+      questions: [
+        Question(
+          description: Instruction.d3.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "4",
+      questions: [
+        Question(
+          description: Instruction.d4.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "5",
+      questions: [
+        Question(
+          description: Instruction.d5.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "D",
+      subSubSection: "6",
+      questions: [
+        Question(
+          description: Instruction.d6.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ //2
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: Instruction.e1.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: Instruction.e2.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "3",
+      questions: [
+        Question(
+          description: Instruction.e3.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "4",
+      questions: [
+        Question(
+          description: Instruction.e4.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "5",
+      questions: [
+        Question(
+          description: Instruction.e5.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "6",
+      questions: [
+        Question(
+          description: Instruction.e6.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "E",
+      subSubSection: "7",
+      questions: [
+        Question(
+          description: Instruction.e7.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 3
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "F",
+      questions: [
+        Question(
+          description: Instruction.f.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 4
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "G",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: Instruction.g1.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "G",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: Instruction.g2.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "G",
+      subSubSection: "3",
+      questions: [
+        Question(
+          description: Instruction.g3.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 5
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "H",
+      questions: [
+        Question(
+          description: Instruction.h.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 6
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "I",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: Instruction.i1.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "I",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: Instruction.i2.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "I",
+      subSubSection: "3",
+      questions: [
+        Question(
+          description: Instruction.i3.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "I",
+      subSubSection: "4",
+      questions: [
+        Question(
+          description: Instruction.i4.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ]
+];
+
+final List<List<FollowUpFormItem>> page23Items = [
+  [ // 0
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "J",
+      questions: [
+        Question(
+          description: Instruction.j.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 1
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: Instruction.k1.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: Instruction.k2.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "3",
+      questions: [
+        Question(
+          description: Instruction.k3.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "4",
+      questions: [
+        Question(
+          description: Instruction.k4.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "5",
+      questions: [
+        Question(
+          description: Instruction.k5.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "K",
+      subSubSection: "6",
+      questions: [
+        Question(
+          description: Instruction.k6.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [ // 2
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "L",
+      questions: [
+        Question(
+          description: Instruction.l.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "M",
+      questions: [
+        Question(
+          description: Instruction.m.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "N",
+      questions: [
+        Question(
+          description: Instruction.n.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+    FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "O",
+      questions: [
+        Question(
+          description: Instruction.o.description,
+          acceptableInputs: ["\u2714", "-"],
+        ),
+      ],
+    ),
+  ], [
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      // What even is this code...
+      subSection: "",
+      subSubSection: "1",
+      questions: [
+        Question(
+          description: "Can you define the \"end of day\"?",
+          acceptableInputs: ["1", "2"],
+        ),
+      ],
+    ),
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      // What even is this code...
+      subSection: "",
+      subSubSection: "2",
+      questions: [
+        Question(
+          description: "Achieving-related and avoiding-related use of the system discussed.",
+          acceptableInputs: ["\u2714"],
+        ),
+        Question(
+          description: "Exhibits understanding of achieving-related and avoiding-related use.",
+          acceptableInputs: ["1", "2"],
+        ),
+      ],
+    ),
+  ], [
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "I",
+      subSection: "Q",
+      questions: [
+        Question(
+          description: "SECTION 14-I: IS MANAGEMENT OF INSTRUCTIONS LIST NECESSARY? (Y or N)",
+          style: TextStyle(fontWeight: FontWeight.bold),
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+  ], [
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "II",
+      subSection: "A",
+      questions: [
+        Question(
+          description: "Client demonstrates understanding of basic system instructions",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "II",
+      subSection: "A",
+      questions: [
+        Question(
+          description: "Client demonstrates understanding of their system instructions",
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
+  ], [
+    const FollowUpFormItem(
+      section: 14,
+      superSection: "II",
+      subSection: "C",
+      questions: [
+        Question(
+          description: "SECTION 14-II: IS MANAGEMENT OF INSTRUCTION INTEGRATION NECESSARY? (Y or N)",
+          style: TextStyle(fontWeight: FontWeight.bold),
+          acceptableInputs: ["Y", "N"],
+        ),
+      ],
+    ),
   ]
 ];

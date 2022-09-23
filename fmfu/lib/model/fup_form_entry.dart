@@ -10,6 +10,7 @@ class FollowUpFormEntry {
 
 class FollowUpFormEntryId {
   final int section;
+  final String? superSection;
   final String subSection;
   final String? subSubSection;
   final int questionIndex;
@@ -18,6 +19,7 @@ class FollowUpFormEntryId {
   const FollowUpFormEntryId({
     required this.section,
     required this.subSection,
+    this.superSection,
     this.subSubSection = "",
     required this.questionIndex,
     required this.followUpIndex,
@@ -34,6 +36,7 @@ class FollowUpFormEntryId {
     if (other.runtimeType != runtimeType) return false;
     return other is FollowUpFormEntryId
         && other.section == section
+        && other.superSection == superSection
         && other.subSection == subSection
         && other.subSubSection == subSubSection
         && other.questionIndex == questionIndex
@@ -42,5 +45,5 @@ class FollowUpFormEntryId {
   }
 
   @override
-  int get hashCode => Object.hash(section, subSection, subSubSection, questionIndex, followUpIndex);
+  int get hashCode => Object.hash(section, superSection, subSection, subSubSection, questionIndex, followUpIndex);
 }

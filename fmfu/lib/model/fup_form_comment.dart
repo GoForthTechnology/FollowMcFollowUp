@@ -61,19 +61,21 @@ class CommentId {
 class BoxId {
   final int followUp;
   final int section;
+  final String? superSection;
   final String? subSection;
   final String? subSubSection;
 
   BoxId({
     required this.followUp,
     required this.section,
+    this.superSection,
     this.subSection,
     this.subSubSection,
   });
 
   @override
   String toString() {
-    return "{followUp: $followUp, section: $section, subSection: $subSection, subSubSection: $subSubSection}";
+    return "{followUp: $followUp, section: $section, superSection: $superSection, subSection: $subSection, subSubSection: $subSubSection}";
   }
 
   @override
