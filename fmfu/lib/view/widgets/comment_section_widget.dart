@@ -72,7 +72,7 @@ class CommentSectionWidget extends StatelessWidget {
     if (index == 0) {
       return DateFormat("yyyy-MM-dd").format(comment.date);
     }
-    if (index == 1) {
+    if (index == 1) { // Deferred to CellPainter
       return "";
     }
     if (index == 2) {
@@ -94,32 +94,42 @@ class CellPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var paint = Paint()..color = Colors.black;
     canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), paint);
+    _paintFollowUpNumber(canvas, size);
+    _paintSection(canvas, size);
+  }
 
-    if (comment != null) {
-      TextPainter textPainter = TextPainter(
-        text: TextSpan(
-          text: comment!.id.boxId.followUp.toString(),
-        ),
-        textDirection: ui.TextDirection.ltr,
-      );
-      textPainter.layout(
-        minWidth: 0,
-        maxWidth: size.width,
-      );
-      textPainter.paint(canvas, const Offset(10, 0));
-
-      TextPainter sectionPainter = TextPainter(
-        text: TextSpan(
-          text: comment!.id.boxId.section.toString(),
-        ),
-        textDirection: ui.TextDirection.ltr,
-      );
-      sectionPainter.layout(
-        minWidth: 0,
-        maxWidth: size.width,
-      );
-      sectionPainter.paint(canvas, Offset(size.width - 20, 10));
+  void _paintSection(Canvas canvas, Size size) {
+    if (comment == null) {
+      return;
     }
+    TextPainter sectionPainter = TextPainter(
+      text: TextSpan(
+        text: comment!.id.boxId.section.toString(),
+      ),
+      textDirection: ui.TextDirection.ltr,
+    );
+    sectionPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    sectionPainter.paint(canvas, Offset(size.width - 20, 10));
+  }
+
+  void _paintFollowUpNumber(Canvas canvas, Size size) {
+    if (comment == null) {
+      return;
+    }
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: comment!.id.boxId.followUp.toString(),
+      ),
+      textDirection: ui.TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    textPainter.paint(canvas, const Offset(10, 0));
   }
 
   @override
