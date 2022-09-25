@@ -1,5 +1,4 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
@@ -20,17 +19,20 @@ class ChartCorrectingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
       return Scaffold(
-          appBar: AppBar(
-            title: const Text("Basic Chart Correcting"),
-            actions: [
-              IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
-                model.toggleControlBar();
-              },),
-            ],
-          ),
-          body: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: Row(children: [
-            const Spacer(),
-            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+        appBar: AppBar(
+          title: const Text("Basic Chart Correcting"),
+          actions: [
+            IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+              model.toggleControlBar();
+            },),
+          ],
+        ),
+        body: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               if (model.showCycleControlBar) ControlBarWidget(model: model),
               ChartWidget(
                 chart: model.charts[0],
@@ -88,10 +90,9 @@ class ChartCorrectingScreen extends StatelessWidget {
                 ),
               ),
               const Padding(padding: EdgeInsets.only(top: 10), child: CorrectionExerciseBar()),
-            ]),
-            const Spacer(),
-          ]
-          ))));
+          ]),
+        )),
+      );
     });
   }
 }
