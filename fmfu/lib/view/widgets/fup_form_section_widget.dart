@@ -105,7 +105,6 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
     }
 
     return IntrinsicHeight(child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (includeExplanationSection) Padding(
           padding: const EdgeInsets.only(right: 10),
@@ -131,7 +130,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
         BoxGridWidget(
           rows: rows,
           headerRow: indexOffset == 0 ? BoxGridWidget.basicHeaderRow(8) : null,
-        )
+        ),
       ],
     ));
   }

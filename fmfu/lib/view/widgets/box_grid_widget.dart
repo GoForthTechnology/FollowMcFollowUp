@@ -40,20 +40,6 @@ class BoxGridWidget extends StatelessWidget {
       gridRows.add(headerRow!);
     }
     gridRows.addAll(rows.map((r) => Row(children: r.cells)));
-    Widget g = Column(children: gridRows.map((r) => Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          left: 5,
-          top: 5 + (headerRow != null ? 30 : 0),
-          child: Container(
-            width: 30.0,
-            height: 30.0,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    )).toList());
     Widget grid = Stack(clipBehavior: Clip.none, children: [
       Positioned(
         left: 5,
@@ -64,7 +50,7 @@ class BoxGridWidget extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.end, children: gridRows),
+      Column(crossAxisAlignment: CrossAxisAlignment.end, children: gridRows),
     ]);
 
     List<Widget> labels = [];
@@ -76,9 +62,17 @@ class BoxGridWidget extends StatelessWidget {
         labels.add(LegendCell(text: rows[i].rowLabel, width: 40,));
       }
     }
-    return Row(children: [
-      Column(children: labels),
-      grid,
+    return Column(children: [
+      const Spacer(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(children: labels),
+          grid,
+        ],
+      ),
+      const Spacer(),
     ],);
   }
 }
