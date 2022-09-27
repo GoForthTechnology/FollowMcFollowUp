@@ -110,7 +110,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
           padding: const EdgeInsets.only(right: 10),
           child: RotatedBox(
             quarterTurns: 3,
-            child: Text(explanationSectionTitle!),
+            child: Text(explanationSectionTitle!, textAlign: TextAlign.center,),
           ),
         ),
         if (includeExplanationSection) Padding(
@@ -144,10 +144,8 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
     showDialog(context: context, builder: (BuildContext context) {
       return Consumer<FollowUpFormViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) {
         var commentWidgets = model.getComments(BoxId(
-          section: item.section,
-          subSection: item.subSection,
-          subSubSection: item.subSubSection,
           followUp: followUpIndex,
+          itemId: item.id(),
         )).mapIndexed((i, comment) => CommentWidget(
           item: item,
           followUpIndex: followUpIndex,
@@ -168,9 +166,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
                   var item = items[itemIndex];
                   model.addComment(BoxId(
                     followUp: followUpIndex,
-                    section: item.section,
-                    subSection: item.subSection,
-                    subSubSection: item.subSubSection,
+                    itemId: item.id(),
                   ));
                 }),
                 child: const Text("Add Comment"),

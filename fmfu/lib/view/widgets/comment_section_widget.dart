@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
+import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
@@ -9,9 +11,30 @@ import 'package:provider/provider.dart';
 
 class CommentSectionWidget extends StatelessWidget {
   final int numRows;
-  final int previousSection;
+  final ItemId? previousItemId;
+  final ItemId? nextItemId;
+  final int numPreviousCommentRows;
 
-  const CommentSectionWidget({Key? key, required this.numRows, required this.previousSection}) : super(key: key);
+  const CommentSectionWidget({
+    Key? key,
+    required this.numRows,
+    required this.previousItemId,
+    required this.nextItemId,
+    required this.numPreviousCommentRows,
+  }) : super(key: key);
+
+  static CommentSectionWidget create(
+      int numRows,
+      List<FollowUpFormItem> previousItems,
+      List<FollowUpFormItem> nextItems,
+      {int numPreviousCommentRows = 0}) {
+    return CommentSectionWidget(
+      numRows: numRows,
+      previousItemId: previousItems.map((i) => i.id()).firstOrNull,
+      nextItemId: nextItems.map((i) => i.id()).firstOrNull,
+      numPreviousCommentRows: numPreviousCommentRows,
+    );
+  }
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);
@@ -33,7 +56,7 @@ class CommentSectionWidget extends StatelessWidget {
           _headerCell("Situation/Problem", headingStyle),
           _headerCell("Plan of Action", headingStyle),
         ], ),
-        ...List.generate(numRows, (index) => _row(index, model.getCommentsForSection(previousSection))),
+        ...List.generate(numRows, (index) => _row(index, model.getCommentsForSection(previousItemId, nextItemId))),
       ],
     ));
   }
@@ -104,7 +127,7 @@ class CellPainter extends CustomPainter {
     }
     TextPainter sectionPainter = TextPainter(
       text: TextSpan(
-        text: comment!.id.boxId.section.toString(),
+        text: comment!.id.boxId.itemId.section.toString(),
       ),
       textDirection: ui.TextDirection.ltr,
     );

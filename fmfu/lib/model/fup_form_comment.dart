@@ -1,3 +1,5 @@
+import 'package:fmfu/model/fup_form_item.dart';
+
 class FollowUpFormComment {
   final CommentId id;
   final DateTime date;
@@ -60,22 +62,16 @@ class CommentId {
 
 class BoxId {
   final int followUp;
-  final int section;
-  final String? superSection;
-  final String? subSection;
-  final String? subSubSection;
+  final ItemId itemId;
 
   BoxId({
     required this.followUp,
-    required this.section,
-    this.superSection,
-    this.subSection,
-    this.subSubSection,
+    required this.itemId,
   });
 
   @override
   String toString() {
-    return "{followUp: $followUp, section: $section, superSection: $superSection, subSection: $subSection, subSubSection: $subSubSection}";
+    return "{followUp: $followUp, itemId: $itemId}";
   }
 
   @override
@@ -84,12 +80,10 @@ class BoxId {
     if (other.runtimeType != runtimeType) return false;
     return other is BoxId
         && other.followUp == followUp
-        && other.section == section
-        && other.subSection == subSection
-        && other.subSubSection == subSubSection
+        && other.itemId == itemId;
     ;
   }
 
   @override
-  int get hashCode => Object.hash(followUp, section, subSection, subSubSection);
+  int get hashCode => Object.hash(followUp, itemId);
 }

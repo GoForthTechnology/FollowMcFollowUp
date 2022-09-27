@@ -18,9 +18,7 @@ class CommentWidget extends StatelessWidget with SaveItem {
       index: commentIndex,
       boxId: BoxId(
         followUp: followUpIndex,
-        section: item.section,
-        subSection: item.subSection,
-        subSubSection: item.subSubSection,
+        itemId: item.id(),
       ),
     ), super(key: key);
 

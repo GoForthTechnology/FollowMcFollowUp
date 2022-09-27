@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_entry.dart';
+import 'package:fmfu/model/fup_form_item.dart';
 import 'package:loggy/loggy.dart';
 
 class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
@@ -28,12 +29,12 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
     return comments[id] ?? [];
   }
 
-  List<FollowUpFormComment> getCommentsForSection(int sectionId) {
+  List<FollowUpFormComment> getCommentsForSection(ItemId? previousItemId, ItemId? nextItemId) {
     List<FollowUpFormComment> out = [];
     for (var boxId in comments.keys) {
-      if (boxId.section == sectionId) {
+      /*if (boxId.section == sectionId) {
         out.addAll(comments[boxId] ?? []);
-      }
+      }*/
     }
     return out;
   }
