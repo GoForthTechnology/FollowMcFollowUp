@@ -29,12 +29,13 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
     return comments[id] ?? [];
   }
 
-  List<FollowUpFormComment> getCommentsForSection(ItemId? previousItemId, ItemId? nextItemId) {
+  List<FollowUpFormComment> getCommentsForSection(ItemId previousItemId, ItemId? nextItemId) {
+
     List<FollowUpFormComment> out = [];
     for (var boxId in comments.keys) {
-      /*if (boxId.section == sectionId) {
+      if (boxId.itemId.section == previousItemId.section) {
         out.addAll(comments[boxId] ?? []);
-      }*/
+      }
     }
     return out;
   }

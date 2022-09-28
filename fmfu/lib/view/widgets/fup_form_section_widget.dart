@@ -157,10 +157,10 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
                 "Follow Up #${followUpIndex + 1} -- ${item.section}${item.subSection}"),
             // IntrinsicHeight to shrink the dialog around the column
             // BoxConstraint to keep it from growing unbounded horizontally
-            content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500), child: Column(children: [
+            content: IntrinsicHeight(child: ConstrainedBox(constraints: const BoxConstraints(minWidth: 350, maxWidth: 500, maxHeight: 500), child: Column(children: [
               ..._getItemRows(context, model, item, followUpIndex),
               // TODO: fix issue when too many comments are added
-              ...commentWidgets,
+              Expanded(child: Column(children: commentWidgets)),
               Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
                 onPressed: () => setState(() {
                   var item = items[itemIndex];

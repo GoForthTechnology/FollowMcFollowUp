@@ -17,6 +17,10 @@ class ItemId extends Comparable<ItemId> {
     return ItemId(item.section, item.superSection, item.subSection, item.subSubSection, item.previousSubSection, item.nextSubSection);
   }
 
+  String get code {
+    return "$section${superSection ?? ""}$subSection${subSubSection ?? ""}";
+  }
+
   @override
   String toString() {
     return "{section: $section, superSection: $superSection, subSection: $subSection, subSubSection: $subSubSection}";
