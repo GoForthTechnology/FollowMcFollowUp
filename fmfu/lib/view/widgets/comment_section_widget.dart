@@ -118,7 +118,6 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
       return "";
     }
     if (index == 2) {
-      print("Row Data: " + rowData.problemLines.join("\n"));
       return rowData.problemLines.join("\n");
     }
     if (index == 3) {
@@ -135,7 +134,7 @@ class CommentRowData {
   final List<String> problemLines;
   final List<String> planLines;
 
-  CommentRowData(this.date, this.followUpNumber, this.sectionCode, this.problemLines, this.planLines);
+  CommentRowData({this.date, this.followUpNumber, this.sectionCode, this.problemLines = const [], this.planLines = const []});
 
   static List<CommentRowData> fromComment(FollowUpFormComment comment) {
     List<String> clamp(String foo) {
@@ -166,7 +165,6 @@ class CommentRowData {
       List<List<String>> out = [];
       List<String> pair = [];
       for (var line in lines) {
-        print("Processing line: $line");
         if (pair.length == 2) {
           out.add(pair);
           pair = [];
@@ -194,19 +192,16 @@ class CommentRowData {
       }
       if (out.isEmpty) {
         out.add(CommentRowData(
-          DateFormat("yyyy-MM-dd").format(comment.date),
-          comment.id.index.toString(),
-          comment.id.boxId.itemId.code,
-          problemLines,
-          planLines,
+          date: DateFormat("yyyy-MM-dd").format(comment.date),
+          followUpNumber: comment.id.boxId.followUp.toString(),
+          sectionCode: comment.id.boxId.itemId.code,
+          planLines: planLines,
+          problemLines: problemLines,
         ));
       } else {
         out.add(CommentRowData(
-          null,
-          null,
-          null,
-          problemLines,
-          planLines,
+          problemLines: problemLines,
+          planLines: planLines,
         ));
       }
     }
