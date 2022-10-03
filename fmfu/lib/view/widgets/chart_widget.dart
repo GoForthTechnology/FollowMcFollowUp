@@ -9,6 +9,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
   final ChartViewModel model;
   final Widget? titleWidget;
   final bool editingEnabled;
+  final bool correctingEnabled;
   final bool showErrors;
   final bool showStats;
   final SoloCell? soloCell;
@@ -18,6 +19,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
     required this.chart,
     required this.model,
     this.editingEnabled = false,
+    this.correctingEnabled = false,
     this.showErrors = false,
     this.showStats = false,
     this.includeFooter = true,
@@ -76,6 +78,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
         cycle: slice.cycle,
         model: model,
         editingEnabled: editingEnabled,
+        correctingEnabled: correctingEnabled,
         showErrors: showErrors,
         dayOffset: slice.offset,
         showStats: showStats,

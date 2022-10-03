@@ -15,6 +15,7 @@ class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
   final bool showStats;
   final int dayOffset;
+  final bool correctingEnabled;
   final bool editingEnabled;
   final bool showErrors;
   final SoloCell? soloCell;
@@ -27,6 +28,7 @@ class CycleWidget extends StatefulWidget {
     required this.cycle,
     required this.model,
     this.editingEnabled = false,
+    this.correctingEnabled = false,
     this.showErrors = false,
     this.showStats = true,
     this.dayOffset = 0,
@@ -81,10 +83,11 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
         ),
       ],
     ));
+    var canShowDialog = widget.editingEnabled || widget.correctingEnabled;
     return ChartCellWidget(
       content: content,
       backgroundColor: textBackgroundColor,
-      onTap: (entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
+      onTap: (!canShowDialog || entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
     );
   }
 

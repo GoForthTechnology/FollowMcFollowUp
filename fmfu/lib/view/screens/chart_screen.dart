@@ -60,6 +60,7 @@ class _ChartPageState extends State<ChartPage> {
                 child: Column(children: [
                   Padding(padding: const EdgeInsets.all(20), child: ChartWidget(
                     editingEnabled: model.editEnabled,
+                    correctingEnabled: true,
                     showErrors: model.showErrors,
                     titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
                       children: [
