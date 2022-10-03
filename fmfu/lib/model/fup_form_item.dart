@@ -1,8 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_entry.dart';
+import 'package:fmfu/utils/better_comparable.dart';
 
-class ItemId extends Comparable<ItemId> {
+class ItemId extends BetterComparable<ItemId> {
   final int section;
   final String? superSection;
   final String subSection;
@@ -11,10 +12,17 @@ class ItemId extends Comparable<ItemId> {
   final String? previousSubSection;
   final String? nextSubSection;
 
-  ItemId(this.section, this.superSection, this.subSection, this.subSubSection, this.previousSubSection, this.nextSubSection);
+  ItemId({required this.section, this.superSection, required this.subSection, this.subSubSection, this.previousSubSection, this.nextSubSection});
 
   static ItemId forItem(FollowUpFormItem item) {
-    return ItemId(item.section, item.superSection, item.subSection, item.subSubSection, item.previousSubSection, item.nextSubSection);
+    return ItemId(
+      section: item.section,
+      superSection: item.superSection,
+      subSection: item.subSection,
+      subSubSection: item.subSubSection,
+      previousSubSection: item.previousSubSection,
+      nextSubSection: item.nextSubSection,
+    );
   }
 
   String get code {

@@ -1,42 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/logic/comment_manager.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_item.dart';
+import 'package:fmfu/model/fup_form_layout.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:loggy/loggy.dart';
 import 'dart:ui' as ui;
 
 import 'package:provider/provider.dart';
 
-
 class CommentSectionWidget extends StatelessWidget with UiLoggy {
-  final int numRows;
-  final ItemId previousItemId;
-  final ItemId? nextItemId;
-  final int numPreviousCommentRows;
+  final CommentSectionConfig config;
 
   const CommentSectionWidget({
     Key? key,
-    required this.numRows,
-    required this.previousItemId,
-    required this.nextItemId,
-    required this.numPreviousCommentRows,
+    required this.config,
   }) : super(key: key);
-
-  static CommentSectionWidget create(
-      int numRows,
-      List<FollowUpFormItem> previousItems,
-      List<FollowUpFormItem> nextItems,
-      {int numPreviousCommentRows = 0}) {
-    return CommentSectionWidget(
-      numRows: numRows,
-      previousItemId: previousItems.map((i) => i.id()).first,
-      nextItemId: nextItems.map((i) => i.id()).firstOrNull,
-      numPreviousCommentRows: numPreviousCommentRows,
-    );
-  }
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);
@@ -45,13 +26,7 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
   Widget build(BuildContext context) {
     const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
     return Consumer<FollowUpFormViewModel>(builder: (context, model, child) {
-      var comments = model.getCommentsForSection(previousItemId, nextItemId);
-      loggy.debug("Got ${comments.length} comments");
-      var commentRowData = comments
-          .map((comment) => CommentRowData.fromComment(comment))
-          .expand((i) => i)
-          .toList();
-      loggy.debug("Got ${commentRowData.length} row models");
+      var commentRowData = model.getCommentsForSection(config.firstItemId, config.lastItemIdExclusive);
       return Table(
         columnWidths: const {
           0: FixedColumnWidth(100),
@@ -67,7 +42,7 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
             _headerCell("Situation/Problem", headingStyle),
             _headerCell("Plan of Action", headingStyle),
           ],),
-          ...List.generate(numRows, (index) => _row(index, commentRowData)),
+          ...List.generate(config.numRows, (index) => _row(index, commentRowData)),
         ],
       );
     });
@@ -124,88 +99,6 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
       return rowData.planLines.join("\n");
     }
     throw Exception();
-  }
-}
-
-class CommentRowData {
-  final String? date;
-  final String? followUpNumber;
-  final String? sectionCode;
-  final List<String> problemLines;
-  final List<String> planLines;
-
-  CommentRowData({this.date, this.followUpNumber, this.sectionCode, this.problemLines = const [], this.planLines = const []});
-
-  static List<CommentRowData> fromComment(FollowUpFormComment comment) {
-    List<String> clamp(String foo) {
-      foo = foo.replaceAll("\n", " ");
-
-      List<String> lines = [];
-      var words = foo.split(" ");
-      String line = "";
-      for (var word in words) {
-        if (line.length > 70) {
-          throw Exception("Line $line is too long");
-        }
-        if (line.length + word.length + 1 < 71) {
-          line += "$word ";
-        } else {
-          if (line.isNotEmpty) {
-            lines.add(line);
-          }
-          line = "$word ";
-        }
-      }
-      if (line.isNotEmpty) {
-        lines.add(line);
-      }
-      return lines;
-    }
-    List<List<String>> pair(List<String> lines) {
-      List<List<String>> out = [];
-      List<String> pair = [];
-      for (var line in lines) {
-        if (pair.length == 2) {
-          out.add(pair);
-          pair = [];
-        }
-        pair.add(line);
-      }
-      if (pair.isNotEmpty) {
-        out.add(pair);
-      }
-      return out;
-    }
-    var problemLinePairs = pair(clamp(comment.problem));
-    var planLinePairs = pair(clamp(comment.planOfAction));
-    List<CommentRowData> out = [];
-    while (planLinePairs.isNotEmpty || problemLinePairs.isNotEmpty) {
-      List<String> problemLines = [];
-      if (problemLinePairs.isNotEmpty) {
-        problemLines = problemLinePairs.first;
-        problemLinePairs.removeAt(0);
-      }
-      List<String> planLines = [];
-      if (planLinePairs.isNotEmpty) {
-        planLines = planLinePairs.first;
-        planLinePairs.removeAt(0);
-      }
-      if (out.isEmpty) {
-        out.add(CommentRowData(
-          date: DateFormat("yyyy-MM-dd").format(comment.date),
-          followUpNumber: comment.id.boxId.followUp.toString(),
-          sectionCode: comment.id.boxId.itemId.code,
-          planLines: planLines,
-          problemLines: problemLines,
-        ));
-      } else {
-        out.add(CommentRowData(
-          problemLines: problemLines,
-          planLines: planLines,
-        ));
-      }
-    }
-    return out;
   }
 }
 

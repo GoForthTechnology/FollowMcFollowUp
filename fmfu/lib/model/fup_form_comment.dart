@@ -1,6 +1,6 @@
 import 'package:fmfu/model/fup_form_item.dart';
 
-class FollowUpFormComment {
+class FollowUpFormComment extends Comparable<FollowUpFormComment> {
   final CommentId id;
   final DateTime date;
   final String problem;
@@ -12,6 +12,10 @@ class FollowUpFormComment {
     required this.problem,
     required this.planOfAction,
   });
+
+  ItemId get itemId {
+    return id.boxId.itemId;
+  }
 
   FollowUpFormComment updateProblem(String problem) {
     return FollowUpFormComment(
@@ -30,13 +34,18 @@ class FollowUpFormComment {
       planOfAction: planOfAction,
     );
   }
+
+  @override
+  int compareTo(FollowUpFormComment other) {
+    return id.compareTo(other.id);
+  }
 }
 
-class CommentId {
+class CommentId extends Comparable<CommentId> {
   final BoxId boxId;
   final int index;
 
-  const CommentId({
+  CommentId({
     required this.boxId,
     required this.index,
   });
@@ -58,9 +67,18 @@ class CommentId {
   String toString() {
     return "{boxId: $boxId, index: $index}";
   }
+
+  @override
+  int compareTo(CommentId other) {
+    var boxIdResult = boxId.compareTo(other.boxId);
+    if (boxIdResult != 0) {
+      return boxIdResult;
+    }
+    return index.compareTo(other.index);
+  }
 }
 
-class BoxId {
+class BoxId extends Comparable<BoxId> {
   final int followUp;
   final ItemId itemId;
 
@@ -86,4 +104,13 @@ class BoxId {
 
   @override
   int get hashCode => Object.hash(followUp, itemId);
+
+  @override
+  int compareTo(BoxId other) {
+    var idResult = itemId.compareTo(other.itemId);
+    if (idResult != 0) {
+      return idResult;
+    }
+    return followUp.compareTo(other.followUp);
+  }
 }
