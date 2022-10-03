@@ -83,6 +83,7 @@ class _ChartPageState extends State<ChartPage> {
                       ],
                     )),
                     chart: model.charts[model.chartIndex],
+                    model: model,
                   )),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                 ],))

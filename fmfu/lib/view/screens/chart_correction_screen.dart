@@ -36,6 +36,7 @@ class ChartCorrectingScreen extends StatelessWidget {
               if (model.showCycleControlBar) ControlBarWidget(model: model),
               ChartWidget(
                 chart: model.charts[0],
+                model: model,
                 includeFooter: false,
                 soloCell: model.showFullCycle ? null : SoloCell(
                   cycleIndex: 0,

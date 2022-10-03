@@ -1,8 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/comment_manager.dart';
-import 'package:fmfu/model/fup_form_comment.dart';
-import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/model/fup_form_layout.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';

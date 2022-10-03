@@ -1,7 +1,8 @@
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
+import 'package:flutter/material.dart';
 
-class ChartListViewModel extends ChartViewModel {
+class ChartListViewModel extends ChartViewModel with ChangeNotifier {
 
   bool showCycleControlBar = false;
   bool showFollowUpForm = false;
@@ -11,6 +12,11 @@ class ChartListViewModel extends ChartViewModel {
 
   ChartListViewModel() : super(6) {
     updateCharts(CycleRecipe.create(), numCycles: 12);
+  }
+
+  @override
+  void onChartChange() {
+    notifyListeners();
   }
 
   void toggleControlBar() {

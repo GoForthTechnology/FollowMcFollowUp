@@ -7,11 +7,9 @@ import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
-import 'package:fmfu/view/widgets/cycle_stats_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
-import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:loggy/loggy.dart';
-import 'package:provider/provider.dart';
 
 class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
@@ -20,12 +18,14 @@ class CycleWidget extends StatefulWidget {
   final bool editingEnabled;
   final bool showErrors;
   final SoloCell? soloCell;
+  final ChartViewModel model;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
 
   const CycleWidget({
     required this.cycle,
+    required this.model,
     this.editingEnabled = false,
     this.showErrors = false,
     this.showStats = true,
@@ -73,7 +73,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       children: [
         TextSpan(
           text: entry == null ? "" : entry.observationText,
-          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
+          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : TextStyle(color: Colors.black),
         ),
         if (hasObservationCorrection) TextSpan(
           text: "\n$observationCorrection",
@@ -83,13 +83,8 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     ));
     return ChartCellWidget(
       content: content,
-      /*content: Text(
-          content,
-          style: const TextStyle(fontSize: 10),
-          textAlign: TextAlign.center,
-        ),*/
       backgroundColor: textBackgroundColor,
-      onTap: (entry == null) ? () {} : _showEditDialog(context, entryIndex, entry, observationCorrection),
+      onTap: (entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
     );
   }
 
@@ -127,7 +122,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     return stickerWidget;
   }
 
-  void Function() _showEditDialog(
+  void Function() _showObservationDialog(
       BuildContext context,
       int entryIndex,
       ChartEntry entry,
@@ -136,7 +131,13 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ObservationEditDialog(cycle: widget.cycle!, entry: entry, entryIndex: entryIndex);
+          return ObservationDialog(
+            cycle: widget.cycle!,
+            entry: entry,
+            entryIndex: entryIndex,
+            editEnabled: widget.editingEnabled,
+            model: widget.model,
+          );
         },
       );
     };
@@ -150,7 +151,11 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return StickerCorrectionDialog(entryIndex: entryIndex, cycle: widget.cycle!, editingEnabled: widget.editingEnabled);
+          return StickerCorrectionDialog(
+            model: widget.model,
+            entryIndex: entryIndex,
+            cycle: widget.cycle!,
+            editingEnabled: widget.editingEnabled);
         },
       );
     };
@@ -162,56 +167,63 @@ class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
   final int entryIndex;
   final bool editingEnabled;
   final StickerWithText? existingCorrection;
+  final ChartViewModel model;
 
-  const StickerCorrectionDialog({Key? key, required this.entryIndex, this.existingCorrection, required this.cycle, required this.editingEnabled}) : super(key: key);
+  const StickerCorrectionDialog({
+    Key? key,
+    required this.entryIndex,
+    this.existingCorrection,
+    required this.cycle,
+    required this.editingEnabled,
+    required this.model,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Sticker? selectedSticker = existingCorrection?.sticker;
     String? selectedStickerText = existingCorrection?.text;
     return StatefulBuilder(builder: (context, setState) {
-      return Consumer<ChartListViewModel>(
-          builder: (context, model, child) => AlertDialog(
-            title: const Text('Sticker Correction'),
-            content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
-              setState(() {
-                if (selectedSticker == sticker) {
-                  selectedSticker = null;
-                } else {
-                  selectedSticker = sticker;
-                }
-              });
-            }, (text) {
-              setState(() {
-                if (selectedStickerText == text) {
-                  selectedStickerText = null;
-                } else {
-                  selectedStickerText = text;
-                }
-              });
-            }),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  StickerWithText? correction;
-                  if (selectedSticker != null) {
-                    correction = StickerWithText(selectedSticker!, selectedStickerText);
-                  }
-                  if (!editingEnabled) {
-                    model.updateStickerCorrections(cycle.index, entryIndex, correction);
-                  } else {
-                    model.editSticker(cycle.index, entryIndex, correction);
-                  }
-                  Navigator.pop(context, 'OK');
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ));
+      return AlertDialog(
+        title: const Text('Sticker Correction'),
+        content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
+          setState(() {
+            if (selectedSticker == sticker) {
+              selectedSticker = null;
+            } else {
+              selectedSticker = sticker;
+            }
+          });
+        }, (text) {
+          setState(() {
+            if (selectedStickerText == text) {
+              selectedStickerText = null;
+            } else {
+              selectedStickerText = text;
+            }
+          });
+        }),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              StickerWithText? correction;
+              if (selectedSticker != null) {
+                correction = StickerWithText(selectedSticker!, selectedStickerText);
+              }
+              if (!editingEnabled) {
+                model.updateStickerCorrections(cycle.index, entryIndex, correction);
+              } else {
+                model.editSticker(cycle.index, entryIndex, correction);
+              }
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
     });
   }
 
@@ -300,32 +312,43 @@ Widget _createDialogTextSticker(String text, String? selectedText, void Function
 }
 
 
-class ObservationEditDialog extends StatelessWidget with UiLoggy {
+class ObservationDialog extends StatelessWidget with UiLoggy {
   final Cycle cycle;
   final ChartEntry entry;
   final int entryIndex;
   final String? correction;
+  final ChartViewModel model;
+  final bool editEnabled;
 
-  const ObservationEditDialog({super.key, required this.cycle, required this.entry, this.correction, required this.entryIndex});
+
+  const ObservationDialog({
+    super.key,
+    required this.cycle,
+    required this.entry,
+    this.correction,
+    required this.entryIndex,
+    required this.model,
+    required this.editEnabled,
+  });
 
   @override
   Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
     var cycleIndex = cycle.index;
-    return Consumer<ChartListViewModel>(builder: (context, model, child) => StatefulBuilder(builder: (context, setState) => AlertDialog(
-      title: Text(model.editEnabled ? "Edit Observation" : "Correct Observation"),
+    return StatefulBuilder(builder: (context, setState) => AlertDialog(
+      title: Text(editEnabled ? "Edit Observation" : "Correct Observation"),
       content: Form(
         key: formKey,
         child: TextFormField(
-          initialValue: model.editEnabled ? entry.observationText : correction ?? entry.observationText,
+          initialValue: editEnabled ? entry.observationText : correction ?? entry.observationText,
           validator: (value) {
-            if (!model.editEnabled && (value == null || value.isEmpty)) {
+            if (!editEnabled && (value == null || value.isEmpty)) {
               return 'Please enter some text';
             }
             return null;
           },
           onSaved: (value) {
-            if (model.editEnabled) {
+            if (editEnabled) {
               if (value == null) {
                 throw Exception(
                     "Validation should have prevented saving a null value");
@@ -344,7 +367,7 @@ class ObservationEditDialog extends StatelessWidget with UiLoggy {
           onPressed: () => Navigator.pop(context, 'Cancel'),
           child: const Text('Cancel'),
         ),
-        if (!model.editEnabled && correction != null) TextButton(
+        if (!editEnabled && correction != null) TextButton(
           onPressed: () {
             model.updateObservationCorrections(cycleIndex, entryIndex, null);
             Navigator.pop(context, 'CLEAR');
@@ -361,6 +384,6 @@ class ObservationEditDialog extends StatelessWidget with UiLoggy {
           child: const Text('OK'),
         ),
       ],
-    )));
+    ));
   }
 }

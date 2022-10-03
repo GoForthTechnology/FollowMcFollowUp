@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
 
-class ChartCorrectionViewModel extends ChartViewModel {
+class ChartCorrectionViewModel extends ChartViewModel with ChangeNotifier {
   final _entryIndex = StreamController<int>.broadcast();
 
   int entryIndex = 0;
@@ -14,6 +15,10 @@ class ChartCorrectionViewModel extends ChartViewModel {
   ChartCorrectionViewModel() : super(1) {
     toggleIncrementalMode();
     addCycle(CycleRecipe.create());
+  }
+
+  void onChartChange() {
+    notifyListeners();
   }
 
   Stream<int> get entryIndexStream => _entryIndex.stream;

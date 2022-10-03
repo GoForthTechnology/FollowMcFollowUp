@@ -8,7 +8,7 @@ import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 
-class ChartViewModel with ChangeNotifier, GlobalLoggy {
+abstract class ChartViewModel with GlobalLoggy {
   static final List<Instruction> _defaultInstructions = _getActiveInstructions(false, false);
 
   final numCyclesPerChart;
@@ -20,6 +20,8 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
 
   ChartViewModel(this.numCyclesPerChart);
 
+  void onChartChange();
+
   void toggleIncrementalMode() {
     if (incrementalMode) {
       _initCharts();
@@ -28,7 +30,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
       charts = _getCharts(cycles);
     }
     incrementalMode = !incrementalMode;
-    notifyListeners();
+    onChartChange();
   }
 
   void updateCharts(
@@ -45,7 +47,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles = _getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
     charts = _getCharts(cycles);
-    notifyListeners();
+    onChartChange();
   }
 
   void swapLastCycle(
@@ -67,7 +69,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     int lastIndex = cycles.length - 1;
     cycles[lastIndex] = _getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios)[0];
     charts = _getCharts(cycles);
-    notifyListeners();
+    onChartChange();
   }
 
   void addCycle(
@@ -84,7 +86,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
     charts = _getCharts(cycles);
-    notifyListeners();
+    onChartChange();
   }
 
   void updateErrors(List<ErrorScenario> errorScenarios) {
@@ -100,7 +102,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     cycles = updatedCycles;
     charts = _getCharts(cycles);
     this.errorScenarios = errorScenarios;
-    notifyListeners();
+    onChartChange();
   }
 
   void updateStickerCorrections(int cycleIndex, int entryIndex, StickerWithText? correction) {
@@ -113,7 +115,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     } else {
       cycle.stickerCorrections[entryIndex] = correction;
     }
-    notifyListeners();
+    onChartChange();
   }
 
   void updateObservationCorrections(int cycleIndex, int entryIndex, String? correction) {
@@ -126,7 +128,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
     } else {
       cycle.observationCorrections[entryIndex] = correction;
     }
-    notifyListeners();
+    onChartChange();
   }
 
   void editSticker(int cycleIndex, int entryIndex, StickerWithText? edit) {
@@ -141,7 +143,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
       manualSticker: edit,
     );
     loggy.info("Altering sticker for cycle $cycleIndex @ $entryIndex");
-    notifyListeners();
+    onChartChange();
   }
 
   void editEntry(int cycleIndex, int entryIndex, String observationText) {
@@ -175,7 +177,7 @@ class ChartViewModel with ChangeNotifier, GlobalLoggy {
       );
       loggy.info("Adding invalid entry to cycle $cycleIndex @ $entryIndex");
     }
-    notifyListeners();
+    onChartChange();
   }
 
   static List<Instruction> _getActiveInstructions(bool prePeakYellowStamps, bool postPeakYellowStamps) {

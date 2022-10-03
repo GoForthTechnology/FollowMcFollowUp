@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view/widgets/cycle_widget.dart';
+import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:loggy/loggy.dart';
 
 class ChartWidget extends StatelessWidget with UiLoggy {
   final Chart chart;
+  final ChartViewModel model;
   final Widget? titleWidget;
   final bool editingEnabled;
   final bool showErrors;
@@ -14,6 +16,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
 
   const ChartWidget({
     required this.chart,
+    required this.model,
     this.editingEnabled = false,
     this.showErrors = false,
     this.showStats = false,
@@ -71,6 +74,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
     for (var slice in chart.cycles) {
       rows.add(CycleWidget(
         cycle: slice.cycle,
+        model: model,
         editingEnabled: editingEnabled,
         showErrors: showErrors,
         dayOffset: slice.offset,
