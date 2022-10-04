@@ -70,11 +70,12 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     bool hasObservationCorrection = observation != null && observationCorrection != null;
+    String? dateString = entry?.renderedObservation?.date?.toString("MM/dd");
     var content = RichText(textAlign: TextAlign.center, text: TextSpan(
       style: const TextStyle(fontSize: 10, color: Colors.black),
       children: [
-        const TextSpan(
-          text: "00/00\n",
+        if (dateString != null) TextSpan(
+          text: "$dateString\n",
         ),
         const TextSpan(
           text: "\n",

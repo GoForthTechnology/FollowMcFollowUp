@@ -7,11 +7,13 @@ import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
+import 'package:time_machine/time_machine.dart';
 
 abstract class ChartViewModel with GlobalLoggy {
   static final List<Instruction> _defaultInstructions = _getActiveInstructions(false, false);
+  static final LocalDate _startDate = LocalDate(DateTime.now().year, 1, 1);
 
-  final numCyclesPerChart;
+  final int numCyclesPerChart;
   bool incrementalMode = false;
   List<Instruction> activeInstructions = _defaultInstructions;
   List<ErrorScenario> errorScenarios = [];
@@ -197,17 +199,25 @@ abstract class ChartViewModel with GlobalLoggy {
       bool askESQ,
       List<Instruction> instructions,
       List<ErrorScenario> errorScenarios) {
-    return List.generate(numCycles, (index) => Cycle(
-      index: index,
-      entries: introduceErrors(renderObservations(recipe.getObservations(askESQ: askESQ), instructions)
-          .map((observation) => ChartEntry(
-        observationText: observation.observationText,
-        renderedObservation: observation,
-      ))
-          .toList(), errorScenarios),
-      stickerCorrections: {},
-      observationCorrections: {},
-    ));
+    List<Cycle> cycles = [];
+    LocalDate currentDate = _startDate;
+    for (int i=0; i<numCycles; i++) {
+      var observations = recipe.getObservations(askESQ: askESQ);
+      var renderedObservations = renderObservations(observations, instructions, startDate: currentDate);
+      currentDate = currentDate.addDays(renderedObservations.length);
+      var chartEntries = renderedObservations.map((o) => ChartEntry(
+          observationText: o.observationText,
+          renderedObservation: o,
+      )).toList();
+      chartEntries = introduceErrors(chartEntries, errorScenarios);
+      cycles.add(Cycle(
+        index: i,
+        entries: chartEntries,
+        stickerCorrections: {},
+        observationCorrections: {},
+      ));
+    }
+    return cycles;
   }
 
   List<Chart> _getCharts(List<Cycle> cycles) {

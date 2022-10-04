@@ -4,14 +4,16 @@ import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/model/instructions.dart';
+import 'package:time_machine/time_machine.dart';
 
-List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions) {
+List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions, {LocalDate? startDate}) {
   int daysOfFlow = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;
   CountsOfThree countsOfThree = CountsOfThree();
   bool yesterdayWasEssentiallyTheSame = false;
   int pointOfChangeCount = 0;
+  LocalDate? currentDate = startDate;
 
   List<RenderedObservation> renderedObservations = [];
   for (int i=0; i < observations.length; i++) {
@@ -119,9 +121,13 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         DebugInfo(
           countOfThreeReason: activeCountOfThreeReason,
         ),
+        currentDate,
     ));
 
     yesterdayWasEssentiallyTheSame = observation.essentiallyTheSame ?? false;
+    if (currentDate != null) {
+      currentDate = currentDate.addDays(1);
+    }
   }
   return renderedObservations;
 }
@@ -137,8 +143,9 @@ class RenderedObservation {
   final List<Instruction> fertilityReasons;
   final List<Instruction> infertilityReasons;
   final DebugInfo _debugInfo;
+  final LocalDate? date;
 
-  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this._debugInfo);
+  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this._debugInfo, this.date);
 
   String debugInfo() {
     return "{debugInfo: $_debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
