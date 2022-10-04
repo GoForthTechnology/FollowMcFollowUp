@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
@@ -10,6 +11,7 @@ import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:loggy/loggy.dart';
+import 'package:time_machine/time_machine.dart' as time;
 
 class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
@@ -62,35 +64,21 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
 
   Widget _createObservationCell(int entryIndex) {
     var entry = _getChartEntry(entryIndex);
-    RenderedObservation? observation = entry?.renderedObservation;
 
     var textBackgroundColor = Colors.white;
     if (widget.showErrors && (entry?.hasErrors() ?? false)) {
       textBackgroundColor = const Color(0xFFEECDCD);
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
-    bool hasObservationCorrection = observation != null && observationCorrection != null;
-    String? dateString = entry?.renderedObservation?.date?.toString("MM/dd");
-    var content = RichText(textAlign: TextAlign.center, text: TextSpan(
-      style: const TextStyle(fontSize: 10, color: Colors.black),
-      children: [
-        if (dateString != null) TextSpan(
-          text: "$dateString\n",
-        ),
-        const TextSpan(
-          text: "\n",
-          style: TextStyle(fontSize: 5),
-        ),
-        TextSpan(
-          text: entry == null ? "" : entry.observationText,
-          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
-        ),
-        if (hasObservationCorrection) TextSpan(
-          text: "\n$observationCorrection",
-          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 10),
-        ),
-      ],
-    ));
+    time.LocalDate? entryDate = entry?.renderedObservation?.date;
+    bool hasFollowup = entryDate != null && widget.model.followUps.contains(entryDate);
+    Widget content = CustomPaint(
+      painter: ObservationPainter(
+        entry,
+        observationCorrection,
+        drawOval: hasFollowup,
+      ),
+    );
     var canShowDialog = widget.editingEnabled || widget.correctingEnabled;
     return ChartCellWidget(
       alignment: Alignment.topCenter,
@@ -171,6 +159,80 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
         },
       );
     };
+  }
+}
+
+class ObservationPainter extends CustomPainter {
+  final ChartEntry? entry;
+  final String? observationCorrection;
+  final bool drawOval;
+
+  ObservationPainter(this.entry, this.observationCorrection, {this.drawOval = false});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawText(canvas, size);
+    if (drawOval) {
+      _drawOval(canvas);
+    }
+  }
+
+  void _drawText(Canvas canvas, Size size) {
+    TextPainter textPainter = TextPainter(
+      text: _getText(),
+      textDirection: ui.TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+    );
+    final xCenter = (size.width - textPainter.width) / 2;
+    const yCenter = 0.0;
+    final Offset offset = Offset(xCenter, yCenter);
+    textPainter.paint(canvas, offset);
+  }
+
+  void _drawOval(Canvas canvas) {
+    var paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+    ;
+    canvas.drawOval(Rect.fromCenter(
+      center: const Offset(0, 6),
+      width: 36,
+      height: 20,
+    ), paint);
+  }
+
+  TextSpan _getText() {
+    RenderedObservation? observation = entry?.renderedObservation;
+    bool hasObservationCorrection = observation != null && observationCorrection != null;
+    String? dateString = entry?.renderedObservation?.date?.toString("MM/dd");
+    return TextSpan(
+      style: const TextStyle(fontSize: 10, color: Colors.black),
+      children: [
+        if (dateString != null) TextSpan(
+          text: "$dateString\n",
+        ),
+        const TextSpan(
+          text: "\n",
+          style: TextStyle(fontSize: 5),
+        ),
+        TextSpan(
+          text: entry?.observationText ?? "",
+          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
+        ),
+        if (hasObservationCorrection) TextSpan(
+          text: "\n$observationCorrection",
+          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 10),
+        ),
+      ],
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
 

@@ -19,10 +19,25 @@ abstract class ChartViewModel with GlobalLoggy {
   List<ErrorScenario> errorScenarios = [];
   List<Cycle> cycles = [];
   List<Chart> charts = [];
+  Set<LocalDate> followUps = {LocalDate(2022, 1, 15)};
 
   ChartViewModel(this.numCyclesPerChart);
 
   void onChartChange();
+
+  bool hasFollowUp(LocalDate date) {
+    return followUps.contains(date);
+  }
+
+  void addFollowUp(LocalDate date) {
+    followUps.add(date);
+    onChartChange();
+  }
+
+  void removeFollowUp(LocalDate date) {
+    followUps.remove(date);
+    onChartChange();
+  }
 
   void toggleIncrementalMode() {
     if (incrementalMode) {
