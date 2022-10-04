@@ -19,7 +19,7 @@ abstract class ChartViewModel with GlobalLoggy {
   List<ErrorScenario> errorScenarios = [];
   List<Cycle> cycles = [];
   List<Chart> charts = [];
-  Set<LocalDate> followUps = {LocalDate(2022, 1, 15)};
+  final Set<LocalDate> followUps = {};
 
   ChartViewModel(this.numCyclesPerChart);
 
