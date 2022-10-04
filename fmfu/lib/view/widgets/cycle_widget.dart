@@ -70,7 +70,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     bool hasObservationCorrection = observation != null && observationCorrection != null;
-    var content = RichText(text: TextSpan(
+    var content = RichText(textAlign: TextAlign.center, text: TextSpan(
       style: const TextStyle(fontSize: 10, color: Colors.black),
       children: [
         const TextSpan(
