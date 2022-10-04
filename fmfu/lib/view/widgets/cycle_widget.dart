@@ -71,11 +71,18 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     bool hasObservationCorrection = observation != null && observationCorrection != null;
     var content = RichText(text: TextSpan(
-      style: const TextStyle(fontSize: 10),
+      style: const TextStyle(fontSize: 10, color: Colors.black),
       children: [
+        const TextSpan(
+          text: "00/00\n",
+        ),
+        const TextSpan(
+          text: "\n",
+          style: TextStyle(fontSize: 5),
+        ),
         TextSpan(
           text: entry == null ? "" : entry.observationText,
-          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : TextStyle(color: Colors.black),
+          style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
         ),
         if (hasObservationCorrection) TextSpan(
           text: "\n$observationCorrection",
@@ -85,6 +92,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     ));
     var canShowDialog = widget.editingEnabled || widget.correctingEnabled;
     return ChartCellWidget(
+      alignment: Alignment.topCenter,
       content: content,
       backgroundColor: textBackgroundColor,
       onTap: (!canShowDialog || entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
