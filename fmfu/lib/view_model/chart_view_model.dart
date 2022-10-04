@@ -22,12 +22,20 @@ abstract class ChartViewModel with GlobalLoggy {
 
   final List<LocalDate> _followUps = [];
   LocalDate? _currentFollowup;
+  LocalDate _startOfCharting = LocalDate(DateTime.now().year, 1, 1);
 
   ChartViewModel(this.numCyclesPerChart);
 
   void onChartChange();
 
+  void setStartOfCharting(LocalDate date) {
+    _startOfCharting = date;
+    onChartChange();
+  }
 
+  LocalDate startOfCharting() {
+    return _startOfCharting;
+  }
 
   int? currentFollowUpNumber() {
     if (_currentFollowup == null) {

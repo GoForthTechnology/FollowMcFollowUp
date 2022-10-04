@@ -62,6 +62,16 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     return null;
   }
 
+  bool _shouldSuppress(time.LocalDate? entryDate) {
+    if (entryDate == null) {
+      return false;
+    }
+    var currentFollowUpDate = widget.model.currentFollowUpDate();
+    bool suppressForFollowup = currentFollowUpDate != null && entryDate > currentFollowUpDate;
+    bool suppressForStartOfCharting = entryDate < widget.model.startOfCharting();
+    return suppressForFollowup || suppressForStartOfCharting;
+  }
+
   Widget _createObservationCell(int entryIndex) {
     var entry = _getChartEntry(entryIndex);
 
@@ -71,8 +81,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     time.LocalDate? entryDate = entry?.renderedObservation?.date;
-    var currentFollowUpDate = widget.model.currentFollowUpDate();
-    if (currentFollowUpDate != null && entryDate != null && entryDate > currentFollowUpDate) {
+    if (_shouldSuppress(entryDate)) {
       entry = null;
     }
     bool hasFollowup = entryDate != null && widget.model.followUps().contains(entryDate);
@@ -101,9 +110,8 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     if (sticker == null && observation != null) {
       sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
     }
-    var currentFollowUpDate = widget.model.currentFollowUpDate();
     var entryDate = entry?.renderedObservation?.date;
-    if (currentFollowUpDate != null && entryDate != null && entryDate > currentFollowUpDate) {
+    if (_shouldSuppress(entryDate)) {
       sticker = null;
     }
     if (soloingCell && !widget.soloCell!.showSticker) {

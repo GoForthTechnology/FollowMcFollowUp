@@ -322,7 +322,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   Row _followUpDatesRow() {
     List<Widget> followUps = widget.model.followUps()
         .map((followUp) => Chip(
-          label: Text(followUp.toString()),
+          label: Text(followUp.toString("MM/dd")),
           onDeleted: () {
             widget.model.removeFollowUp(followUp);
           },
@@ -332,7 +332,21 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
 
     return Row(
       children: [
-        const Text("Follow Up Dates    ", style: TextStyle(fontWeight: FontWeight.bold),),
+        const Text("Start of charting    ", style: TextStyle(fontWeight: FontWeight.bold),),
+        ElevatedButton(onPressed: () {
+          showDatePicker(
+          context: context,
+          initialDate: DateTime(2022),
+          firstDate: DateTime(2022),
+          lastDate: DateTime(2023),
+          //selectableDayPredicate: (day) => widget.model.hasFollowUp(LocalDate.dateTime(day)),
+          ).then((date) {
+            if (date != null) {
+              widget.model.setStartOfCharting(LocalDate.dateTime(date));
+            }
+          });
+        }, child: Text(widget.model.startOfCharting().toString("MM/dd"))),
+        const Padding(padding: EdgeInsets.only(left: 30, right:30), child: Text("Follow Up Dates", style: TextStyle(fontWeight: FontWeight.bold))),
         ...followUps,
         ElevatedButton(onPressed: () {
           showDatePicker(
