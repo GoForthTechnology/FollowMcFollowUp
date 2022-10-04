@@ -320,8 +320,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   }
 
   Row _followUpDatesRow() {
-    List<Widget> followUps = widget.model.followUps
-        .sorted((a, b) => a.compareTo(b))
+    List<Widget> followUps = widget.model.followUps()
         .map((followUp) => Chip(
           label: Text(followUp.toString()),
           onDeleted: () {

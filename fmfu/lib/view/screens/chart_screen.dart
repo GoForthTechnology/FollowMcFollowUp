@@ -58,41 +58,65 @@ class _ChartPageState extends State<ChartPage> {
               Expanded(child: Center(child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(children: [
-                  Padding(padding: const EdgeInsets.all(20), child: ChartWidget(
-                    editingEnabled: model.editEnabled,
-                    correctingEnabled: true,
-                    showErrors: model.showErrors,
-                    titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
-                      children: [
-                        Text(
-                          "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                          onPressed: model.showPreviousButton() ? () => model.moveToPreviousChart() : null,
-                          child: const Text("Previous"),
-                        )),
-                        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                          onPressed: model.showNextButton() ? () => model.moveToNextChart() : null,
-                          child: const Text("Next"),
-                        )),
-                        if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
-                        if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
-                      ],
-                    )),
-                    chart: model.charts[model.chartIndex],
-                    model: model,
-                  )),
+                  Padding(padding: const EdgeInsets.all(20), child: _chartWidget(model)),
                   if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
-                ],))
+                ]))
                )),
             ],
           ),
         ),
       )
+    ));
+  }
+
+  ChartWidget _chartWidget(ChartListViewModel model) {
+    return  ChartWidget(
+      model: model,
+      editingEnabled: model.editEnabled,
+      correctingEnabled: true,
+      showErrors: model.showErrors,
+      titleWidget: _chartTitleWidget(model),
+      chart: model.charts[model.chartIndex],
+    );
+  }
+
+  Widget _chartTitleWidget(ChartListViewModel model) {
+    return Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
+      children: [
+        Text(
+          "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+          onPressed: model.showPreviousButton() ? () => model.moveToPreviousChart() : null,
+          child: const Text("Previous"),
+        )),
+        Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+          onPressed: model.showNextButton() ? () => model.moveToNextChart() : null,
+          child: const Text("Next"),
+        )),
+        if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
+        if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
+        if (model.followUps().isNotEmpty) ...[
+          Padding(padding: EdgeInsets.only(left: 20), child: Text(
+            "Current Follow Up: #${model.currentFollowUpNumber()}",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          )),
+          Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+              onPressed: model.hasPreviousFollowUp() ? () {
+                model.goToPreviousFollowup();
+              } : null,
+              child: const Text("Previous Followup"))),
+          Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+              onPressed: model.hasNextFollowUp() ? () {
+                model.goToNextFollowup();
+              } : null,
+              child: const Text("Next Followup"))),
+        ],
+      ],
     ));
   }
 }

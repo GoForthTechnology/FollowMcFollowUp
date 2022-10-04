@@ -19,24 +19,91 @@ abstract class ChartViewModel with GlobalLoggy {
   List<ErrorScenario> errorScenarios = [];
   List<Cycle> cycles = [];
   List<Chart> charts = [];
-  final Set<LocalDate> followUps = {};
+
+  final List<LocalDate> _followUps = [];
+  LocalDate? _currentFollowup;
 
   ChartViewModel(this.numCyclesPerChart);
 
   void onChartChange();
 
+
+
+  int? currentFollowUpNumber() {
+    if (_currentFollowup == null) {
+      return null;
+    }
+    return _followUps.indexOf(_currentFollowup!) + 1;
+  }
+
+  LocalDate? currentFollowUpDate() {
+    if (_currentFollowup == null) {
+      return null;
+    }
+    return _currentFollowup;
+  }
+
+  bool hasNextFollowUp() {
+    if (_followUps.isEmpty || _currentFollowup == null) {
+      if (_currentFollowup == null) {
+        loggy.warning("Current followup should not be null...");
+      }
+      return false;
+    }
+    return _followUps.indexOf(_currentFollowup!) < _followUps.length - 1;
+  }
+
+  void goToNextFollowup() {
+    if (!hasNextFollowUp()) {
+      loggy.warning("Trying to go to next followup without checking if one exists!");
+      return;
+    }
+    var currentIndex = _followUps.indexOf(_currentFollowup!);
+    _currentFollowup = _followUps[currentIndex + 1];
+    onChartChange();
+  }
+
+  void goToPreviousFollowup() {
+    if (!hasPreviousFollowUp()) {
+      loggy.warning("Trying to go to previous followup without checking if one exists!");
+      return;
+    }
+    var currentIndex = _followUps.indexOf(_currentFollowup!);
+    _currentFollowup = _followUps[currentIndex - 1];
+    onChartChange();
+  }
+
+  bool hasPreviousFollowUp() {
+    if (_followUps.isEmpty || _currentFollowup == null) {
+      if (_currentFollowup == null) {
+        loggy.warning("Current followup should not be null...");
+      }
+      return false;
+    }
+    return _followUps.indexOf(_currentFollowup!) > 0;
+  }
+
   bool hasFollowUp(LocalDate date) {
-    return followUps.contains(date);
+    return _followUps.contains(date);
   }
 
   void addFollowUp(LocalDate date) {
-    followUps.add(date);
+    _followUps.add(date);
+    _followUps.sort();
+    _currentFollowup ??= date;
     onChartChange();
   }
 
   void removeFollowUp(LocalDate date) {
-    followUps.remove(date);
+    if (_currentFollowup == date) {
+      _currentFollowup = null;
+    }
+    _followUps.remove(date);
     onChartChange();
+  }
+
+  List<LocalDate> followUps() {
+    return List.from(_followUps);
   }
 
   void toggleIncrementalMode() {

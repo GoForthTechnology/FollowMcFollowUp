@@ -71,12 +71,16 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     time.LocalDate? entryDate = entry?.renderedObservation?.date;
-    bool hasFollowup = entryDate != null && widget.model.followUps.contains(entryDate);
+    var currentFollowUpDate = widget.model.currentFollowUpDate();
+    if (currentFollowUpDate != null && entryDate != null && entryDate > currentFollowUpDate) {
+      entry = null;
+    }
+    bool hasFollowup = entryDate != null && widget.model.followUps().contains(entryDate);
     Widget content = CustomPaint(
       painter: ObservationPainter(
         entry,
         observationCorrection,
-        drawOval: hasFollowup,
+        drawOval: entry != null && hasFollowup,
       ),
     );
     var canShowDialog = widget.editingEnabled || widget.correctingEnabled;
@@ -96,6 +100,11 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     StickerWithText? sticker = entry?.manualSticker;
     if (sticker == null && observation != null) {
       sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
+    }
+    var currentFollowUpDate = widget.model.currentFollowUpDate();
+    var entryDate = entry?.renderedObservation?.date;
+    if (currentFollowUpDate != null && entryDate != null && entryDate > currentFollowUpDate) {
+      sticker = null;
     }
     if (soloingCell && !widget.soloCell!.showSticker) {
       sticker = StickerWithText(Sticker.grey, "?");
