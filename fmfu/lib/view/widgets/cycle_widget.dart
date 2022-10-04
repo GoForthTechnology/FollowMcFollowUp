@@ -180,6 +180,7 @@ class ObservationPainter extends CustomPainter {
   void _drawText(Canvas canvas, Size size) {
     TextPainter textPainter = TextPainter(
       text: _getText(),
+      textAlign: TextAlign.center,
       textDirection: ui.TextDirection.ltr,
     );
     textPainter.layout(
