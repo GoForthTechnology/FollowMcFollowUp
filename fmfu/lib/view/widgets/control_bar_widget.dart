@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
@@ -319,13 +320,16 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   }
 
   Row _followUpDatesRow() {
-    List<Widget> followUps = widget.model.followUps.map((followUp) => Chip(
-      label: Text(followUp.toString()),
-      onDeleted: () {
-        widget.model.removeFollowUp(followUp);
-      },
-    )).toList();
-    followUps.map((chip) => Padding(padding: const EdgeInsets.only(left: 2, right: 2), child: chip)).toList();
+    List<Widget> followUps = widget.model.followUps
+        .sorted((a, b) => a.compareTo(b))
+        .map((followUp) => Chip(
+          label: Text(followUp.toString()),
+          onDeleted: () {
+            widget.model.removeFollowUp(followUp);
+          },
+        ))
+        .map((chip) => Padding(padding: const EdgeInsets.only(left: 2, right: 2), child: chip))
+        .toList();
 
     return Row(
       children: [
