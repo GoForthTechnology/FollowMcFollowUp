@@ -12,8 +12,8 @@ void main() {
           boxId: BoxId(
             followUp: 0,
             itemId: ItemId(
-              section: 8,
-              subSection: "A",
+              section: 4,
+              subSection: "N",
             ),
           ),
         ),
@@ -22,6 +22,9 @@ void main() {
         planOfAction: "foo",
       ),
     ];
-    CommentLayout.forComments(comments);
+    var layout = CommentLayout.forComments(comments);
+    expect(layout.getCommentsForPage(3).length, 0);
+    expect(layout.getCommentsForPage(4).length, 1);
+    expect(layout.getCommentsForPage(5).length, 0);
   });
 }

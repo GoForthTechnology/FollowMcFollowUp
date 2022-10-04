@@ -460,8 +460,7 @@ abstract class AbstractPage extends StatelessWidget {
   const AbstractPage({Key? key, required this.content, required this.pageNum}) : super(key: key);
 
   static CommentSectionWidget getCommentSection(int pageNum) {
-    var config = FollowUpFormLayout.commentConfigForPage(pageNum)!;
-    return CommentSectionWidget(config: config);
+    return CommentSectionWidget(pageNum: pageNum);
   }
 
   @override

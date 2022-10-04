@@ -8,6 +8,7 @@ import 'package:loggy/loggy.dart';
 class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
   Map<FollowUpFormEntryId, String> entries = {};
   Map<BoxId, List<FollowUpFormComment>> comments = {};
+  CommentLayout commentLayout = CommentLayout({});
 
   String? getEntry(FollowUpFormEntryId id) {
     if (!entries.containsKey(id)) {
@@ -30,17 +31,8 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
     return comments[id] ?? [];
   }
 
-  List<CommentRowData> getCommentsForSection(ItemId previousItemId, ItemId? nextItemId) {
-    List<FollowUpFormComment> out = [];
-    for (var boxId in comments.keys) {
-      if (boxId.itemId.section == previousItemId.section) {
-        out.addAll(comments[boxId] ?? []);
-      }
-    }
-    return out
-        .map((comment) => CommentRowData.fromComment(comment))
-        .expand((element) => element)
-        .toList();
+  List<CommentRowData> getCommentsForPage(int pageNum) {
+    return commentLayout.getCommentsForPage(pageNum);
   }
 
   FollowUpFormComment? getComment(CommentId commentId) {
@@ -57,26 +49,31 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
       planOfAction: "",
     )];
     loggy.info("Added comment for box: $id");
-    notifyListeners();
+    refreshCommentLayout();
   }
 
   void updateCommentProblem(CommentId id, String problem) {
     var comment = comments[id.boxId]![id.index];
     comments[id.boxId]![id.index] = comment.updateProblem(problem);
     loggy.info("Updating comment for $id from ${comment.problem} to $problem");
-    notifyListeners();
+    refreshCommentLayout();
   }
 
   void updateCommentPlan(CommentId id, String plan) {
     var comment = comments[id.boxId]![id.index];
     comments[id.boxId]![id.index] = comment.updatePlanOfAction(plan);
     loggy.info("Updating plan for $id from ${comment.planOfAction} to $plan");
-    notifyListeners();
+    refreshCommentLayout();
   }
 
   void removeComment(CommentId id) {
     comments[id.boxId]!.removeAt(id.index);
     loggy.info("Removing comment: $id");
+    refreshCommentLayout();
+  }
+
+  void refreshCommentLayout() {
+    commentLayout = CommentLayout.forComments(comments.values.expand((i) => i).toList());
     notifyListeners();
   }
 }

@@ -107,10 +107,10 @@ class BoxId extends Comparable<BoxId> {
 
   @override
   int compareTo(BoxId other) {
-    var idResult = itemId.compareTo(other.itemId);
-    if (idResult != 0) {
-      return idResult;
+    var followUpUpResult = followUp.compareTo(other.followUp);
+    if (followUpUpResult != 0) {
+      return followUpUpResult;
     }
-    return followUp.compareTo(other.followUp);
+    return itemId.compareTo(other.itemId);
   }
 }

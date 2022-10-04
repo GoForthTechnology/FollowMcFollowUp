@@ -121,7 +121,7 @@ class CommentRowData {
       if (out.isEmpty) {
         out.add(CommentRowData(
           date: DateFormat("yyyy-MM-dd").format(comment.date),
-          followUpNumber: comment.id.boxId.followUp.toString(),
+          followUpNumber: (comment.id.boxId.followUp + 1).toString(),
           sectionCode: comment.id.boxId.itemId.code,
           planLines: planLines,
           problemLines: problemLines,

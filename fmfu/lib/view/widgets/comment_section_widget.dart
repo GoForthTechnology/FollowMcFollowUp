@@ -9,12 +9,15 @@ import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 
 class CommentSectionWidget extends StatelessWidget with UiLoggy {
-  final CommentSectionConfig config;
+  final int pageNum;
+  late CommentSectionConfig commentConfig;
 
-  const CommentSectionWidget({
+  CommentSectionWidget({
     Key? key,
-    required this.config,
-  }) : super(key: key);
+    required this.pageNum,
+  }) : super(key: key) {
+    commentConfig = FollowUpFormLayout.commentConfigForPage(pageNum)!;
+  }
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);
@@ -23,7 +26,7 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
   Widget build(BuildContext context) {
     const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
     return Consumer<FollowUpFormViewModel>(builder: (context, model, child) {
-      var commentRowData = model.getCommentsForSection(config.firstItemId, config.lastItemIdExclusive);
+      var commentRowData = model.getCommentsForPage(pageNum);
       return Table(
         columnWidths: const {
           0: FixedColumnWidth(100),
@@ -39,7 +42,7 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
             _headerCell("Situation/Problem", headingStyle),
             _headerCell("Plan of Action", headingStyle),
           ],),
-          ...List.generate(config.numRows, (index) => _row(index, commentRowData)),
+          ...List.generate(commentConfig.numRows, (index) => _row(index, commentRowData)),
         ],
       );
     });
