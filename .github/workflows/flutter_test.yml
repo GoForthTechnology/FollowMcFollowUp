@@ -25,14 +25,18 @@ jobs:
           flutter-version: '2.0.1'
           
       - name: Restore packages
+        working-directory: fmfu
         run: flutter pub get
         
       - name: Analyze
+        working-directory: fmfu
         run:   flutter analyze
 
       - name: Run tests
+        working-directory: fmfu
         run: flutter test --coverage
         
       - name: Upload coverage to codecov
+        working-directory: fmfu
         run: curl -s https://codecov.io/bash
         shell: bash
