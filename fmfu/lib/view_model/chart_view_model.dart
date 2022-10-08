@@ -22,19 +22,37 @@ abstract class ChartViewModel with GlobalLoggy {
 
   final List<LocalDate> _followUps = [];
   LocalDate? _currentFollowup;
-  LocalDate _startOfCharting = LocalDate(DateTime.now().year, 1, 1);
+  LocalDate _startOfCharting = _startDate;
 
   ChartViewModel(this.numCyclesPerChart);
 
   void onChartChange();
 
   void setStartOfCharting(LocalDate date) {
+    if (date < earliestStartOfCharting()) {
+      throw Exception("$date before earliest start of charting ${earliestStartOfCharting()}");
+    }
+    if (date > latestStartOfCharting()) {
+      throw Exception("$date after latest start of charting ${latestStartOfCharting()}");
+    }
     _startOfCharting = date;
     onChartChange();
   }
 
   LocalDate startOfCharting() {
     return _startOfCharting;
+  }
+
+  LocalDate earliestStartOfCharting() {
+    return _startDate;
+  }
+
+  LocalDate latestStartOfCharting() {
+    int numDays = 0;
+    for (var cycle in cycles) {
+      numDays += cycle.entries.length;
+    }
+    return _startDate.addDays(numDays);
   }
 
   int? currentFollowUpNumber() {
@@ -49,6 +67,19 @@ abstract class ChartViewModel with GlobalLoggy {
       return null;
     }
     return _currentFollowup;
+  }
+
+  LocalDate nextFollowUpDate() {
+    if (_followUps.isEmpty) {
+      return _startOfCharting.addDays(14);
+    }
+    if (_followUps.length < 4) {
+      return _followUps.last.addDays(14);
+    }
+    if (_followUps.length == 4) {
+      return _followUps.last.addDays(28);
+    }
+    return _followUps.last.addDays(3 * 28);
   }
 
   bool hasNextFollowUp() {
@@ -96,6 +127,15 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void addFollowUp(LocalDate date) {
+    if (date > latestStartOfCharting()) {
+      throw Exception("$date is after latest start of charting ${latestStartOfCharting()}");
+    }
+    if (date < earliestStartOfCharting()) {
+      throw Exception("$date is before earliest start of charting ${earliestStartOfCharting()}");
+    }
+    if (_followUps.contains(date)) {
+      throw Exception("Duplicate follow up date $date");
+    }
     _followUps.add(date);
     _followUps.sort();
     _currentFollowup ??= date;

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
@@ -67,7 +66,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
             _lengthControlRow(updateCycles),
             _instructionRow(updateCycles),
             _errorControlRow(),
-            _followUpDatesRow(),
+            _followUpDatesRow(context, widget.model),
             if (widget.model.incrementalMode) _incrementalControlRow(),
           ],
         ));
@@ -319,12 +318,12 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
     );
   }
 
-  Row _followUpDatesRow() {
-    List<Widget> followUps = widget.model.followUps()
+  static Row _followUpDatesRow(BuildContext context, ChartViewModel model) {
+    List<Widget> followUps = model.followUps()
         .map((followUp) => Chip(
           label: Text(followUp.toString("MM/dd")),
           onDeleted: () {
-            widget.model.removeFollowUp(followUp);
+            model.removeFollowUp(followUp);
           },
         ))
         .map((chip) => Padding(padding: const EdgeInsets.only(left: 2, right: 2), child: chip))
@@ -336,28 +335,32 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
         ElevatedButton(onPressed: () {
           showDatePicker(
           context: context,
-          initialDate: DateTime(2022),
-          firstDate: DateTime(2022),
-          lastDate: DateTime(2023),
-          //selectableDayPredicate: (day) => widget.model.hasFollowUp(LocalDate.dateTime(day)),
+          initialDate: model.startOfCharting().toDateTimeUnspecified(),
+          firstDate: model.earliestStartOfCharting().toDateTimeUnspecified(),
+          lastDate: model.latestStartOfCharting().toDateTimeUnspecified(),
           ).then((date) {
             if (date != null) {
-              widget.model.setStartOfCharting(LocalDate.dateTime(date));
+              model.setStartOfCharting(LocalDate.dateTime(date));
             }
           });
-        }, child: Text(widget.model.startOfCharting().toString("MM/dd"))),
+        }, child: Text(model.startOfCharting().toString("MM/dd"))),
         const Padding(padding: EdgeInsets.only(left: 30, right:30), child: Text("Follow Up Dates", style: TextStyle(fontWeight: FontWeight.bold))),
         ...followUps,
         ElevatedButton(onPressed: () {
           showDatePicker(
             context: context,
-            initialDate: DateTime(2022),
-            firstDate: DateTime(2022),
-            lastDate: DateTime(2023),
-            //selectableDayPredicate: (day) => widget.model.hasFollowUp(LocalDate.dateTime(day)),
-          ).then((date) {
+            initialDate: model.nextFollowUpDate().toDateTimeUnspecified(),
+            firstDate: model.startOfCharting().toDateTimeUnspecified(),
+            lastDate: model.latestStartOfCharting().toDateTimeUnspecified(),
+            selectableDayPredicate: (day) {
+              var date = LocalDate.dateTime(day);
+              if (date < model.startOfCharting()) {
+                return false;
+              }
+              return !model.hasFollowUp(LocalDate.dateTime(day));
+            }).then((date) {
             if (date != null) {
-              widget.model.addFollowUp(LocalDate.dateTime(date));
+              model.addFollowUp(LocalDate.dateTime(date));
             }
           });
         }, child: const Text("+")),
