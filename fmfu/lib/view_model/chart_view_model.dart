@@ -159,7 +159,7 @@ abstract class ChartViewModel with GlobalLoggy {
       _initCharts();
     } else {
       cycles = [];
-      charts = _getCharts(cycles);
+      charts = getCharts(cycles, numCyclesPerChart);
     }
     incrementalMode = !incrementalMode;
     onChartChange();
@@ -178,7 +178,7 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles = _getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
-    charts = _getCharts(cycles);
+    charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
 
@@ -200,7 +200,7 @@ abstract class ChartViewModel with GlobalLoggy {
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     int lastIndex = cycles.length - 1;
     cycles[lastIndex] = _getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios)[0];
-    charts = _getCharts(cycles);
+    charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
 
@@ -217,7 +217,7 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
-    charts = _getCharts(cycles);
+    charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
 
@@ -232,7 +232,7 @@ abstract class ChartViewModel with GlobalLoggy {
       ));
     }
     cycles = updatedCycles;
-    charts = _getCharts(cycles);
+    charts = getCharts(cycles, numCyclesPerChart);
     this.errorScenarios = errorScenarios;
     onChartChange();
   }
@@ -350,7 +350,7 @@ abstract class ChartViewModel with GlobalLoggy {
     return cycles;
   }
 
-  List<Chart> _getCharts(List<Cycle> cycles) {
+  static List<Chart> getCharts(List<Cycle> cycles, int numCyclesPerChart) {
     List<CycleSlice> slices = [];
     for (var cycle in cycles) {
       for (var offset in cycle.getOffsets()) {
@@ -378,7 +378,7 @@ abstract class ChartViewModel with GlobalLoggy {
 
   void _initCharts() {
     cycles = _getCycles(CycleRecipe.create(), 10, false, _defaultInstructions, []);
-    charts = _getCharts(cycles);
+    charts = getCharts(cycles, numCyclesPerChart);
   }
 
   Cycle? _findCycle(int cycleIndex) {
