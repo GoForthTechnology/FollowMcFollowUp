@@ -36,7 +36,5 @@ jobs:
         working-directory: fmfu
         run: flutter test --coverage
         
-      - name: Upload coverage to codecov
-        working-directory: fmfu
-        run: curl -s https://codecov.io/bash
-        shell: bash
+      - name: Upload coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v3
