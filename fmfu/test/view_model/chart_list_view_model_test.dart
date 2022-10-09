@@ -55,6 +55,8 @@ void main() {
       int nCharts = 3;
       viewModel.updateCharts(CycleRecipe.standardRecipe, numCycles: nCharts * 6);
 
+      expect(() => viewModel.moveToPreviousChart(), throwsException);
+
       expect(viewModel.showNextButton(), true);
       expect(viewModel.showPreviousButton(), false);
 
@@ -65,6 +67,8 @@ void main() {
       viewModel.moveToNextChart();
       expect(viewModel.showNextButton(), false);
       expect(viewModel.showPreviousButton(), true);
+
+      expect(() => viewModel.moveToNextChart(), throwsException);
 
       viewModel.moveToPreviousChart();
       expect(viewModel.showNextButton(), true);

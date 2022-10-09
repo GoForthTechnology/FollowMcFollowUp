@@ -51,7 +51,18 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
     refreshCommentLayout();
   }
 
+  bool hasComment(CommentId id) {
+    var comments = getComments(id.boxId);
+    if (comments.isEmpty) {
+      return false;
+    }
+    return id.index < comments.length;
+  }
+
   void updateCommentProblem(CommentId id, String problem) {
+    if (!hasComment(id)) {
+      throw ArgumentError("No comment for id: $id");
+    }
     var comment = comments[id.boxId]![id.index];
     comments[id.boxId]![id.index] = comment.updateProblem(problem);
     loggy.info("Updating comment for $id from ${comment.problem} to $problem");
@@ -59,6 +70,9 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
   }
 
   void updateCommentPlan(CommentId id, String plan) {
+    if (!hasComment(id)) {
+      throw ArgumentError("No comment for id: $id");
+    }
     var comment = comments[id.boxId]![id.index];
     comments[id.boxId]![id.index] = comment.updatePlanOfAction(plan);
     loggy.info("Updating plan for $id from ${comment.planOfAction} to $plan");
@@ -66,6 +80,9 @@ class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {
   }
 
   void removeComment(CommentId id) {
+    if (!hasComment(id)) {
+      throw ArgumentError("No comment for id: $id");
+    }
     comments[id.boxId]!.removeAt(id.index);
     loggy.info("Removing comment: $id");
     refreshCommentLayout();
