@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';

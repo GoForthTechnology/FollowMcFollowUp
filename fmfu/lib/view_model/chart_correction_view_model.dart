@@ -17,6 +17,7 @@ class ChartCorrectionViewModel extends ChartViewModel with ChangeNotifier {
     addCycle(CycleRecipe.create());
   }
 
+  @override
   void onChartChange() {
     notifyListeners();
   }

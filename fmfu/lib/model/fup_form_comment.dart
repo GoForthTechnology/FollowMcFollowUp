@@ -99,7 +99,6 @@ class BoxId extends Comparable<BoxId> {
     return other is BoxId
         && other.followUp == followUp
         && other.itemId == itemId;
-    ;
   }
 
   @override

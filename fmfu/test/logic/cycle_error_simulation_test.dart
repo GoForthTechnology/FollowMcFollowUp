@@ -3,7 +3,6 @@ import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:test/test.dart';
 

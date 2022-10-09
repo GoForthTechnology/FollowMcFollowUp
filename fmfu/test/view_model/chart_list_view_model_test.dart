@@ -1,10 +1,6 @@
 
-import 'dart:developer';
 
-import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
-import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:test/test.dart';
 

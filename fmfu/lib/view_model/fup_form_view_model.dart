@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/logic/comment_manager.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
 import 'package:fmfu/model/fup_form_entry.dart';
-import 'package:fmfu/model/fup_form_item.dart';
 import 'package:loggy/loggy.dart';
 
 class FollowUpFormViewModel extends ChangeNotifier with GlobalLoggy {

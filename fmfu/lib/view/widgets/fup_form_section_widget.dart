@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -220,7 +219,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
           padding: const EdgeInsets.all(2),
           child: ElevatedButton(
             onPressed: () => model.updateEntry(id, item == selectedItem ? null : item),
-            style: item == selectedItem ? ElevatedButton.styleFrom(primary: Colors.pinkAccent) : ElevatedButton.styleFrom(primary: Colors.blueAccent),
+            style: item == selectedItem ? ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent) : ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
             child: Text(item),
           ),
         )).toList(),

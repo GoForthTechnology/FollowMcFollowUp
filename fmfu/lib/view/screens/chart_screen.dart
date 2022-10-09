@@ -101,7 +101,7 @@ class _ChartPageState extends State<ChartPage> {
         if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
         if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
         if (model.followUps().isNotEmpty) ...[
-          Padding(padding: EdgeInsets.only(left: 20), child: Text(
+          Padding(padding: const EdgeInsets.only(left: 20), child: Text(
             "Current Follow Up: #${model.currentFollowUpNumber()}",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           )),

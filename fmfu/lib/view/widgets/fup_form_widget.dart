@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/logic/comment_manager.dart';
 import 'package:fmfu/model/fup_form_layout.dart';
 
 import 'comment_section_widget.dart';

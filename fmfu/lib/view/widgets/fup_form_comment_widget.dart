@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/fup_form_comment.dart';
-import 'package:fmfu/model/fup_form_item.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:provider/provider.dart';
 

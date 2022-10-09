@@ -1,6 +1,4 @@
 
-import 'package:flutter/material.dart';
-import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/model/instructions.dart';
