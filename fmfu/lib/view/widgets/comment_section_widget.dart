@@ -10,14 +10,13 @@ import 'package:provider/provider.dart';
 
 class CommentSectionWidget extends StatelessWidget with UiLoggy {
   final int pageNum;
-  late CommentSectionConfig commentConfig;
+  final CommentSectionConfig commentConfig;
 
   CommentSectionWidget({
     Key? key,
     required this.pageNum,
-  }) : super(key: key) {
-    commentConfig = FollowUpFormLayout.commentConfigForPage(pageNum)!;
-  }
+  }) :  commentConfig = FollowUpFormLayout.commentConfigForPage(pageNum)!,
+        super(key: key);
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);

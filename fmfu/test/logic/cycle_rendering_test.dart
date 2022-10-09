@@ -8,6 +8,7 @@ import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
+import 'package:loggy/loggy.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -236,8 +237,8 @@ TrainingCycle basicB1F = TrainingCycle.create()
     .addEntry(TrainingEntry.forText("0ad"), StickerExpectations.greenBabySticker("3"))
     .addEntry(TrainingEntry.forText("0ad"), StickerExpectations.greenSticker())
     .addEntry(TrainingEntry.forText("0ad"), StickerExpectations.greenSticker())
-    .addEntry(TrainingEntry.forText("vl10kx2").unusualBleeding(), StickerExpectations.redSticker())
-    .addEntry(TrainingEntry.forText("vl0ad").unusualBleeding(), StickerExpectations.redSticker())
+    .addEntry(TrainingEntry.forText("vl10kx2"), StickerExpectations.redSticker())
+    .addEntry(TrainingEntry.forText("vl0ad"), StickerExpectations.redSticker())
     .addEntry(TrainingEntry.forText("0ad"), StickerExpectations.greenBabySticker("1"))
     .addEntry(TrainingEntry.forText("0ad"), StickerExpectations.greenBabySticker("2"))
 
@@ -418,7 +419,7 @@ TrainingCycle advancedBreastFeedingPrePeakYellowStamps = TrainingCycle
     .addEntry(TrainingEntry.forText("8cx2").essentiallyTheSame(), StickerExpectations.yellowSticker())
     .addEntry(TrainingEntry.forText("8cx2").essentiallyTheSame(), StickerExpectations.yellowSticker());
 
-class TrainingCycle {
+class TrainingCycle extends GlobalLoggy {
   final List<Instruction> activeInstructions;
   final LinkedHashMap<TrainingEntry, StickerExpectations> entries = LinkedHashMap();
 
@@ -437,6 +438,15 @@ class TrainingCycle {
     var observations = entries.keys
         .map((trainingEntry) {
           var observation = parseObservation(trainingEntry._observationText);
+          if (trainingEntry._peakDay) {
+            loggy.debug("Is peak day");
+          }
+          if (trainingEntry._intercourse) {
+            loggy.debug("Has intercourse");
+          }
+          if (trainingEntry._pointOfChange) {
+            loggy.debug("Is point of change");
+          }
           return Observation(
             flow: observation.flow,
             dischargeSummary: observation.dischargeSummary,
@@ -455,9 +465,7 @@ class TrainingEntry {
   bool _peakDay = false;
   bool _intercourse = false;
   bool _pointOfChange = false;
-  bool _unusualBleeding = false;
   bool _isEssentiallyTheSame = false;
-  bool _uncertain = false;
 
   TrainingEntry(this._observationText);
 
@@ -480,18 +488,8 @@ class TrainingEntry {
     return this;
   }
 
-  TrainingEntry unusualBleeding() {
-    _unusualBleeding = true;
-    return this;
-  }
-
   TrainingEntry essentiallyTheSame() {
     _isEssentiallyTheSame = true;
-    return this;
-  }
-
-  TrainingEntry uncertain() {
-    _uncertain = true;
     return this;
   }
 }

@@ -55,7 +55,7 @@ class CommentSectionConfig {
         lastItemIdExclusive = nextItems.isEmpty ? null : nextItems.first.id();
 }
 
-const TextStyle SectionHeadingStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+const TextStyle sectionHeadingStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 const TextStyle subSectionHeadingStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold);
 const List<List<FollowUpFormItem>> page3Items = [
   [
@@ -518,7 +518,7 @@ const List<List<FollowUpFormItem>> page6Items = [
       questions: [
         Question(
           description: "6) PICTURE DICTIONARY PRESENTED",
-          style: SectionHeadingStyle,
+          style: sectionHeadingStyle,
         ),
       ],
     ),

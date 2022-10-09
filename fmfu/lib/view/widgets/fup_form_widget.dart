@@ -65,14 +65,14 @@ final Widget comingSoon = Expanded(child: Column(mainAxisAlignment: MainAxisAlig
 
 class Page2 extends AbstractPage {
   Page2({Key? key}) : super(key: key, pageNum: 2, content: [
-    const Text("COMPLETION OF FORMS", style: SectionHeadingStyle),
+    const Text("COMPLETION OF FORMS", style: sectionHeadingStyle),
     comingSoon, // TODO: finish
   ]);
 }
 
 class Page3 extends AbstractPage {
   Page3({Key? key}) : super(key: key, pageNum: 3, content: [
-    const Text("4) OBSERVATIONS", style: SectionHeadingStyle),
+    const Text("4) OBSERVATIONS", style: sectionHeadingStyle),
     const Padding(
       padding: EdgeInsets.only(left: 20),
       child: Text("How do you check for the mucus?", style: subSectionHeadingStyle,),
@@ -90,7 +90,7 @@ class Page3 extends AbstractPage {
 
 class Page4 extends AbstractPage {
   Page4({Key? key}) : super(key: key, pageNum: 4, content: [
-    const Text("4) OBSERVATIONS -- Cont'd", style: SectionHeadingStyle),
+    const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
     const Padding(
       padding: EdgeInsets.only(left: 20),
       child: Text("When do you check for the mucus?", style: subSectionHeadingStyle,),
@@ -107,7 +107,7 @@ class Page4 extends AbstractPage {
 
 class Page5 extends AbstractPage {
   Page5({Key? key}) : super(key: key, pageNum: 5, content: [
-    const Text("4) OBSERVATIONS -- Cont'd", style: SectionHeadingStyle),
+    const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
     Expanded(child: Row(children: [
       const RotatedBox(
         quarterTurns: 3,
@@ -145,7 +145,7 @@ class Page5 extends AbstractPage {
 
 class Page6 extends AbstractPage {
   Page6({Key? key}) : super(key: key, pageNum: 6, content: [
-    const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: SectionHeadingStyle),
+    const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: sectionHeadingStyle),
     // TODO: add principles explained column
     Padding(
       padding: const EdgeInsets.all(10),
@@ -160,7 +160,7 @@ class Page6 extends AbstractPage {
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: FollowUpFormSectionWidget.createSingle(page6Items, groupIndex: 2),
     ),
-    const Text("7) DEFINITIONS -- REVIEW & ASSESSMENT", style: SectionHeadingStyle),
+    const Text("7) DEFINITIONS -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory knowledge  2=Satisfactory knowledge  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(
       padding: const EdgeInsets.all(10),
@@ -171,7 +171,7 @@ class Page6 extends AbstractPage {
 
 class Page7 extends AbstractPage {
   Page7({Key? key}) : super(key: key, pageNum: 7, content: [
-    const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: SectionHeadingStyle),
+    const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: FollowUpFormSectionWidget.create(page7Items),)),
@@ -187,7 +187,7 @@ class Page8 extends AbstractPage {
 
 class Page9 extends AbstractPage {
   Page9({Key? key}) : super(key: key, pageNum: 9, content: [
-    const Text("9) SPECIAL DISCHARGES -- REVIEW & ASSESSMENT", style: SectionHeadingStyle),
+    const Text("9) SPECIAL DISCHARGES -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,7 +245,7 @@ class Page9 extends AbstractPage {
 
 class Page10 extends AbstractPage {
   Page10({Key? key}) : super(key: key, pageNum: 10, content: [
-    const Text("10) Charting (NaProTRACKING) PATTERNS IDENTIFIED (\u2714 OR -)", style: SectionHeadingStyle),
+    const Text("10) Charting (NaProTRACKING) PATTERNS IDENTIFIED (\u2714 OR -)", style: sectionHeadingStyle),
     const Text("(All \u2714 require comments)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       children: [
@@ -259,7 +259,7 @@ class Page10 extends AbstractPage {
 
 class Page11 extends AbstractPage {
   Page11({Key? key}) : super(key: key, pageNum: 11, content: [
-    const Text("11) SPECIAL CIRCUMSTANCES -- REVIEW & ASSESSMENT", style: SectionHeadingStyle),
+    const Text("11) SPECIAL CIRCUMSTANCES -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,13 +339,13 @@ class Page12 extends AbstractPage {
 
 class Page22 extends AbstractPage {
   Page22({Key? key}) : super(key: key, pageNum: 22, content: [
-    const Text("14) INSTRUCTIONS -- LIST AND INTEGRATION (\u2714 OR --)", style: SectionHeadingStyle),
+    const Text("14) INSTRUCTIONS -- LIST AND INTEGRATION (\u2714 OR --)", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 10),
-          child: Text("I. LIST", style: SectionHeadingStyle,),
+          child: Text("I. LIST", style: sectionHeadingStyle,),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 20),
@@ -398,7 +398,7 @@ class Page22 extends AbstractPage {
 
 class Page23 extends AbstractPage {
   Page23({Key? key}) : super(key: key, pageNum: 23, content: [
-    const Text("14) INSTRUCTIONS -- Cont'd", style: SectionHeadingStyle),
+    const Text("14) INSTRUCTIONS -- Cont'd", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -432,7 +432,7 @@ class Page23 extends AbstractPage {
         ),
         const Padding(
           padding: EdgeInsets.only(left: 10),
-          child: Text("II. INSTRUCTION INTEGRATION (Y or N)", style: SectionHeadingStyle,),
+          child: Text("II. INSTRUCTION INTEGRATION (Y or N)", style: sectionHeadingStyle,),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 30),
