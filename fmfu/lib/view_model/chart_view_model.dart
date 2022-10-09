@@ -237,7 +237,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void updateStickerCorrections(int cycleIndex, int entryIndex, StickerWithText? correction) {
-    var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
@@ -250,7 +250,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void updateObservationCorrections(int cycleIndex, int entryIndex, String? correction) {
-    var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
@@ -263,7 +263,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void editSticker(int cycleIndex, int entryIndex, StickerWithText? edit) {
-    var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
@@ -278,7 +278,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void editEntry(int cycleIndex, int entryIndex, String observationText) {
-    var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
@@ -380,7 +380,7 @@ abstract class ChartViewModel with GlobalLoggy {
     charts = getCharts(cycles, numCyclesPerChart);
   }
 
-  Cycle? _findCycle(int cycleIndex) {
+  Cycle? findCycle(int cycleIndex) {
     for (var chart in charts) {
       for (var cycle in chart.cycles) {
         if (cycle.cycle?.index == cycleIndex) {

@@ -52,7 +52,7 @@ class CycleStats {
   }
 
   CycleStats setLengthOfPostPeakPhase(int? length) {
-    return CycleStats(mucusCycleScore: mucusCycleScore, lengthOfPostPeakPhase: null);
+    return CycleStats(mucusCycleScore: mucusCycleScore, lengthOfPostPeakPhase: length);
   }
 }
 

@@ -4,6 +4,8 @@ import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:test/test.dart';
 
+import 'chart_view_model_test.dart';
+
 void main() {
 
   group("Actions", ()
@@ -77,6 +79,40 @@ void main() {
       viewModel.moveToPreviousChart();
       expect(viewModel.showNextButton(), true);
       expect(viewModel.showPreviousButton(), false);
+    });
+  });
+  group("Cycle stats", () {
+    group("Length of post peak phase", () {
+      test("CRUD", () {
+        var viewModel = ChartListViewModel();
+        expect(viewModel.cycles[0].cycleStats.lengthOfPostPeakPhase, null);
+
+        var expectedLength = 12;
+        viewModel.setLengthOfPostPeakPhase(0, expectedLength);
+        expect(viewModel.cycles[0].cycleStats.lengthOfPostPeakPhase, expectedLength);
+      });
+      test("Invalid cycle index", () {
+        var viewModel = ChartListViewModel();
+        var invalidIndex = viewModel.cycles.length;
+        expect(() => viewModel.setLengthOfPostPeakPhase(invalidIndex, 12), throwsException);
+      });
+    });
+
+    group("Mucus cycle score", () {
+      test("CRUD", () {
+        var viewModel = ChartListViewModel();
+        viewModel.cycles.add(fakeCycle(28));
+        expect(viewModel.cycles[0].cycleStats.mucusCycleScore, null);
+
+        var expectedScore = 1.2;
+        viewModel.setMucusCycleScore(0, expectedScore);
+        expect(viewModel.cycles[0].cycleStats.mucusCycleScore, expectedScore);
+      });
+      test("Invalid cycle index", () {
+        var viewModel = ChartListViewModel();
+        var invalidIndex = viewModel.cycles.length;
+        expect(() => viewModel.setMucusCycleScore(invalidIndex, 1.5), throwsException);
+      });
     });
   });
 }

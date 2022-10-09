@@ -64,20 +64,20 @@ class ChartListViewModel extends ChartViewModel with ChangeNotifier {
   }
 
   void setLengthOfPostPeakPhase(int cycleIndex, int? length) {
-    /*var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
     cycle.cycleStats = cycle.cycleStats.setLengthOfPostPeakPhase(length);
-    notifyListeners();*/
+    notifyListeners();
   }
 
   void setMucusCycleScore(int cycleIndex, double? score) {
-    /*var cycle = _findCycle(cycleIndex);
+    var cycle = findCycle(cycleIndex);
     if (cycle == null) {
       throw Exception("Could not find cycle at index $cycleIndex");
     }
     cycle.cycleStats = cycle.cycleStats.setMucusCycleScore(score);
-    notifyListeners();*/
+    notifyListeners();
   }
 }
