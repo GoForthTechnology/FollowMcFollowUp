@@ -59,7 +59,7 @@ void testTrainingCycle(TrainingCycle trainingCycle) {
   var expectations = List.of(trainingCycle.entries.values);
   trainingCycle.chartEntries().forEachIndexed((i, entry) {
     var expectation = expectations[i];
-    var reason = "on day $i: ${entry.renderedObservation?.debugInfo()}";
+    var reason = "on day $i: ${entry.renderedObservation?.debugString()}";
     expect(entry.renderedObservation?.getSticker(), expectation.sticker(), reason: reason);
     expect(entry.renderedObservation?.getStickerText(), expectation.text() ?? "", reason: reason);
   });

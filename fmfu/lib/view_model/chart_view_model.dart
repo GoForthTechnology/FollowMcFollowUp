@@ -3,6 +3,7 @@ import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/chart.dart';
+import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
@@ -26,6 +27,10 @@ abstract class ChartViewModel with GlobalLoggy {
   ChartViewModel(this.numCyclesPerChart);
 
   void onChartChange();
+
+  String getStateAsJson() {
+    return ExerciseState.fromChartViewModel(this).toJson().toString();
+  }
 
   void setStartOfCharting(LocalDate date) {
     if (date < earliestStartOfCharting()) {

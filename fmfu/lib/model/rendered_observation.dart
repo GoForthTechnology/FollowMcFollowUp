@@ -2,7 +2,12 @@
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:time_machine/time_machine.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'rendered_observation.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+@LocalDateJsonConverter()
 class RenderedObservation {
   final String observationText;
   final int countOfThree;
@@ -13,13 +18,13 @@ class RenderedObservation {
   final bool? essentiallyTheSame;
   final List<Instruction> fertilityReasons;
   final List<Instruction> infertilityReasons;
-  final DebugInfo _debugInfo;
+  final DebugInfo debugInfo;
   final LocalDate? date;
 
-  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this._debugInfo, this.date);
+  RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this.debugInfo, this.date);
 
-  String debugInfo() {
-    return "{debugInfo: $_debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
+  String debugString() {
+    return "{debugInfo: $debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
   }
 
   String getObservationText() {
@@ -70,8 +75,12 @@ class RenderedObservation {
       return hasMucus ? Sticker.yellow : Sticker.green;
     }
   }
+
+  factory RenderedObservation.fromJson(Map<String, dynamic> json) => _$RenderedObservationFromJson(json);
+  Map<String, dynamic> toJson() => _$RenderedObservationToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class DebugInfo {
   final CountOfThreeReason? countOfThreeReason;
 
@@ -81,7 +90,11 @@ class DebugInfo {
   String toString() {
     return "{countOfThreeReason: $countOfThreeReason}";
   }
+
+  factory DebugInfo.fromJson(Map<String, dynamic> json) => _$DebugInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$DebugInfoToJson(this);
 }
+
 enum CountOfThreeReason {
   unusualBleeding,
   peakDay,
@@ -89,4 +102,18 @@ enum CountOfThreeReason {
   singleDayOfPeakMucus,
   pointOfChange,
   uncertain
+}
+
+class LocalDateJsonConverter extends JsonConverter<LocalDate, int> {
+  const LocalDateJsonConverter();
+
+  @override
+  LocalDate fromJson(int json) {
+    return LocalDate.fromEpochDay(json);
+  }
+
+  @override
+  int toJson(LocalDate object) {
+    return object.epochDay;
+  }
 }

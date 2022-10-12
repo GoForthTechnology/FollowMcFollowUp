@@ -1,6 +1,9 @@
 import 'package:fmfu/logic/observation_parser.dart';
 import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/stickers.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'chart.g.dart';
 
 class Chart {
   final List<CycleSlice> cycles;
@@ -15,6 +18,7 @@ class CycleSlice {
   CycleSlice(this.cycle, this.offset);
 }
 
+@JsonSerializable(explicitToJson: true)
 class Cycle {
   final int index;
   final List<ChartEntry> entries;
@@ -37,8 +41,12 @@ class Cycle {
   static Cycle empty() {
     return Cycle(index: 0, entries: [], stickerCorrections: {}, observationCorrections: {});
   }
+
+  factory Cycle.fromJson(Map<String, dynamic> json) => _$CycleFromJson(json);
+  Map<String, dynamic> toJson() => _$CycleToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class CycleStats {
   final double? mucusCycleScore;
   final int? lengthOfPostPeakPhase;
@@ -54,8 +62,12 @@ class CycleStats {
   CycleStats setLengthOfPostPeakPhase(int? length) {
     return CycleStats(mucusCycleScore: mucusCycleScore, lengthOfPostPeakPhase: length);
   }
+
+  factory CycleStats.fromJson(Map<String, dynamic> json) => _$CycleStatsFromJson(json);
+  Map<String, dynamic> toJson() => _$CycleStatsToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class ChartEntry {
   final String observationText;
   final RenderedObservation? renderedObservation;
@@ -87,4 +99,7 @@ class ChartEntry {
   bool hasErrors() {
     return !isCorrectSticker() || !isValidObservation();
   }
+
+  factory ChartEntry.fromJson(Map<String, dynamic> json) => _$ChartEntryFromJson(json);
+  Map<String, dynamic> toJson() => _$ChartEntryToJson(this);
 }

@@ -1,4 +1,7 @@
 
+import 'dart:convert';
+
+import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
@@ -42,6 +45,10 @@ class _ChartPageState extends State<ChartPage> {
           },),
           IconButton(icon: Icon(model.incrementalMode ? Icons.extension_off : Icons.extension, color: Colors.white), onPressed: () {
             model.toggleIncrementalMode();
+          },),
+          IconButton(icon: const Icon(Icons.download, color: Colors.white), onPressed: () async {
+            var json = const JsonEncoder.withIndent("  ").convert(model.getStateAsJson());
+            downloadJson(json, "exercise.json");
           },),
         ],
       ),

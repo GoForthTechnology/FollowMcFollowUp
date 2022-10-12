@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
@@ -25,9 +24,6 @@ class ChartCorrectingScreen extends StatelessWidget {
           actions: [
             IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
               model.toggleControlBar();
-            },),
-            IconButton(icon: const Icon(Icons.download, color: Colors.white), onPressed: () async {
-              downloadJson("{ message: 'hello world' }", "hello.json");
             },),
           ],
         ),

@@ -1,13 +1,20 @@
 
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'stickers.g.dart';
 
 const Color _lightGreen = Color(0xFFE2FFCC);
 
+@JsonSerializable(explicitToJson: true)
 class StickerWithText {
   final Sticker sticker;
   final String? text;
 
   StickerWithText(this.sticker, this.text);
+
+  factory StickerWithText.fromJson(Map<String, dynamic> json) => _$StickerWithTextFromJson(json);
+  Map<String, dynamic> toJson() => _$StickerWithTextToJson(this);
 }
 
 enum Sticker {
