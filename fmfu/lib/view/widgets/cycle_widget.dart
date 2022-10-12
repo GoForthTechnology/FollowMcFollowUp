@@ -2,8 +2,8 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/chart.dart';
+import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';

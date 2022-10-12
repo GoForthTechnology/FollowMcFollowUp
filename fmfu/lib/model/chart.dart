@@ -1,5 +1,5 @@
-import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/logic/observation_parser.dart';
+import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/stickers.dart';
 
 class Chart {
