@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
@@ -29,7 +31,15 @@ abstract class ChartViewModel with GlobalLoggy {
   void onChartChange();
 
   String getStateAsJson() {
-    return ExerciseState.fromChartViewModel(this).toJson().toString();
+    return jsonEncode(ExerciseState.fromChartViewModel(this).toJson());
+  }
+
+  void restoreStateFromJson(ExerciseState state) {
+    activeInstructions = state.activeInstructions;
+    errorScenarios = state.errorScenarios;
+    cycles = state.cycles;
+    charts = getCharts(cycles, numCyclesPerChart);
+    onChartChange();
   }
 
   void setStartOfCharting(LocalDate date) {

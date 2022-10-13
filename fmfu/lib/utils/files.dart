@@ -1,6 +1,18 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 
+Future<XFile?> openJsonFile() {
+  return openFiles().then((files) {
+    if (files.isEmpty) {
+      return null;
+    }
+    if (files.length > 1) {
+      throw Exception("Opening multiple files is not supported");
+    }
+    return files.first;
+  });
+}
+
 void downloadJson(String content, String fileName) async {
   downloadFile(
     content: content,

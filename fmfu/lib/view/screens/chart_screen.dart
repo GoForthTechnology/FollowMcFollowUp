@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
@@ -46,9 +47,19 @@ class _ChartPageState extends State<ChartPage> {
           IconButton(icon: Icon(model.incrementalMode ? Icons.extension_off : Icons.extension, color: Colors.white), onPressed: () {
             model.toggleIncrementalMode();
           },),
-          IconButton(icon: const Icon(Icons.download, color: Colors.white), onPressed: () async {
-            var json = const JsonEncoder.withIndent("  ").convert(model.getStateAsJson());
-            downloadJson(json, "exercise.json");
+          IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () async {
+            downloadJson(model.getStateAsJson(), "exercise.json");
+          },),
+          IconButton(icon: const Icon(Icons.open_in_browser, color: Colors.white), onPressed: () async {
+            openJsonFile().then((file) async {
+              if (file == null) {
+                _showSnackBar("No file selected");
+              }
+              final contents = await file!.readAsString();
+              model.restoreStateFromJson(
+                  ExerciseState.fromJson(jsonDecode(contents)));
+              _showSnackBar("Loaded ${file.name}");
+            }, onError: (error) => _showSnackBar(error.toString()));
           },),
         ],
       ),
@@ -74,6 +85,11 @@ class _ChartPageState extends State<ChartPage> {
         ),
       )
     ));
+  }
+
+  void _showSnackBar(String message) {
+    var snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   ChartWidget _chartWidget(ChartListViewModel model) {
