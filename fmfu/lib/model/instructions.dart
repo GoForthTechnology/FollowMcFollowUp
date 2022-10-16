@@ -11,7 +11,8 @@ enum Instruction {
   f, g1, g2, g3, h,
   i1, i2, i3, i4,
   j, k1, k2, k3, k4, k5, k6,
-  l, m, n, o
+  l, m, n, o,
+  ys1c // Magic instructions from Book 2, page 85
   ;
 
   String get description {
@@ -88,6 +89,8 @@ enum Instruction {
         return "End of day instructions apply through the first normal menstrual cycle.";
       case Instruction.o:
         return "Continue charting for the duration of the pregnancy";
+      case Instruction.ys1c:
+        return "Any single day of change -- plus count of three";
     }
   }
 }

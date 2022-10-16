@@ -6,25 +6,30 @@ import 'package:time_machine/time_machine.dart';
 
 List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions, {LocalDate? startDate}) {
   int daysOfFlow = 0;
+  int daysOfMucus = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
   int consecutiveDaysOfPeakMucus = 0;
   CountsOfThree countsOfThree = CountsOfThree();
-  bool yesterdayWasEssentiallyTheSame = false;
-  int pointOfChangeCount = 0;
+  //bool yesterdayWasEssentiallyTheSame = false;
   LocalDate? currentDate = startDate;
+  bool inEssentialSamenessPattern = true;
+  bool canAskESQ = activeInstructions.contains(Instruction.k1);
+  List<int> pointsOfChange = [];
 
   List<RenderedObservation> renderedObservations = [];
   for (int i=0; i < observations.length; i++) {
     var observation = observations[i];
     var isPostPeak = countsOfThree.getCount(CountOfThreeReason.peakDay, i) > 0;
-    var isPointOfChange = yesterdayWasEssentiallyTheSame && !(observation.essentiallyTheSame ?? false);
-    if (isPointOfChange) {
-      pointOfChangeCount++;
-      if (pointOfChangeCount % 2 == 0) {
-        countsOfThree.registerCountStart(CountOfThreeReason.pointOfChange, i);
-      }
-    }
 
+    if (observation.hasMucus) {
+      daysOfMucus++;
+    }
+    var shouldAskESQ = canAskESQ && daysOfMucus > 1 && !(countsOfThree.getCount(CountOfThreeReason.peakDay, i) > 3);
+    var isPointOfChange = shouldAskESQ && /*yesterdayWasEssentiallyTheSame &&*/ !(observation.essentiallyTheSame ?? false);
+    if (isPointOfChange) {
+      pointsOfChange.add(i);
+      inEssentialSamenessPattern = !inEssentialSamenessPattern;
+    }
     if (observation.flow != null) {
       daysOfFlow++;
     }
@@ -81,11 +86,6 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
       countsOfThree.registerCountStart(CountOfThreeReason.peakDay, i);
     }
 
-    if (yesterdayWasEssentiallyTheSame && !(observation.essentiallyTheSame ?? false)) {
-      // TODO: re-enable this once I figure out what's up with stickering
-      //countsOfThree.registerCountStart(CountOfThreeReason.pointOfChange, i);
-    }
-
     List<Instruction> infertilityReasons = [];
     if (activeInstructions.contains(Instruction.k2) && isPostPeak) {
       infertilityReasons.add(Instruction.k2);
@@ -94,7 +94,7 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         fertilityReasons.remove(Instruction.d2);
       }
     }
-    if (activeInstructions.contains(Instruction.k1) && (observation.essentiallyTheSame ?? false)) {
+    if (activeInstructions.contains(Instruction.k1) && !isPostPeak && inEssentialSamenessPattern) {
       infertilityReasons.add(Instruction.k1);
       fertilityReasons.remove(Instruction.d2);
       fertilityReasons.remove(Instruction.d3);
@@ -106,9 +106,24 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     }
 
     var activeCountOfThreeReason = countsOfThree.getActiveReason(i);
+    if (activeCountOfThreeReason == CountOfThreeReason.singleDayOfPeakMucus) {
+      fertilityReasons.add(Instruction.d5);
+    }
+    var activeCount = countsOfThree.getCount(activeCountOfThreeReason, i);
+
+    if (pointsOfChange.length > 1 && inEssentialSamenessPattern) {
+      var lastPoCToward = pointsOfChange[pointsOfChange.length - 2];
+      var pocCount = i - lastPoCToward;
+      if (pocCount < 4) {
+        fertilityReasons.add(Instruction.ys1c);
+        activeCount = pocCount;
+        activeCountOfThreeReason = CountOfThreeReason.pointOfChange;
+      }
+    }
+
     renderedObservations.add(RenderedObservation(
         observation.toString(),
-        countsOfThree.getCount(activeCountOfThreeReason, i),
+        activeCount,
         isPeakDay,
         observation.hasBleeding,
         observation.hasMucus,
@@ -122,7 +137,7 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
         currentDate,
     ));
 
-    yesterdayWasEssentiallyTheSame = observation.essentiallyTheSame ?? false;
+    //yesterdayWasEssentiallyTheSame = observation.essentiallyTheSame ?? false;
     if (currentDate != null) {
       currentDate = currentDate.addDays(1);
     }
