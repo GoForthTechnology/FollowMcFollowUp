@@ -21,6 +21,8 @@ class HomeScreen extends StatelessWidget {
           _button(context, "Chart Correcting", ChartCorrectingScreen.routeName),
           _button(context, "Chart Editor", ChartPage.routeName),
           _button(context, "FUP Form", FupFormScreen.routeName),
+          // TODO: Make this open https://github.com/BloomCycleCare/FollowMcFollowUp/issues/new
+          _button(context, "Report Issue", FupFormScreen.routeName),
         ],
       ))),
     );
