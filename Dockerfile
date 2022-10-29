@@ -21,6 +21,6 @@ RUN flutter build web
 EXPOSE 5000
 
 # make server startup script executable and start the web server
-RUN ["chmod", "+x", "/server/server.sh"]
+RUN ["chmod", "+x", "/app/server/server.sh"]
 
-ENTRYPOINT [ "/server/server.sh"]
+ENTRYPOINT [ "/app/server/server.sh"]
