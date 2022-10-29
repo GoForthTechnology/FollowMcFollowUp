@@ -1,0 +1,5 @@
+/.flutter-plugins
+/.idea/
+/.dart_tool/
+/.flutter-plugins-dependencies
+/pubspec.lock
