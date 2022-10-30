@@ -35,7 +35,9 @@ class CorrectionExerciseBar extends StatelessWidget {
             exerciseModel.clearSelection();
             // This needs to come second because submitting answer checks the
             // current entry index...
-            model.nextEntry();
+            if (model.showNextButton()) {
+              model.nextEntry();
+            }
           },
           child: Text(
               exerciseModel.hasAnswer(model.entryIndex) ? "Update Answer" : "Submit Answer"
