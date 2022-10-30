@@ -44,9 +44,6 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
           IconButton(icon: Icon(model.showFollowUpForm ? Icons.grid_off : Icons.grid_on, color: Colors.white), onPressed: () {
             model.toggleShowFollowUpForm();
           },),
-          IconButton(icon: Icon(model.incrementalMode ? Icons.extension_off : Icons.extension, color: Colors.white), onPressed: () {
-            model.toggleIncrementalMode();
-          },),
           IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () async {
             downloadJson(model.getStateAsJson(), "exercise.json");
           },),
