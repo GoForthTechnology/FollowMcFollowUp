@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
-import 'package:fmfu/view/screens/chart_screen.dart';
+import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       home: const HomeScreen(),
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
-        ChartPage.routeName: (context) => const ChartPage(),
+        ChartEditorPage.routeName: (context) => const ChartEditorPage(),
         FupFormScreen.routeName: (context) => const FupFormScreen(),
         ChartCorrectingScreen.routeName: (context) => const ChartCorrectingScreen(),
       },

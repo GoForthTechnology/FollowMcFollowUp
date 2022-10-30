@@ -12,18 +12,18 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 
-class ChartPage extends StatefulWidget {
+class ChartEditorPage extends StatefulWidget {
   static const String routeName = "charts";
 
-  const ChartPage({Key? key}) : super(key: key);
+  const ChartEditorPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ChartPageState();
+  State<StatefulWidget> createState() => _ChartEditorPageState();
 }
 
 typedef Corrections = Map<int, Map<int, StickerWithText>>;
 
-class _ChartPageState extends State<ChartPage> {
+class _ChartEditorPageState extends State<ChartEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ChartListViewModel>(builder: (context, model, child) => Scaffold(

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
-import 'package:fmfu/view/screens/chart_screen.dart';
+import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
     return ButtonWidget(
       title: "Chart Editor",
       onPressed: () {
-        Navigator.of(context).pushNamed(ChartPage.routeName);
+        Navigator.of(context).pushNamed(ChartEditorPage.routeName);
       },
     );
   }
