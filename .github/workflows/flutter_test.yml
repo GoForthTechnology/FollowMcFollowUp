@@ -25,15 +25,12 @@ jobs:
           channel: 'stable'
           
       - name: Restore packages
-        working-directory: fmfu
         run: flutter pub get
         
       - name: Analyze
-        working-directory: fmfu
         run:   flutter analyze
 
       - name: Run tests
-        working-directory: fmfu
         run: flutter test --coverage
         
       - name: Upload coverage reports to Codecov with GitHub Action
