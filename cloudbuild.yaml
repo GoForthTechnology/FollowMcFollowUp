@@ -1,0 +1,7 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/follow-mcfollowup/github:$COMMIT_SHA', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/follow-mcfollowup/github:$COMMIT_SHA' ]
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [ 'beta', 'run', 'deploy', 'cloud-run-continuous-deployment-example', '--image=gcr.io/follow-mcfollowup/github:$COMMIT_SHA', '--region=us-central1' ]
