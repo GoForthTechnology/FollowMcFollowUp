@@ -37,6 +37,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
     return CycleRecipe.create(
       prePeakMucusPatchProbability: prePeakMucusPatchFrequency / 100,
       prePeakPeakTypeProbability: prePeakPeakTypeFrequency / 100,
+      postPeakMucusPatchProbability: postPeakMucusPatchFrequency / 100,
       flowLength: flowLength,
       preBuildUpLength: preBuildupLength,
       buildUpLength: buildUpLength,
