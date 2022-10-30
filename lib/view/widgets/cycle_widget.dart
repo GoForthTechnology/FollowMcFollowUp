@@ -15,13 +15,13 @@ import 'package:time_machine/time_machine.dart' as time;
 
 class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
-  final bool showStats;
   final int dayOffset;
   final bool correctingEnabled;
   final bool editingEnabled;
   final bool showErrors;
   final SoloCell? soloCell;
   final ChartViewModel model;
+  final Widget? Function(Cycle?) rightWidgetFn;
 
   static const int nSectionsPerCycle = 5;
   static const int nEntriesPerSection = 7;
@@ -32,10 +32,9 @@ class CycleWidget extends StatefulWidget {
     this.editingEnabled = false,
     this.correctingEnabled = false,
     this.showErrors = false,
-    this.showStats = true,
     this.dayOffset = 0,
     this.soloCell,
-    Key? key,
+    Key? key, required this.rightWidgetFn,
   }) : super(key: key);
 
   @override
@@ -49,6 +48,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       dayOffset: widget.dayOffset,
       topCellCreator: _createStickerCell,
       bottomCellCreator: _createObservationCell,
+      rightWidget: widget.rightWidgetFn(widget.cycle),
     );
   }
 

@@ -218,6 +218,12 @@ abstract class ChartViewModel with GlobalLoggy {
     onChartChange();
   }
 
+  void setCycle(Cycle cycle) {
+    cycles = [cycle];
+    charts = getCharts(cycles, numCyclesPerChart);
+    onChartChange();
+  }
+
   void addCycle(
       CycleRecipe recipe, {
         bool askESQ = false,

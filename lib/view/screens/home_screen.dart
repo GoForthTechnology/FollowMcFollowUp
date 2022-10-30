@@ -1,7 +1,6 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,22 +18,12 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [
-          openChartCorrecting(context),
           openChartEditor(context),
           openFollowUpForm(context),
           // TODO: re-enable once the reporting user is set up
           //reportIssue(context),
         ],
       ))),
-    );
-  }
-
-  Widget openChartCorrecting(BuildContext context) {
-    return ButtonWidget(
-      title: "Chart Correcting",
-      onPressed: () {
-        Navigator.of(context).pushNamed(ChartCorrectingScreen.routeName);
-      },
     );
   }
 

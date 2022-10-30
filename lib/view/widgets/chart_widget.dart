@@ -11,9 +11,9 @@ class ChartWidget extends StatelessWidget with UiLoggy {
   final bool editingEnabled;
   final bool correctingEnabled;
   final bool showErrors;
-  final bool showStats;
   final SoloCell? soloCell;
   final bool includeFooter;
+  final Widget? Function(Cycle?) rightWidgetFn;
 
   const ChartWidget({
     required this.chart,
@@ -21,11 +21,10 @@ class ChartWidget extends StatelessWidget with UiLoggy {
     this.editingEnabled = false,
     this.correctingEnabled = false,
     this.showErrors = false,
-    this.showStats = false,
     this.includeFooter = true,
     this.titleWidget,
     this.soloCell,
-    Key? key,
+    Key? key, required this.rightWidgetFn,
   }) : super(key: key);
 
   @override
@@ -81,8 +80,8 @@ class ChartWidget extends StatelessWidget with UiLoggy {
         correctingEnabled: correctingEnabled,
         showErrors: showErrors,
         dayOffset: slice.offset,
-        showStats: showStats,
         soloCell: soloCell,
+        rightWidgetFn: rightWidgetFn,
       ));
     }
     loggy.debug("Created ${rows.length} rows");

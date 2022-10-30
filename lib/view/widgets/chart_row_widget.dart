@@ -7,14 +7,18 @@ class ChartRowWidget extends StatelessWidget {
   final int dayOffset;
   final Widget Function(int) topCellCreator;
   final Widget Function(int) bottomCellCreator;
+  final Widget? rightWidget;
 
-  const ChartRowWidget({Key? key, required this.dayOffset, required this.topCellCreator, required this.bottomCellCreator}) : super(key: key);
+  const ChartRowWidget({Key? key, required this.dayOffset, required this.topCellCreator, required this.bottomCellCreator, this.rightWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> sections = [];
     for (int i=0; i<nSectionsPerRow; i++) {
       sections.add(_createSection(context, i));
+    }
+    if (rightWidget != null) {
+      sections.add(rightWidget!);
     }
     return Row(children: sections);
   }

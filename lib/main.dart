@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         HomeScreen.routeName: (context) => const HomeScreen(),
         ChartEditorPage.routeName: (context) => const ChartEditorPage(),
         FupFormScreen.routeName: (context) => const FupFormScreen(),
-        ChartCorrectingScreen.routeName: (context) => const ChartCorrectingScreen(),
+        ChartCorrectingScreen.routeName: (context) => const ChartCorrectingScreen(cycle: null,),
       },
       ));
   }

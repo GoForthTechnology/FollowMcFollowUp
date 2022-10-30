@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
@@ -11,18 +12,23 @@ import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ChartCorrectingScreen extends StatelessWidget {
-  const ChartCorrectingScreen({Key? key}) : super(key: key);
+  final Cycle? cycle;
+
+  const ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
 
   static const String routeName = "chartCorrection";
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
+      if (cycle != null) {
+        model.setCycle(cycle!);
+      }
       return Scaffold(
         appBar: AppBar(
           title: const Text("Basic Chart Correcting"),
           actions: [
-            IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+            if (cycle == null) IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
               model.toggleControlBar();
             },),
           ],
@@ -43,6 +49,7 @@ class ChartCorrectingScreen extends StatelessWidget {
                   entryIndex: model.entryIndex,
                   showSticker: model.showSticker,
                 ),
+                rightWidgetFn: (cycle) => null,
                 titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(children: [
                   Text(
                     "Correcting Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",

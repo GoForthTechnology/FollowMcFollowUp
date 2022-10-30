@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/utils/files.dart';
+import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
@@ -94,6 +95,16 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
       showErrors: model.showErrors,
       titleWidget: _chartTitleWidget(model),
       chart: model.charts[model.chartIndex],
+      rightWidgetFn: (cycle) => Padding(
+          padding: const EdgeInsets.all(10),
+          child: ElevatedButton(
+            child: const Text("Run Correcting\nExercise"),
+            onPressed: () {
+              Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => ChartCorrectingScreen(cycle: cycle)));
+            },
+          )
+      ),
     );
   }
 
