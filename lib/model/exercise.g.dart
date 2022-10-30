@@ -17,6 +17,10 @@ ExerciseState _$ExerciseStateFromJson(Map<String, dynamic> json) =>
       (json['cycles'] as List<dynamic>)
           .map((e) => Cycle.fromJson(e as Map<String, dynamic>))
           .toList(),
+      (json['followUps'] as List<dynamic>)
+          .map((e) => const LocalDateJsonConverter().fromJson(e as int))
+          .toList(),
+      const LocalDateJsonConverter().fromJson(json['startOfCharting'] as int),
     );
 
 Map<String, dynamic> _$ExerciseStateToJson(ExerciseState instance) =>
@@ -28,6 +32,11 @@ Map<String, dynamic> _$ExerciseStateToJson(ExerciseState instance) =>
           .map((e) => _$ErrorScenarioEnumMap[e]!)
           .toList(),
       'cycles': instance.cycles.map((e) => e.toJson()).toList(),
+      'followUps': instance.followUps
+          .map(const LocalDateJsonConverter().toJson)
+          .toList(),
+      'startOfCharting':
+          const LocalDateJsonConverter().toJson(instance.startOfCharting),
     };
 
 const _$InstructionEnumMap = {
@@ -67,6 +76,7 @@ const _$InstructionEnumMap = {
   Instruction.m: 'm',
   Instruction.n: 'n',
   Instruction.o: 'o',
+  Instruction.ys1c: 'ys1c',
 };
 
 const _$ErrorScenarioEnumMap = {

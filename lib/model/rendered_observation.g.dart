@@ -84,6 +84,7 @@ const _$InstructionEnumMap = {
   Instruction.m: 'm',
   Instruction.n: 'n',
   Instruction.o: 'o',
+  Instruction.ys1c: 'ys1c',
 };
 
 Value? _$JsonConverterFromJson<Json, Value>(

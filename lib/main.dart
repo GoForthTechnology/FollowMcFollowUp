@@ -7,6 +7,7 @@ import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
+import 'package:fmfu/view_model/fup_simulator_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +26,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
         ChangeNotifierProvider.value(value: ChartListViewModel()),
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
-        ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
+        ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
       ], child: MaterialApp(
       debugShowCheckedModeBanner: false,

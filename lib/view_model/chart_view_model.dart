@@ -22,6 +22,7 @@ abstract class ChartViewModel with GlobalLoggy {
   List<Cycle> cycles = [];
   List<Chart> charts = [];
 
+  bool autoAdvanceToLastFollowup = false;
   final List<LocalDate> _followUps = [];
   LocalDate? _currentFollowup;
   LocalDate _startOfCharting = _startDate;
@@ -34,12 +35,19 @@ abstract class ChartViewModel with GlobalLoggy {
     return jsonEncode(ExerciseState.fromChartViewModel(this).toJson());
   }
 
-  void restoreStateFromJson(ExerciseState state) {
+  void restoreStateFromJson(ExerciseState state, {notify = true}) {
     activeInstructions = state.activeInstructions;
     errorScenarios = state.errorScenarios;
     cycles = state.cycles;
     charts = getCharts(cycles, numCyclesPerChart);
-    onChartChange();
+    _startOfCharting = state.startOfCharting;
+    _followUps.addAll(state.followUps);
+    if (_followUps.isNotEmpty) {
+      _currentFollowup = _followUps[0];
+    }
+    if (notify) {
+      onChartChange();
+    }
   }
 
   void setStartOfCharting(LocalDate date) {
@@ -152,7 +160,11 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     _followUps.add(date);
     _followUps.sort();
-    _currentFollowup ??= date;
+    if (autoAdvanceToLastFollowup) {
+      _currentFollowup = date;
+    } else {
+      _currentFollowup ??= date;
+    }
     onChartChange();
   }
 
