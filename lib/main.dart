@@ -3,6 +3,7 @@ import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
+import 'package:fmfu/view/screens/landing_screen.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
@@ -33,14 +34,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
       ], child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Follow McFollowUp',
       theme: ThemeData(
         textTheme: GoogleFonts.sourceSans3TextTheme(
           Theme.of(context).textTheme,
         ),
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const LandingScreen(),
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         ChartEditorPage.routeName: (context) => const ChartEditorPage(),
