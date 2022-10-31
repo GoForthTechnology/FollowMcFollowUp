@@ -1,17 +1,19 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ScreenWidget {
   static const String routeName = "home";
 
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    logScreenView("HomeScreen");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Follow McFollowUp"),

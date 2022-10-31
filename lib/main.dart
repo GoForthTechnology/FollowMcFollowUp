@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
@@ -13,18 +15,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  Loggy.initLoggy();
+import 'firebase_options.dart';
 
-  runApp(const MyApp());
+Future<void> main() async {
+  Loggy.initLoggy();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    analytics.logAppOpen();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
@@ -41,12 +51,12 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.blue,
       ),
-      home: const LandingScreen(),
+      home: LandingScreen(),
       routes: {
-        HomeScreen.routeName: (context) => const HomeScreen(),
+        HomeScreen.routeName: (context) => HomeScreen(),
         ChartEditorPage.routeName: (context) => const ChartEditorPage(),
-        FupFormScreen.routeName: (context) => const FupFormScreen(),
-        ChartCorrectingScreen.routeName: (context) => const ChartCorrectingScreen(cycle: null,),
+        FupFormScreen.routeName: (context) => FupFormScreen(),
+        ChartCorrectingScreen.routeName: (context) => ChartCorrectingScreen(cycle: null,),
       },
       ));
   }

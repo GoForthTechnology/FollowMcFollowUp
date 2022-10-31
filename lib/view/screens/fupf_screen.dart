@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
 
-class FupFormScreen extends StatelessWidget {
+class FupFormScreen extends ScreenWidget {
   static const String routeName = "fupf";
 
-  const FupFormScreen({Key? key}) : super(key: key);
+  FupFormScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    logScreenView("FupFormScreen");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Follow Up Form"),

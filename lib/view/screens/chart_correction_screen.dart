@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
+import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
@@ -11,15 +12,16 @@ import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:provider/provider.dart';
 
-class ChartCorrectingScreen extends StatelessWidget {
+class ChartCorrectingScreen extends ScreenWidget {
   final Cycle? cycle;
 
-  const ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
+  ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
 
   static const String routeName = "chartCorrection";
 
   @override
   Widget build(BuildContext context) {
+    logScreenView("ChartCorrectingScreen");
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
       if (cycle != null) {
         model.setCycle(cycle!);

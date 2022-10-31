@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 
-class LandingScreen extends StatelessWidget {
-  const LandingScreen({super.key});
+class LandingScreen extends ScreenWidget {
+  LandingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    logScreenView("LandingScreen");
     var formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
@@ -28,6 +30,7 @@ class LandingScreen extends StatelessWidget {
                     if (value != "creighton") {
                       return "Incorrect password";
                     }
+                    analytics.logLogin();
                     return null;
                   },
                   onFieldSubmitted: (value) {
