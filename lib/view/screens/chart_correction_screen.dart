@@ -79,8 +79,8 @@ class ChartCorrectingScreen extends ScreenWidget {
                     child: Text(model.showFullCycle ? "Hide Full Cycle" : "Show Full Cycle"),
                   )),
                   Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                    onPressed: () => model.toggleShowSticker(),
-                    child: Text(model.showSticker ? "Hide Sticker" : "Show Sticker"),
+                    onPressed: model.showFullCycle ? null : () => model.toggleShowSticker(),
+                    child: Text(model.showSticker ? "Hide Answer" : "Show Answer"),
                   )),
                 ])),
               ),

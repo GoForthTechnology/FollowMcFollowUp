@@ -12,7 +12,7 @@ class CorrectionExerciseBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) => Row(children: [
-      const Text("Select a Sticker: "),
+      const Text("Select a Stamp: "),
       StickerSelectionRow(
         includeYellow: true,
         selectedSticker: exerciseModel.currentStickerSelection,
