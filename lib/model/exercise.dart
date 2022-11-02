@@ -12,7 +12,7 @@ part 'exercise.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ExerciseState {
   final List<Instruction> activeInstructions;
-  final List<ErrorScenario> errorScenarios;
+  final Set<ErrorScenario> errorScenarios;
   final List<Cycle> cycles;
   @LocalDateJsonConverter()
   final List<LocalDate> followUps;

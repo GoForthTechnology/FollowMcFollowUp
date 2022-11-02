@@ -13,7 +13,7 @@ ExerciseState _$ExerciseStateFromJson(Map<String, dynamic> json) =>
           .toList(),
       (json['errorScenarios'] as List<dynamic>)
           .map((e) => $enumDecode(_$ErrorScenarioEnumMap, e))
-          .toList(),
+          .toSet(),
       (json['cycles'] as List<dynamic>)
           .map((e) => Cycle.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -82,4 +82,8 @@ const _$InstructionEnumMap = {
 const _$ErrorScenarioEnumMap = {
   ErrorScenario.forgetD4: 'forgetD4',
   ErrorScenario.forgetObservationOnFlow: 'forgetObservationOnFlow',
+  ErrorScenario.forgetRedStampForUnusualBleeding:
+      'forgetRedStampForUnusualBleeding',
+  ErrorScenario.forgetCountOfThreeForUnusualBleeding:
+      'forgetCountOfThreeForUnusualBleeding',
 };

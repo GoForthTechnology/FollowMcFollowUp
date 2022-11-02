@@ -19,7 +19,7 @@ void main() {
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
           .toList();
-      var correctedEntries = introduceErrors(entries, []);
+      var correctedEntries = introduceErrors(entries, {});
       for (var entry in correctedEntries) {
         expect(entry.manualSticker, null);
       }
@@ -35,10 +35,10 @@ void main() {
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
           .toList();
-      var correctedEntries = introduceErrors(entries, [ErrorScenario.forgetObservationOnFlow]);
+      var correctedEntries = introduceErrors(entries, {ErrorScenario.forgetObservationOnFlow});
       expect(correctedEntries[3].observationText, "L");
 
-      correctedEntries = introduceErrors(entries, []);
+      correctedEntries = introduceErrors(entries, {});
       expect(correctedEntries[3].observationText, "L 6C X1");
     });
   });
@@ -63,7 +63,7 @@ void main() {
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation,))
           .toList();
-      var updatedEntries = introduceErrors(entries, [ErrorScenario.forgetD4]);
+      var updatedEntries = introduceErrors(entries, {ErrorScenario.forgetD4});
 
       expect(updatedEntries[7].isCorrectSticker(), false);
       expect(updatedEntries[7].manualSticker!.sticker, Sticker.green);

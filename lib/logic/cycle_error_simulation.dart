@@ -2,14 +2,22 @@
 
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/instructions.dart';
+import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/stickers.dart';
 
 enum ErrorScenario {
   forgetD4,
   forgetObservationOnFlow,
+  forgetRedStampForUnusualBleeding,
+  forgetCountOfThreeForUnusualBleeding,
 }
 
-List<ChartEntry> introduceErrors(List<ChartEntry> entries, List<ErrorScenario> scenarios) {
+List<ChartEntry> introduceErrors(List<ChartEntry> entries, Set<ErrorScenario> scenarios) {
+  if (scenarios.contains(ErrorScenario.forgetCountOfThreeForUnusualBleeding)) {
+    // If you've forgotten to put the right stamp on, you've probably also
+    // forgotten to add a count of three...
+    scenarios.add(ErrorScenario.forgetCountOfThreeForUnusualBleeding);
+  }
   List<ChartEntry> out = [];
   for (var entry in entries) {
     out.add(ChartEntry(
@@ -25,6 +33,67 @@ List<ChartEntry> introduceErrors(List<ChartEntry> entries, List<ErrorScenario> s
       case ErrorScenario.forgetObservationOnFlow:
         out = runForgetObservationOnFlow(out);
         break;
+      case ErrorScenario.forgetRedStampForUnusualBleeding:
+        out = runForgetRedStampForUnusualBleeding(out);
+        break;
+      case ErrorScenario.forgetCountOfThreeForUnusualBleeding:
+        out = runForgetCountOfThreeForUnusualBleeding(out);
+        break;
+    }
+  }
+  return out;
+}
+
+List<ChartEntry> runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entries) {
+  List<ChartEntry> out = entries;
+  for (int i = 0; i < out.length; i++) {
+    final entry = entries[i];
+    if (entry.renderedObservation == null) {
+      continue;
+    }
+    var observation = entry.renderedObservation!;
+    var countOfThreeReason = observation.debugInfo.countOfThreeReason;
+    if (countOfThreeReason == CountOfThreeReason.unusualBleeding) {
+      Sticker updatedStamp;
+      if (observation.hasMucus) {
+        updatedStamp = Sticker.whiteBaby;
+      } else {
+        updatedStamp = Sticker.green;
+      }
+      out[i] = ChartEntry(
+        observationText: entry.observationText,
+        renderedObservation: entry.renderedObservation,
+        manualSticker: StickerWithText(updatedStamp, null),
+      );
+    }
+  }
+  return out;
+}
+
+List<ChartEntry> runForgetRedStampForUnusualBleeding(List<ChartEntry> entries) {
+  List<ChartEntry> out = entries;
+  for (int i=0; i<out.length; i++) {
+    final entry = entries[i];
+    if (entry.renderedObservation == null) {
+      continue;
+    }
+    var observation = entry.renderedObservation!;
+    if (observation.hasBleeding && !observation.inFlow) {
+      Sticker updatedStamp;
+      if (observation.hasMucus) {
+        updatedStamp = Sticker.whiteBaby;
+      } else {
+        if (observation.countOfThree > 0) {
+          updatedStamp = Sticker.greenBaby;
+        } else {
+          updatedStamp = Sticker.green;
+        }
+      }
+      out[i] = ChartEntry(
+        observationText: entry.observationText,
+        renderedObservation: entry.renderedObservation,
+        manualSticker: StickerWithText(updatedStamp, observation.getStickerText()),
+      );
     }
   }
   return out;

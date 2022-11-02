@@ -3,6 +3,18 @@ import 'dart:math';
 
 import 'package:fmfu/utils/gamma.dart';
 
+class UniformRange {
+  final double lowerBound;
+  final double upperBound;
+
+  const UniformRange(this.lowerBound, this.upperBound);
+
+  double get() {
+    var delta = upperBound - lowerBound;
+    return lowerBound + delta * Random().nextDouble();
+  }
+}
+
 class NormalDistribution {
   final int _mean;
   final double _stdDev;

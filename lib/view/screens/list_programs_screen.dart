@@ -58,6 +58,7 @@ class ListProgramsScreen extends ScreenWidget {
                   if (value == null || value.isEmpty) {
                     return "Value required";
                   }
+                  return null;
                 },
                 onFieldSubmitted: (value) => saveForm(),
                 onSaved: (value) {

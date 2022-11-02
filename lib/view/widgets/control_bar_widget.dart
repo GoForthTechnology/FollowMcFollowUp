@@ -31,7 +31,7 @@ class ControlBarWidgetState extends State<ControlBarWidget> {
   bool postPeakYellowStamps = false;
   int toggles = 0;
 
-  List<ErrorScenario> errorScenarios = [];
+  Set<ErrorScenario> errorScenarios = {};
 
   CycleRecipe _getRecipe() {
     return CycleRecipe.create(

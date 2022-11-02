@@ -88,14 +88,18 @@ class AppRouter extends _i9.RootStackRouter {
         child: _i7.ListProgramsScreen(key: args.key),
       );
     },
-    ExerciseListScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<ExerciseListScreenRouteArgs>();
+    StaticExerciseListScreenRoute.name: (routeData) {
       return _i9.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i8.ExerciseListScreen(
-          key: args.key,
-          exercises: args.exercises,
-        ),
+        child: const _i8.StaticExerciseListScreen(),
+      );
+    },
+    DynamicExerciseListScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<DynamicExerciseListScreenRouteArgs>(
+          orElse: () => const DynamicExerciseListScreenRouteArgs());
+      return _i9.AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: _i8.DynamicExerciseListScreen(key: args.key),
       );
     },
   };
@@ -194,13 +198,26 @@ class AppRouter extends _i9.RootStackRouter {
           ],
         ),
         _i9.RouteConfig(
-          ExerciseListScreenRoute.name,
-          path: '/exercises',
+          StaticExerciseListScreenRoute.name,
+          path: '/exercises/static',
           children: [
             _i9.RouteConfig(
               '*#redirect',
               path: '*',
-              parent: ExerciseListScreenRoute.name,
+              parent: StaticExerciseListScreenRoute.name,
+              redirectTo: '',
+              fullMatch: true,
+            )
+          ],
+        ),
+        _i9.RouteConfig(
+          DynamicExerciseListScreenRoute.name,
+          path: '/exercises/dynamic',
+          children: [
+            _i9.RouteConfig(
+              '*#redirect',
+              path: '*',
+              parent: DynamicExerciseListScreenRoute.name,
               redirectTo: '',
               fullMatch: true,
             )
@@ -412,38 +429,42 @@ class ListProgramsScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i8.ExerciseListScreen]
-class ExerciseListScreenRoute
-    extends _i9.PageRouteInfo<ExerciseListScreenRouteArgs> {
-  ExerciseListScreenRoute({
-    _i10.Key? key,
-    required List<_i8.Exercise> exercises,
-    List<_i9.PageRouteInfo>? children,
-  }) : super(
-          ExerciseListScreenRoute.name,
-          path: '/exercises',
-          args: ExerciseListScreenRouteArgs(
-            key: key,
-            exercises: exercises,
-          ),
+/// [_i8.StaticExerciseListScreen]
+class StaticExerciseListScreenRoute extends _i9.PageRouteInfo<void> {
+  const StaticExerciseListScreenRoute({List<_i9.PageRouteInfo>? children})
+      : super(
+          StaticExerciseListScreenRoute.name,
+          path: '/exercises/static',
           initialChildren: children,
         );
 
-  static const String name = 'ExerciseListScreenRoute';
+  static const String name = 'StaticExerciseListScreenRoute';
 }
 
-class ExerciseListScreenRouteArgs {
-  const ExerciseListScreenRouteArgs({
-    this.key,
-    required this.exercises,
-  });
+/// generated route for
+/// [_i8.DynamicExerciseListScreen]
+class DynamicExerciseListScreenRoute
+    extends _i9.PageRouteInfo<DynamicExerciseListScreenRouteArgs> {
+  DynamicExerciseListScreenRoute({
+    _i10.Key? key,
+    List<_i9.PageRouteInfo>? children,
+  }) : super(
+          DynamicExerciseListScreenRoute.name,
+          path: '/exercises/dynamic',
+          args: DynamicExerciseListScreenRouteArgs(key: key),
+          initialChildren: children,
+        );
+
+  static const String name = 'DynamicExerciseListScreenRoute';
+}
+
+class DynamicExerciseListScreenRouteArgs {
+  const DynamicExerciseListScreenRouteArgs({this.key});
 
   final _i10.Key? key;
 
-  final List<_i8.Exercise> exercises;
-
   @override
   String toString() {
-    return 'ExerciseListScreenRouteArgs{key: $key, exercises: $exercises}';
+    return 'DynamicExerciseListScreenRouteArgs{key: $key}';
   }
 }

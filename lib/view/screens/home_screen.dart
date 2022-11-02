@@ -6,8 +6,6 @@ import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'exercise_list_screen.dart';
-
 class HomeScreen extends ScreenWidget {
   static const String routeName = "home";
 
@@ -54,8 +52,7 @@ class HomeScreen extends ScreenWidget {
     return ButtonWidget(
       title: "Static Exercises",
       onPressed: () {
-        AutoRouter.of(context).push(
-            ExerciseListScreenRoute(exercises: staticExerciseList));
+        AutoRouter.of(context).push(const StaticExerciseListScreenRoute());
       },
     );
   }
@@ -64,8 +61,7 @@ class HomeScreen extends ScreenWidget {
     return ButtonWidget(
       title: "Dynamic Exercises",
       onPressed: () {
-        AutoRouter.of(context).push(
-            ExerciseListScreenRoute(exercises: dynamicExerciseList));
+        AutoRouter.of(context).push(DynamicExerciseListScreenRoute());
       },
     );
   }

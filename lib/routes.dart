@@ -67,8 +67,16 @@ import 'package:fmfu/view/screens/list_programs_screen.dart';
     ),
 
     AutoRoute(
-      path: '/exercises',
-      page: ExerciseListScreen,
+      path: '/exercises/static',
+      page: StaticExerciseListScreen,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+
+    AutoRoute(
+      path: '/exercises/dynamic',
+      page: DynamicExerciseListScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],

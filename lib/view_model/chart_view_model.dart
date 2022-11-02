@@ -18,7 +18,7 @@ abstract class ChartViewModel with GlobalLoggy {
   final int numCyclesPerChart;
   bool incrementalMode = false;
   List<Instruction> activeInstructions = _defaultInstructions;
-  List<ErrorScenario> errorScenarios = [];
+  Set<ErrorScenario> errorScenarios = {};
   List<Cycle> cycles = [];
   List<Chart> charts = [];
 
@@ -197,7 +197,7 @@ abstract class ChartViewModel with GlobalLoggy {
         bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
-        List<ErrorScenario> errorScenarios = const [],
+        Set<ErrorScenario> errorScenarios = const {},
       }) {
     if (incrementalMode) {
       return;
@@ -213,7 +213,7 @@ abstract class ChartViewModel with GlobalLoggy {
         bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
-        List<ErrorScenario> errorScenarios = const [],
+        Set<ErrorScenario> errorScenarios = const {},
       }) {
     if (!incrementalMode) {
       loggy.error("swapLastCycle only supported in incremental mode!");
@@ -241,7 +241,7 @@ abstract class ChartViewModel with GlobalLoggy {
         bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
-        List<ErrorScenario> errorScenarios = const [],
+        Set<ErrorScenario> errorScenarios = const {},
       }) {
     if (!incrementalMode) {
       loggy.error("addCycle only supported in incremental mode!");
@@ -253,7 +253,7 @@ abstract class ChartViewModel with GlobalLoggy {
     onChartChange();
   }
 
-  void updateErrors(List<ErrorScenario> errorScenarios) {
+  void updateErrors(Set<ErrorScenario> errorScenarios) {
     List<Cycle> updatedCycles = [];
     for (var cycle in cycles) {
       updatedCycles.add(Cycle(
@@ -360,7 +360,7 @@ abstract class ChartViewModel with GlobalLoggy {
       int numCycles,
       bool askESQ,
       List<Instruction> instructions,
-      List<ErrorScenario> errorScenarios) {
+      Set<ErrorScenario> errorScenarios) {
     List<Cycle> cycles = [];
     LocalDate currentDate = _startDate;
     for (int i=0; i<numCycles; i++) {
@@ -409,7 +409,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void _initCharts() {
-    cycles = _getCycles(CycleRecipe.create(), 10, false, _defaultInstructions, []);
+    cycles = _getCycles(CycleRecipe.create(), 10, false, _defaultInstructions, {});
     charts = getCharts(cycles, numCyclesPerChart);
   }
 

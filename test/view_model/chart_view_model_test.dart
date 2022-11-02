@@ -441,7 +441,7 @@ void main() {
 
     expect(viewModel.errorScenarios.length, 0);
 
-    viewModel.updateErrors([ErrorScenario.forgetObservationOnFlow]);
+    viewModel.updateErrors({ErrorScenario.forgetObservationOnFlow});
     expect(viewModel.errorScenarios.length, 1);
 
     expect(viewModel.numUpdates, 1);
