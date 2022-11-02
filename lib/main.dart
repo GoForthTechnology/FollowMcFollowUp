@@ -1,11 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fmfu/view/screens/chart_correction_screen.dart';
-import 'package:fmfu/view/screens/chart_editor_screen.dart';
-import 'package:fmfu/view/screens/fupf_screen.dart';
-import 'package:fmfu/view/screens/home_screen.dart';
-import 'package:fmfu/view/screens/landing_screen.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
@@ -15,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
+import 'routes.gr.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -25,6 +21,8 @@ Future<void> main() async {
 
   runApp(MyApp());
 }
+
+final _appRouter = AppRouter();
 
 class MyApp extends StatelessWidget {
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -42,7 +40,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
-      ], child: MaterialApp(
+      ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Follow McFollowUp',
       theme: ThemeData(
@@ -51,13 +49,8 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.blue,
       ),
-      home: LandingScreen(),
-      routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
-        ChartEditorPage.routeName: (context) => const ChartEditorPage(),
-        FupFormScreen.routeName: (context) => FupFormScreen(),
-        ChartCorrectingScreen.routeName: (context) => ChartCorrectingScreen(cycle: null,),
-      },
-      ));
+      routerDelegate: _appRouter.delegate(),
+      routeInformationParser: _appRouter.defaultRouteParser(),
+    ));
   }
 }

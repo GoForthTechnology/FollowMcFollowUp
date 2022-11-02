@@ -1,10 +1,10 @@
 
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:fmfu/model/exercise.dart';
+import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/files.dart';
-import 'package:fmfu/view/screens/chart_correction_screen.dart';
-import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
@@ -104,8 +104,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
           child: ElevatedButton(
             child: const Text("Run Correcting\nExercise"),
             onPressed: () {
-              Navigator.push(context,MaterialPageRoute(
-                  builder: (context) => ChartCorrectingScreen(cycle: cycle)));
+              AutoRouter.of(context).push(ChartCorrectingScreenRoute(cycle: cycle));
             },
           )
       ),
@@ -126,8 +125,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
         titleButton("Next", () => model.showNextButton() ? () => model.moveToNextChart() : null),
         titleButton("Run Simulation", () {
           final state = ExerciseState.fromChartViewModel(model);
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => FollowUpSimulatorPage(exerciseState: state)));
+          AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: state));
         }),
         if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
         if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),

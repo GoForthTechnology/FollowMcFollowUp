@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 
@@ -36,7 +38,7 @@ class LandingScreen extends ScreenWidget {
                   onFieldSubmitted: (value) {
                     if (formKey.currentState!.validate()) {
                       Navigator.pop(context, 'OK');
-                      Navigator.of(context).pushNamed(HomeScreen.routeName);
+                      AutoRouter.of(context).push(HomeScreenRoute());
                     }
                   },
                 ),

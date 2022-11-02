@@ -1,9 +1,9 @@
 
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
-import 'package:fmfu/view/screens/chart_editor_screen.dart';
-import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends ScreenWidget {
@@ -33,7 +33,7 @@ class HomeScreen extends ScreenWidget {
     return ButtonWidget(
       title: "Chart Editor",
       onPressed: () {
-        Navigator.of(context).pushNamed(ChartEditorPage.routeName);
+        AutoRouter.of(context).push(const ChartEditorPageRoute());
       },
     );
   }
@@ -42,7 +42,7 @@ class HomeScreen extends ScreenWidget {
     return ButtonWidget(
       title: "FupFormScreen",
       onPressed: () {
-        Navigator.of(context).pushNamed(FupFormScreen.routeName);
+        AutoRouter.of(context).push(FupFormScreenRoute());
       },
     );
   }
