@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/view/screens/exercise_list_screen.dart';
 import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view/screens/landing_screen.dart';
+import 'package:fmfu/view/screens/list_programs_screen.dart';
 
 @AdaptiveAutoRouter(
   replaceInRouteName: 'Page,Route,Screen',
@@ -51,6 +53,22 @@ import 'package:fmfu/view/screens/landing_screen.dart';
     AutoRoute(
       path: '/correction',
       page: ChartCorrectingScreen,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+
+    AutoRoute(
+      path: '/programs',
+      page: ListProgramsScreen,
+      children: [
+        RedirectRoute(path: '*', redirectTo: '/programs'),
+      ],
+    ),
+
+    AutoRoute(
+      path: '/exercises',
+      page: ExerciseListScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],

@@ -6,6 +6,8 @@ import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'exercise_list_screen.dart';
+
 class HomeScreen extends ScreenWidget {
   static const String routeName = "home";
 
@@ -20,12 +22,88 @@ class HomeScreen extends ScreenWidget {
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [
+          const Text("For Students"),
           openChartEditor(context),
+          staticExercises(context),
+          dynamicExercises(context),
+          joinExercise(context),
+          const Divider(),
+          const Text("For Educators"),
+          manageProgram(context),
+          const Divider(),
+          const Text("Under Construction"),
           openFollowUpForm(context),
           // TODO: re-enable once the reporting user is set up
           //reportIssue(context),
         ],
       ))),
+    );
+  }
+
+  Widget manageProgram(BuildContext context) {
+    return ButtonWidget(
+      title: "Manage Program",
+      onPressed: () {
+        AutoRouter.of(context).push(ListProgramsScreenRoute());
+      },
+      backgroundColor: Colors.pinkAccent,
+    );
+  }
+
+  Widget staticExercises(BuildContext context) {
+    return ButtonWidget(
+      title: "Static Exercises",
+      onPressed: () {
+        AutoRouter.of(context).push(
+            ExerciseListScreenRoute(exercises: staticExerciseList));
+      },
+    );
+  }
+
+  Widget dynamicExercises(BuildContext context) {
+    return ButtonWidget(
+      title: "Dynamic Exercises",
+      onPressed: () {
+        AutoRouter.of(context).push(
+            ExerciseListScreenRoute(exercises: dynamicExerciseList));
+      },
+    );
+  }
+
+  Widget joinExercise(BuildContext context) {
+    return ButtonWidget(
+      title: "Join Group Exercise",
+      onPressed: () {
+        showDialog(context: context, builder: (context)  {
+          var formKey = GlobalKey<FormState>();
+          saveForm() {
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
+            }
+          }
+          return AlertDialog(
+            title: const Text("Enter Exercise ID"),
+            content: Form(
+              key: formKey,
+              child: TextFormField(
+                validator: (value) {
+                  return "Exercise not found";
+                },
+                onFieldSubmitted: (value) => saveForm(),
+                onSaved: (value) {
+                  // TODO: trigger exercise
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => saveForm(),
+                child: const Text("Submit"),
+              ),
+            ],
+          );
+        });
+      },
     );
   }
 
@@ -44,6 +122,7 @@ class HomeScreen extends ScreenWidget {
       onPressed: () {
         AutoRouter.of(context).push(FupFormScreenRoute());
       },
+      backgroundColor: Colors.grey,
     );
   }
 

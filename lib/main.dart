@@ -6,6 +6,7 @@ import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:fmfu/view_model/fup_simulator_view_model.dart';
+import 'package:fmfu/view_model/program_list_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
+        ChangeNotifierProvider.value(value: ProgramListViewModel()),
       ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Follow McFollowUp',
