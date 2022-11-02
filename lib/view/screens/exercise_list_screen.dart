@@ -8,6 +8,7 @@ import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/exercise.dart';
+import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/distributions.dart';
 import 'package:loggy/loggy.dart';
@@ -40,21 +41,26 @@ class DynamicExerciseListScreen extends ExerciseListScreen {
   DynamicExerciseListScreen({super.key}) : super(exercises: dynamicExerciseList);
 }
 
+const preBuildUpLengthRange = UniformRange(4, 6);
+
 final dynamicExerciseList = [
   const DynamicExercise(name: "Over reading lubrication"),
   DynamicExercise(name: "Continuous Mucus", recipe: CycleRecipe.create(
+    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
     prePeakMucusPatchProbability: 1.0,
     postPeakMucusPatchProbability: 1.0,
   )),
   const DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)"),
   const DynamicExercise(name: "Variable return of Peak-type mucus"),
   DynamicExercise(name: "Post-Peak, non-Peak-type mucus", recipe: CycleRecipe.create(
+    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
     postPeakMucusPatchProbability: const UniformRange(0.7, 0.9).get(),
   )),
   const DynamicExercise(name: "Post-Peak Pasty"),
   const DynamicExercise(name: "Post-Peak, Peak-type mucus"),
   const DynamicExercise(name: "Premenstrual Spotting"),
   DynamicExercise(name: "Unusual Bleeding", recipe: CycleRecipe.create(
+    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
     unusualBleedingProbability: const UniformRange(0.6, 0.9).get(),
   ), errorScenarios: {
     ErrorScenario.forgetObservationOnFlow: 0.4,
@@ -63,6 +69,8 @@ final dynamicExerciseList = [
   }),
   const DynamicExercise(name: "Limited Mucus"),
 ];
+
+const followUpSequence = [14, 14, 14, 14, 28, 84, 84, 84];
 
 class DynamicExercise extends Exercise {
   final CycleRecipe? recipe;
@@ -85,8 +93,30 @@ class DynamicExercise extends Exercise {
         activeScenarios.add(scenario);
       }
     });
+
+    final startDate = LocalDate(LocalDate.today().year, 1, 1);
+    final firstCycleObservations = recipe!.getObservations();
+    final startingDayOffset = UniformRange(0, firstCycleObservations.length.toDouble()).get().toInt();
+
+    print("Starting day offset: ${startingDayOffset.toString()}");
+
+    var currentDate = startDate;
     final cycles = List.generate(6, (index) {
-      final observations = renderObservations(recipe!.getObservations(), []);
+      final List<RenderedObservation> observations;
+      if (index == 0) {
+        print("Starting with ${firstCycleObservations.length} observations");
+        observations = [];
+        for (int i=0; i < startingDayOffset - 1; i++) {
+          observations.add(RenderedObservation.blank(startDate.addDays(i)));
+        }
+        print("Blanked ${observations.length} days");
+        observations.addAll(renderObservations(firstCycleObservations.sublist(startingDayOffset), [], startDate: startDate.addDays(startingDayOffset)));
+        print("Final total ${observations.length}");
+      } else {
+        observations = renderObservations(recipe!.getObservations(), [], startDate: currentDate);
+      }
+      currentDate = currentDate.addDays(observations.length);
+
       var entries = List.of(observations.map((o) => ChartEntry(
           renderedObservation: o, observationText: o.observationText)));
       entries = introduceErrors(entries, activeScenarios);
@@ -95,7 +125,16 @@ class DynamicExercise extends Exercise {
         entries: entries,
       );
     });
-    return ExerciseState([], activeScenarios, cycles, [], LocalDate.today());
+
+    final startingDay = startDate.addDays(startingDayOffset - 1);
+
+    List<LocalDate> followUps = [];
+    var elapsedDays = 0;
+    for (int i=0; i < followUpSequence.length; i++) {
+      elapsedDays += followUpSequence[i];
+      followUps.add(startingDay.addDays(elapsedDays));
+    }
+    return ExerciseState([], activeScenarios, cycles, followUps, startingDay);
   }
 }
 

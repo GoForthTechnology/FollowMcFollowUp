@@ -41,6 +41,7 @@ abstract class ChartViewModel with GlobalLoggy {
     cycles = state.cycles;
     charts = getCharts(cycles, numCyclesPerChart);
     _startOfCharting = state.startOfCharting;
+    _followUps.clear();
     _followUps.addAll(state.followUps);
     if (_followUps.isNotEmpty) {
       _currentFollowup = _followUps[0];

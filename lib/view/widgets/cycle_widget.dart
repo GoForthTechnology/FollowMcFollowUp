@@ -74,17 +74,21 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
 
   Widget _createObservationCell(int entryIndex) {
     var entry = _getChartEntry(entryIndex);
+    time.LocalDate? entryDate = entry?.renderedObservation?.date;
+    var shouldSuppress = _shouldSuppress(entryDate);
 
     var textBackgroundColor = Colors.white;
-    if (widget.showErrors && (entry?.hasErrors() ?? false)) {
+    if (widget.showErrors && (entry?.hasErrors() ?? false) && !shouldSuppress) {
       textBackgroundColor = const Color(0xFFEECDCD);
     }
     String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
-    time.LocalDate? entryDate = entry?.renderedObservation?.date;
-    if (_shouldSuppress(entryDate)) {
+    if (shouldSuppress) {
       entry = null;
     }
     bool hasFollowup = entryDate != null && widget.model.followUps().contains(entryDate);
+    if (hasFollowup) {
+      print("Has followup: $entryDate");
+    }
     Widget content = CustomPaint(
       painter: ObservationPainter(
         entry,

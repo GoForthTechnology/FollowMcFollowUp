@@ -23,6 +23,10 @@ class RenderedObservation {
 
   RenderedObservation(this.observationText, this.countOfThree, this.isPeakDay, this.hasBleeding, this.hasMucus, this.inFlow, this.fertilityReasons, this.infertilityReasons, this.essentiallyTheSame, this.debugInfo, this.date);
 
+  static RenderedObservation blank(LocalDate date) {
+    return RenderedObservation("", 0, false, false, false, false, [], [], null, const DebugInfo(), date);
+  }
+
   String debugString() {
     return "{debugInfo: $debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
   }

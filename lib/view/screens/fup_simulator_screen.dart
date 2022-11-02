@@ -105,15 +105,6 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
   Widget _chartTitleWidget(FollowUpSimulatorViewModel model) {
     return Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
       children: [
-        Text(
-          "Chart #${model.chartIndex+1}",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        titleButton("Previous", () => model.showPreviousButton() ? () => model.moveToPreviousChart() : null),
-        titleButton("Next", () => model.showNextButton() ? () => model.moveToNextChart() : null),
         if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
         if (model.followUps().isNotEmpty) ...[
           Padding(padding: const EdgeInsets.only(left: 20), child: Text(
