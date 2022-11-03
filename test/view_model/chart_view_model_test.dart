@@ -450,7 +450,7 @@ void main() {
 
 Cycle fakeCycle(int numEntries) {
   List<ChartEntry> entries = List.generate(numEntries, (index) => ChartEntry(observationText: "0 AD"));
-  return Cycle(index: 0, entries: entries);
+  return Cycle(index: 0, entries: entries, observationCorrections: {}, stickerCorrections: {});
 }
 
 class ChartViewModelForTest extends ChartViewModel {

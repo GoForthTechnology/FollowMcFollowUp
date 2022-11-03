@@ -204,6 +204,8 @@ class DynamicExercise extends Exercise {
       return Cycle(
         index: index,
         entries: entries,
+        observationCorrections: {},
+        stickerCorrections: {},
       );
     });
 
