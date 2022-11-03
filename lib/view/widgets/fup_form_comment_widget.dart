@@ -36,15 +36,23 @@ class CommentWidget extends StatelessWidget with SaveItem {
           children: [
             Row(children: [
               const Text("Problem: ", style: TextStyle(fontWeight: FontWeight.bold)),
-              Expanded(child: TextFormField(maxLines: null, onSaved: (value) {
-                model.updateCommentProblem(commentId, value ?? "");
-              }, initialValue: model.getComment(commentId)!.problem)),
+              Expanded(child: TextFormField(
+                initialValue: model.getComment(commentId)!.problem,
+                maxLines: null,
+                onSaved: (value) {
+                  model.updateCommentProblem(commentId, value ?? "");
+                },
+              )),
             ]),
             Row(children: [
               const Text("Plan: ", style: TextStyle(fontWeight: FontWeight.bold)),
-              Expanded(child: TextFormField(maxLines: null, onSaved: (value) {
-                model.updateCommentPlan(commentId, value ?? "");
-              }, initialValue: model.getComment(commentId)!.planOfAction)),
+              Expanded(child: TextFormField(
+                initialValue: model.getComment(commentId)!.planOfAction,
+                maxLines: null,
+                onSaved: (value) {
+                  model.updateCommentPlan(commentId, value ?? "");
+                },
+              )),
             ]),
             TextButton(onPressed: () => model.removeComment(commentId), child: const Text("Remove Comment")),
           ],

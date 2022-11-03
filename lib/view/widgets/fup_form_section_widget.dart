@@ -151,6 +151,7 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
           commentIndex: i,
         )).toList();
         saveItems.addAll(commentWidgets);
+        var addCommentText = commentWidgets.isEmpty ? "Add Comment" : "Add Another Comment";
         return AlertDialog(
             title: Text(
                 "Follow Up #${followUpIndex + 1} -- ${item.section}${item.subSection}"),
@@ -162,13 +163,17 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
               Expanded(child: Column(children: commentWidgets)),
               Padding(padding: const EdgeInsets.only(bottom: 20), child: ElevatedButton(
                 onPressed: () => setState(() {
+                  for (var saveItem in saveItems) {
+                    // Save all the current edits before adding a new item.
+                    saveItem.save();
+                  }
                   var item = items[itemIndex];
                   model.addComment(BoxId(
                     followUp: followUpIndex,
                     itemId: item.id(),
                   ));
                 }),
-                child: const Text("Add Comment"),
+                child: Text(addCommentText),
               )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
