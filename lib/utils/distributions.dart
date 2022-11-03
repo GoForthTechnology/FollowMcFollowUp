@@ -23,6 +23,9 @@ class NormalDistribution {
   NormalDistribution(this._mean, this._stdDev);
 
   int get() {
+    if (_mean == 0) {
+      return 0;
+    }
     double u = _r.nextDouble() * 2 - 1;
     double v = _r.nextDouble() * 2 - 1;
     double r = u*u + v*v;

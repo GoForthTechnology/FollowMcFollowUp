@@ -127,7 +127,7 @@ class CycleRecipe extends Recipe {
     final postPeakRecipe = PostPeakRecipe(
       lengthDist: NormalDistribution(postPeakLength, stdDev),
       mucusLengthDist: NormalDistribution(1, stdDev),
-      preMenstrualSpottingLengthDist: NormalDistribution(3, stdDev),
+      preMenstrualSpottingLengthDist: NormalDistribution(0, stdDev),
       mucusDischargeGenerator: postPeakPasty
           ? pastyCloudyDischargeGenerator : nonPeakTypeDischargeGenerator,
       nonMucusDischargeGenerator: postPeakPasty
