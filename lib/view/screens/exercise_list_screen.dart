@@ -98,7 +98,7 @@ final dynamicExerciseList = [
   }),
 
   DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)", recipe: CycleRecipe.create(
-    preBuildUpLength: preBuildUpLengthRange.get().round(),
+    preBuildUpLength: 0,
     buildUpLength: const UniformRange(8, 10).get().round(),
   ), errorScenarios: {
     ErrorScenario.forgetObservationOnFlow: 0.3,
