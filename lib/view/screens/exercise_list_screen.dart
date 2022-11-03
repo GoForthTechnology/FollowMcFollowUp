@@ -46,28 +46,43 @@ const preBuildUpLengthRange = UniformRange(4, 6);
 final dynamicExerciseList = [
   const DynamicExercise(name: "Over reading lubrication"),
   DynamicExercise(name: "Continuous Mucus", recipe: CycleRecipe.create(
-    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
+    preBuildUpLength: preBuildUpLengthRange.get().round(),
     prePeakMucusPatchProbability: 1.0,
     postPeakMucusPatchProbability: 1.0,
-  )),
-  const DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)"),
+  ), errorScenarios: {
+    ErrorScenario.forgetObservationOnFlow: 0.3,
+  }),
+  DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)", recipe: CycleRecipe.create(
+    preBuildUpLength: preBuildUpLengthRange.get().round(),
+    buildUpLength: const UniformRange(8, 10).get().round(),
+  ), errorScenarios: {
+    ErrorScenario.forgetObservationOnFlow: 0.3,
+  }),
   const DynamicExercise(name: "Variable return of Peak-type mucus"),
   DynamicExercise(name: "Post-Peak, non-Peak-type mucus", recipe: CycleRecipe.create(
-    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
+    preBuildUpLength: preBuildUpLengthRange.get().round(),
     postPeakMucusPatchProbability: const UniformRange(0.7, 0.9).get(),
-  )),
+  ), errorScenarios: {
+    ErrorScenario.forgetObservationOnFlow: 0.3,
+  }),
   const DynamicExercise(name: "Post-Peak Pasty"),
   const DynamicExercise(name: "Post-Peak, Peak-type mucus"),
   const DynamicExercise(name: "Premenstrual Spotting"),
   DynamicExercise(name: "Unusual Bleeding", recipe: CycleRecipe.create(
-    preBuildUpLength: preBuildUpLengthRange.get().toInt(),
+    preBuildUpLength: preBuildUpLengthRange.get().round(),
     unusualBleedingProbability: const UniformRange(0.6, 0.9).get(),
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.4,
+    ErrorScenario.forgetObservationOnFlow: 0.3,
     ErrorScenario.forgetRedStampForUnusualBleeding: 0.5,
     ErrorScenario.forgetCountOfThreeForUnusualBleeding: 0.7,
   }),
-  const DynamicExercise(name: "Limited Mucus"),
+  DynamicExercise(name: "Limited Mucus", recipe: CycleRecipe.create(
+    preBuildUpLength: preBuildUpLengthRange.get().round(),
+    buildUpLength: const UniformRange(1, 2).get().round(),
+    peakTypeLength: const UniformRange(0, 1).get().round(),
+  ), errorScenarios: {
+    ErrorScenario.forgetObservationOnFlow: 0.3,
+  }),
 ];
 
 const followUpSequence = [14, 14, 14, 14, 28, 84, 84, 84];
@@ -96,7 +111,7 @@ class DynamicExercise extends Exercise {
 
     final startDate = LocalDate(LocalDate.today().year, 1, 1);
     final firstCycleObservations = recipe!.getObservations();
-    final startingDayOffset = UniformRange(0, firstCycleObservations.length.toDouble()).get().toInt();
+    final startingDayOffset = UniformRange(0, firstCycleObservations.length.toDouble()).get().round();
 
     print("Starting day offset: ${startingDayOffset.toString()}");
 
