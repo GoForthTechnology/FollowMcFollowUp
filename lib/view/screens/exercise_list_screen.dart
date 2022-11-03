@@ -72,12 +72,21 @@ class StaticExercise extends Exercise {
   const StaticExercise(super.name, this.observations);
 
   @override
-  bool get enabled => false;
+  bool get enabled => observations.isNotEmpty;
 
   @override
   ExerciseState getState() {
-    // TODO: implement getState
-    throw UnimplementedError();
+    final entries = observations.map((o) => ChartEntry(
+      observationText: o.observationText,
+      manualSticker: o.stamp ?? StickerWithText(Sticker.white, null),
+    )).toList();
+    final cycle = Cycle(
+      index: 0,
+      entries: entries,
+      stickerCorrections: {},
+      observationCorrections: {},
+    );
+    return ExerciseState([], {}, [cycle], [], LocalDate.today());
   }
 }
 class DynamicExerciseListScreen extends ExerciseListScreen {
