@@ -91,7 +91,7 @@ class AppRouter extends _i9.RootStackRouter {
     StaticExerciseListScreenRoute.name: (routeData) {
       return _i9.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i8.StaticExerciseListScreen(),
+        child: _i8.StaticExerciseListScreen(),
       );
     },
     DynamicExerciseListScreenRoute.name: (routeData) {

@@ -9,24 +9,67 @@ import 'package:fmfu/logic/cycle_rendering.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/model/rendered_observation.dart';
+import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/distributions.dart';
 import 'package:loggy/loggy.dart';
 import 'package:time_machine/time_machine.dart';
 
 class StaticExerciseListScreen extends ExerciseListScreen {
-  const StaticExerciseListScreen({super.key}) : super(exercises: staticExerciseList);
+  StaticExerciseListScreen({super.key}) : super(exercises: staticExerciseList);
 }
 
-const staticExerciseList = [
-  StaticExercise("Book 1: Figure 11-1"),
-  StaticExercise("Book 1: Figure 11-2"),
-  StaticExercise("Book 1: Figure 11-3"),
-  StaticExercise("Book 1: Figure 11-4"),
+final staticExerciseList = [
+  StaticExercise("Book 1: Figure 11-3", [
+    ExerciseObservation("L", StickerWithText(Sticker.red, null)),
+    ExerciseObservation("H", StickerWithText(Sticker.red, null)),
+    ExerciseObservation("H", StickerWithText(Sticker.red, null)),
+    ExerciseObservation("M", StickerWithText(Sticker.red, null)),
+    ExerciseObservation("L", StickerWithText(Sticker.red, null)),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("2x1", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("2x1", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("4k", null),
+    ExerciseObservation("6pcx2", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("6c", null),
+    ExerciseObservation("2ad", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("", null),
+    ExerciseObservation("0", null),
+    ExerciseObservation("10c/k", StickerWithText(Sticker.whiteBaby, null)),
+    ExerciseObservation("10lk AD", StickerWithText(Sticker.whiteBaby, null)),
+    ExerciseObservation("10lk AD", StickerWithText(Sticker.whiteBaby, "P")),
+    ExerciseObservation("8k x1", StickerWithText(Sticker.greenBaby, "1")),
+    ExerciseObservation("8k", StickerWithText(Sticker.greenBaby, "2")),
+    ExerciseObservation("6c x2", StickerWithText(Sticker.greenBaby, "3")),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("2AD", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("10SL", StickerWithText(Sticker.whiteBaby, null)),
+    ExerciseObservation("0", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("10SL", StickerWithText(Sticker.whiteBaby, null)),
+    ExerciseObservation("10SL", StickerWithText(Sticker.whiteBaby, null)),
+    ExerciseObservation("2AD", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("2AD", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("2AD", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("10K", StickerWithText(Sticker.green, null)),
+    ExerciseObservation("L", StickerWithText(Sticker.red, null)),
+  ]),
+  const StaticExercise("Book 1: Figure 11-4", []),
 ];
 
+class ExerciseObservation {
+  final StickerWithText? stamp;
+  final String observationText;
+
+  ExerciseObservation(this.observationText, this.stamp);
+}
+
 class StaticExercise extends Exercise {
-  const StaticExercise(super.name);
+  final List<ExerciseObservation> observations;
+
+  const StaticExercise(super.name, this.observations);
 
   @override
   bool get enabled => false;
