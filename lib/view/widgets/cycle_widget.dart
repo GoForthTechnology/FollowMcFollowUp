@@ -118,12 +118,13 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     if (soloingCell && !widget.soloCell!.showSticker) {
       sticker = StickerWithText(Sticker.grey, "?");
     }
+    var showStickerDialog = observation != null || entry?.manualSticker != null;
     Widget stickerWidget = StickerWidget(
       stickerWithText: sticker,
-      onTap: observation != null ? _showCorrectionDialog(context, entryIndex, null) : () {},
+      onTap: showStickerDialog ? _showCorrectionDialog(context, entryIndex, null) : () {},
     );
     StickerWithText? stickerCorrection = widget.cycle?.stickerCorrections[entryIndex];
-    if (observation != null && stickerCorrection != null) {
+    if (showStickerDialog && stickerCorrection != null) {
       stickerWidget = Stack(children: [
         stickerWidget,
         Transform.rotate(
@@ -225,7 +226,7 @@ class ObservationPainter extends CustomPainter {
 
   TextSpan _getText() {
     RenderedObservation? observation = entry?.renderedObservation;
-    bool hasObservationCorrection = observation != null && observationCorrection != null;
+    bool hasObservationCorrection = (observation != null || entry?.manualSticker != null) && observationCorrection != null;
     String? dateString = entry?.renderedObservation?.date?.toString("MM/dd");
     return TextSpan(
       style: const TextStyle(fontSize: 10, color: Colors.black),
