@@ -86,9 +86,6 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       entry = null;
     }
     bool hasFollowup = entryDate != null && widget.model.followUps().contains(entryDate);
-    if (hasFollowup) {
-      print("Has followup: $entryDate");
-    }
     Widget content = CustomPaint(
       painter: ObservationPainter(
         entry,
