@@ -6,8 +6,8 @@ class ChartListViewModel extends ChartViewModel with ChangeNotifier {
 
   bool showCycleControlBar = false;
   bool showFollowUpForm = false;
-  bool editEnabled = false;
-  bool showErrors = false;
+  bool editEnabled = true;
+  bool showErrors = true;
   int chartIndex = 0;
 
   ChartListViewModel() : super(6) {
@@ -26,16 +26,6 @@ class ChartListViewModel extends ChartViewModel with ChangeNotifier {
 
   void toggleShowFollowUpForm() {
     showFollowUpForm = !showFollowUpForm;
-    notifyListeners();
-  }
-
-  void toggleShowErrors() {
-    showErrors = !showErrors;
-    notifyListeners();
-  }
-
-  void toggleEdit() {
-    editEnabled = !editEnabled;
     notifyListeners();
   }
 

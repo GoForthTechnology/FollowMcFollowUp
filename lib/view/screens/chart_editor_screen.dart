@@ -66,12 +66,10 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
 
   List<Widget> _actions(ChartListViewModel model) {
     return [
-      IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
-        model.toggleShowErrors();
-      }, tooltip: "Show errors"),
-      IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
-        model.toggleEdit();
-      }, tooltip: "Enable editing model",),
+      IconButton(icon: const Icon(Icons.play_arrow, color: Colors.white), onPressed: () {
+        final state = ExerciseState.fromChartViewModel(model);
+        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: state));
+      }, tooltip: "Run simulation with this chart",),
       IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
         model.toggleControlBar();
       }, tooltip: "Open cycle settings panel",),
@@ -178,10 +176,11 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
   }
 
   ChartWidget _chartWidget(ChartListViewModel model) {
+    print("Edit: ${model.editEnabled}");
     return  ChartWidget(
       model: model,
       editingEnabled: model.editEnabled,
-      correctingEnabled: true,
+      correctingEnabled: !model.editEnabled,
       showErrors: model.showErrors,
       titleWidget: _chartTitleWidget(model),
       chart: model.charts[model.chartIndex],
@@ -198,23 +197,13 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
   }
 
   Widget _chartTitleWidget(ChartListViewModel model) {
-    return Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(
-      children: [
-        Text(
-          "${model.editEnabled ? "Editing " : ""}Chart #${model.chartIndex+1}",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        titleButton("Previous", () => model.showPreviousButton() ? () => model.moveToPreviousChart() : null),
-        titleButton("Next", () => model.showNextButton() ? () => model.moveToNextChart() : null),
-        titleButton("Run Simulation", () {
-          final state = ExerciseState.fromChartViewModel(model);
-          AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: state));
-        }),
-        if (model.editEnabled) const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select a sticker or observation to make an edit.", style: TextStyle(fontStyle: FontStyle.italic))),
-        if (model.showErrors) const Padding(padding: EdgeInsets.only(left: 10), child: Text("All charting errors (if any) are now highlighted in pink.", style: TextStyle(fontStyle: FontStyle.italic))),
+    return Padding(padding: const EdgeInsets.only(bottom: 10), child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text("Select a stamp or observation to make an edit or open the settings panel to: alter the cycle recipe, add follow ups, change instructions, etc.", style: TextStyle(fontStyle: FontStyle.italic)),
+        SizedBox(height: 10),
+        Text("When you're done editing, click the play button to run a follow up simulation or select \"Run Correcting Exercise\" to practice chart corrections.", style: TextStyle(fontStyle: FontStyle.italic)),
       ],
     ));
   }

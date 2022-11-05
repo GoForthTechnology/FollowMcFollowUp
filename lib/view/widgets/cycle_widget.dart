@@ -278,7 +278,7 @@ class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
     String? selectedStickerText = existingCorrection?.text;
     return StatefulBuilder(builder: (context, setState) {
       return AlertDialog(
-        title: const Text('Sticker Correction'),
+        title: editingEnabled ? const Text('Edit Stamp') : const Text("Correct Stamp"),
         content: _createStickerCorrectionContent(selectedSticker, selectedStickerText, (sticker) {
           setState(() {
             if (selectedSticker == sticker) {

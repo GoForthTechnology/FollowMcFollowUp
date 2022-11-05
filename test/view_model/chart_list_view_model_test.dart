@@ -20,16 +20,6 @@ void main() {
       viewModel.toggleControlBar();
       expect(viewModel.showCycleControlBar, false);
     });
-    test("Toggle control bar", () {
-      var viewModel = ChartListViewModel();
-      expect(viewModel.editEnabled, false);
-
-      viewModel.toggleEdit();
-      expect(viewModel.editEnabled, true);
-
-      viewModel.toggleEdit();
-      expect(viewModel.editEnabled, false);
-    });
     test("Toggle followup form", () {
       var viewModel = ChartListViewModel();
       expect(viewModel.showFollowUpForm, false);
@@ -39,16 +29,6 @@ void main() {
 
       viewModel.toggleShowFollowUpForm();
       expect(viewModel.showFollowUpForm, false);
-    });
-    test("Toggle errors", () {
-      var viewModel = ChartListViewModel();
-      expect(viewModel.showErrors, false);
-
-      viewModel.toggleShowErrors();
-      expect(viewModel.showErrors, true);
-
-      viewModel.toggleShowErrors();
-      expect(viewModel.showErrors, false);
     });
   });
   group("Chart Navigation", () {
