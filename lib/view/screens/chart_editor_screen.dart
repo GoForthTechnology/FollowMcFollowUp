@@ -176,7 +176,6 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
   }
 
   ChartWidget _chartWidget(ChartListViewModel model) {
-    print("Edit: ${model.editEnabled}");
     return  ChartWidget(
       model: model,
       editingEnabled: model.editEnabled,
