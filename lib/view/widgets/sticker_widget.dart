@@ -8,6 +8,9 @@ class StickerWidget extends StatelessWidget {
 
   const StickerWidget({Key? key, required this.stickerWithText, required this.onTap}) : super(key: key);
 
+  static const Icon emptyIcon = Icon(null);
+  static const Text emptyText = Text("");
+
   @override
   Widget build(BuildContext context) {
     Widget content = Container();
@@ -17,14 +20,14 @@ class StickerWidget extends StatelessWidget {
       content =  Stack(
         alignment: Alignment.center,
         children: [
-          Text(
+          stickerWithText!.text == "" ? emptyText : Text(
             stickerWithText!.text ?? "", textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          Icon(
+          stickerWithText!.sticker.showBaby ? Icon(
             stickerWithText!.sticker.showBaby ? Icons.child_care : null,
             color: Colors.black12,
-          )
+          ) : emptyIcon,
         ],
       );
     }
