@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ProgramListViewModel()),
       ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Follow McFollowUp',
+      title: 'FCP Classroom',
       theme: ThemeData(
         textTheme: GoogleFonts.sourceSans3TextTheme(
           Theme.of(context).textTheme,

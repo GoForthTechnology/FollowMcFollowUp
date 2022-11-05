@@ -13,7 +13,7 @@ class LandingScreen extends ScreenWidget {
     var formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Follow McFollowUp"),
+        title: const Text("FCP Classroom"),
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [

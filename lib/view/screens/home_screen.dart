@@ -16,20 +16,20 @@ class HomeScreen extends ScreenWidget {
     logScreenView("HomeScreen");
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Follow McFollowUp"),
+        title: const Text("Home"),
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [
-          const Text("For Students"),
+          const Text("For Students", style: TextStyle(fontStyle: FontStyle.italic)),
           openChartEditor(context),
           staticExercises(context),
           dynamicExercises(context),
           joinExercise(context),
           const Divider(),
-          const Text("For Educators"),
+          const Text("For Educators", style: TextStyle(fontStyle: FontStyle.italic)),
           manageProgram(context),
           const Divider(),
-          const Text("Under Construction"),
+          const Text("Under Construction", style: TextStyle(fontStyle: FontStyle.italic)),
           openFollowUpForm(context),
           // TODO: re-enable once the reporting user is set up
           //reportIssue(context),
