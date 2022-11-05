@@ -12,9 +12,66 @@ import 'package:fmfu/utils/distributions.dart';
 import 'package:time_machine/time_machine.dart';
 
 class ExerciseListViewModel extends ChangeNotifier {
-  final List<Exercise> customExercises = [];
+  final Map<String, StaticExercise> _customStaticExercises = {};
+  final Map<String, DynamicExercise> _customDynamicExercises = {};
 
-  void addCustomExercise(Chart chart, ExerciseType exerciseType) {
+  List<Exercise> getExercises(ExerciseType exerciseType) {
+    switch (exerciseType) {
+      case ExerciseType.static:
+        return staticExerciseList;
+      case ExerciseType.dynamic:
+        return dynamicExerciseList;
+    }
+  }
+
+  List<Exercise> getCustomExercises(ExerciseType exerciseType) {
+    switch (exerciseType) {
+      case ExerciseType.static:
+        return _customStaticExercises.values.toList();
+      case ExerciseType.dynamic:
+        return _customDynamicExercises.values.toList();
+    }
+  }
+
+  bool hasCustomExercise(String name, ExerciseType exerciseType) {
+    switch (exerciseType) {
+      case ExerciseType.static:
+        return _customStaticExercises.containsKey(name);
+      case ExerciseType.dynamic:
+        return _customDynamicExercises.containsKey(name);
+    }
+  }
+
+  void addCustomExercise({
+    required String name,
+    required ExerciseType exerciseType,
+    required Chart chart,
+    CycleRecipe? recipe,
+    Map<ErrorScenario, double> errorScenarios = const {},
+  }) {
+    switch (exerciseType) {
+      case ExerciseType.static:
+        var cycles = chart.cycles
+            .where((slice) => slice.cycle != null)
+            .map((slice) => slice.cycle!.entries
+                .map((entry) => ExerciseObservation(
+                    entry.observationText,
+                    entry.manualSticker ?? StickerWithText(
+                        entry.renderedObservation?.getSticker() ?? Sticker.white,
+                        entry.renderedObservation?.getStickerText())))
+                .toList())
+            .toList();
+        _customStaticExercises[name] = StaticExercise(name, cycles);
+        break;
+      case ExerciseType.dynamic:
+        _customDynamicExercises[name] = DynamicExercise(
+          name: name,
+          recipe: recipe,
+          errorScenarios: errorScenarios,
+        );
+        break;
+    }
+    notifyListeners();
   }
 }
 
@@ -23,7 +80,7 @@ enum ExerciseType {
 }
 
 final staticExerciseList = [
-  StaticExercise("Book 1: Figure 11-3", [
+  StaticExercise("Book 1: Figure 11-3", [[
     ExerciseObservation("L", StickerWithText(Sticker.red, null)),
     ExerciseObservation("H", StickerWithText(Sticker.red, null)),
     ExerciseObservation("H", StickerWithText(Sticker.red, null)),
@@ -58,7 +115,7 @@ final staticExerciseList = [
     ExerciseObservation("2AD", StickerWithText(Sticker.green, null)),
     ExerciseObservation("10K", StickerWithText(Sticker.green, null)),
     ExerciseObservation("L", StickerWithText(Sticker.red, null)),
-  ]),
+  ]]),
   const StaticExercise("Book 1: Figure 11-4", []),
 ];
 
@@ -70,26 +127,30 @@ class ExerciseObservation {
 }
 
 class StaticExercise extends Exercise {
-  final List<ExerciseObservation> observations;
+  final List<List<ExerciseObservation>> cycles;
 
-  const StaticExercise(super.name, this.observations);
+  const StaticExercise(super.name, this.cycles);
 
   @override
-  bool get enabled => observations.isNotEmpty;
+  bool get enabled => cycles.isNotEmpty;
 
   @override
   ExerciseState getState() {
-    final entries = observations.map((o) => ChartEntry(
-      observationText: o.observationText,
-      manualSticker: o.stamp ?? StickerWithText(Sticker.white, null),
-    )).toList();
-    final cycle = Cycle(
-      index: 0,
-      entries: entries,
-      stickerCorrections: {},
-      observationCorrections: {},
-    );
-    return ExerciseState([], {}, [cycle], [], LocalDate.today());
+    List<Cycle> cycles = [];
+    for (var observations in this.cycles) {
+      final entries = observations.map((o) =>
+          ChartEntry(
+            observationText: o.observationText,
+            manualSticker: o.stamp ?? StickerWithText(Sticker.white, null),
+          )).toList();
+      cycles.add(Cycle(
+        index: 0,
+        entries: entries,
+        stickerCorrections: {},
+        observationCorrections: {},
+      ));
+    }
+    return ExerciseState([], {}, cycles, [], LocalDate.today());
   }
 }
 const preBuildUpLengthRange = UniformRange(4, 6);

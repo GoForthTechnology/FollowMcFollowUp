@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/files.dart';
@@ -147,14 +148,19 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
                 return null;
               },
               onSaved: (name) {
-                switch (exerciseType) {
-                  case ExerciseType.static:
-                    // TODO: Handle this case.
-                    break;
-                  case ExerciseType.dynamic:
-                    // TODO: Handle this case.
-                    break;
+                // TODO: fix error scenario probabilities
+                Map<ErrorScenario, double> errorScenarios = {};
+                for (var errorScenario in model.errorScenarios) {
+                  errorScenarios[errorScenario] = 1.0;
                 }
+                exerciseModel.addCustomExercise(
+                  name: name!,
+                  exerciseType: exerciseType,
+                  chart: model.charts[0],
+                  recipe: model.recipe,
+                  errorScenarios: errorScenarios,
+                );
+                _showSnackBar("Saved \"$name\" as a ${exerciseType.name} exercise");
               },
               onFieldSubmitted: (name) {
                 saveForm();
@@ -203,6 +209,8 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
         Text("Select a stamp or observation to make an edit or open the settings panel to: alter the cycle recipe, add follow ups, change instructions, etc.", style: TextStyle(fontStyle: FontStyle.italic)),
         SizedBox(height: 10),
         Text("When you're done editing, click the play button to run a follow up simulation or select \"Run Correcting Exercise\" to practice chart corrections.", style: TextStyle(fontStyle: FontStyle.italic)),
+        SizedBox(height: 10),
+        Text("If you'd like to save this chart as an exercise which can be revisited later, clicke the save button above.", style: TextStyle(fontStyle: FontStyle.italic)),
       ],
     ));
   }
