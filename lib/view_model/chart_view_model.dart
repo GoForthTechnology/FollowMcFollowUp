@@ -19,8 +19,12 @@ abstract class ChartViewModel with GlobalLoggy {
   bool incrementalMode = false;
   List<Instruction> activeInstructions = _defaultInstructions;
   Set<ErrorScenario> errorScenarios = {};
+  CycleRecipe? recipe;
   List<Cycle> cycles = [];
   List<Chart> charts = [];
+
+  bool hasStickerEdits = false;
+  bool hasObservationEdits = false;
 
   bool autoAdvanceToLastFollowup = false;
   final List<LocalDate> _followUps = [];
@@ -33,6 +37,20 @@ abstract class ChartViewModel with GlobalLoggy {
 
   String getStateAsJson() {
     return jsonEncode(ExerciseState.fromChartViewModel(this).toJson());
+  }
+
+  List<String> dynamicExerciseIssues() {
+    List<String> issues = [];
+    if (recipe == null) {
+      issues.add("Chart not based on a (single) recipe");
+    }
+    if (hasObservationEdits) {
+      issues.add("Observation edits would be lost");
+    }
+    if (hasStickerEdits) {
+      issues.add("Stamp edits would be lost");
+    }
+    return issues;
   }
 
   void restoreStateFromJson(ExerciseState state, {notify = true}) {
@@ -204,6 +222,7 @@ abstract class ChartViewModel with GlobalLoggy {
       return;
     }
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
+    this.recipe = recipe;
     cycles = _getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
@@ -224,6 +243,7 @@ abstract class ChartViewModel with GlobalLoggy {
       loggy.error("no cycle to swap!");
       return;
     }
+    this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     int lastIndex = cycles.length - 1;
     cycles[lastIndex] = _getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios)[0];
@@ -248,6 +268,7 @@ abstract class ChartViewModel with GlobalLoggy {
       loggy.error("addCycle only supported in incremental mode!");
       return;
     }
+    this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
     charts = getCharts(cycles, numCyclesPerChart);
@@ -308,6 +329,7 @@ abstract class ChartViewModel with GlobalLoggy {
       manualSticker: edit,
     );
     loggy.info("Altering sticker for cycle $cycleIndex @ $entryIndex");
+    hasStickerEdits = true;
     onChartChange();
   }
 
@@ -342,6 +364,7 @@ abstract class ChartViewModel with GlobalLoggy {
       );
       loggy.info("Adding invalid entry to cycle $cycleIndex @ $entryIndex");
     }
+    hasObservationEdits = true;
     onChartChange();
   }
 

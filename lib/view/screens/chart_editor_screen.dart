@@ -8,6 +8,8 @@ import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
 import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
+import 'package:fmfu/view_model/exercise_list_view_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -35,31 +37,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
             // Here we take the value from the MyHomePage object that was created by
             // the App.build method, and use it to set our appbar title.
             title: const Text("Chart Editor"),
-            actions: [
-              IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
-                model.toggleShowErrors();
-              },),
-              IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
-                model.toggleEdit();
-              },),
-              IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
-                model.toggleControlBar();
-              },),
-              IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () async {
-                downloadJson(model.getStateAsJson(), "exercise.json");
-              },),
-              IconButton(icon: const Icon(Icons.open_in_browser, color: Colors.white), onPressed: () async {
-                openJsonFile().then((file) async {
-                  if (file == null) {
-                    _showSnackBar("No file selected");
-                  }
-                  final contents = await file!.readAsString();
-                  model.restoreStateFromJson(
-                      ExerciseState.fromJson(jsonDecode(contents)));
-                  _showSnackBar("Loaded ${file.name}");
-                }, onError: (error) => _showSnackBar(error.toString()));
-              },),
-            ],
+            actions: _actions(model),
           ),
           // TODO: figure out how to make horizontal scrolling work...
           body: Consumer<ChartListViewModel>(
@@ -83,6 +61,114 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
             ),
           )
       );
+    });
+  }
+
+  List<Widget> _actions(ChartListViewModel model) {
+    return [
+      IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
+        model.toggleShowErrors();
+      }, tooltip: "Show errors"),
+      IconButton(icon: Icon(model.editEnabled ? Icons.edit_off: Icons.edit, color: Colors.white), onPressed: () {
+        model.toggleEdit();
+      }, tooltip: "Enable editing model",),
+      IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+        model.toggleControlBar();
+      }, tooltip: "Open cycle settings panel",),
+      IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () {
+        _promptForSaveType(model);
+      }, tooltip: "Save chart as an exercise",),
+      IconButton(icon: const Icon(Icons.file_download, color: Colors.white), onPressed: () async {
+        downloadJson(model.getStateAsJson(), "exercise.json");
+      }, tooltip: "Download current chart",),
+      IconButton(icon: const Icon(Icons.file_upload, color: Colors.white), onPressed: () async {
+        openJsonFile().then((file) async {
+          if (file == null) {
+            _showSnackBar("No file selected");
+          }
+          final contents = await file!.readAsString();
+          model.restoreStateFromJson(
+              ExerciseState.fromJson(jsonDecode(contents)));
+          _showSnackBar("Loaded ${file.name}");
+        }, onError: (error) => _showSnackBar(error.toString()));
+      }, tooltip: "Load chart from file",),
+    ];
+  }
+
+  void _promptForSaveType(ChartListViewModel model) {
+    const itemSeparation = 10.0;
+    const maxDialogWidth = 300.0;
+    List<String> dynamicExerciseIssues = model.dynamicExerciseIssues();
+    showDialog(context: context, builder: (context) => AlertDialog(
+      title: const Text("Choose Exercise Type"),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        ConstrainedBox(constraints: const BoxConstraints.tightFor(width: maxDialogWidth), child: const Text(
+            "Exercises can be saved as \"static exercises\" which will always show the same chart or \"dynamic exercises\" which will show charts using the recipe you have configured in the editor.")),
+        const SizedBox(height: itemSeparation),
+        const Text("Which exercise would you like to create?"),
+
+        const SizedBox(height: itemSeparation * 2),
+        ElevatedButton(onPressed: () {
+          Navigator.of(context).pop("OK");
+          _showSaveDialog(model, ExerciseType.static);
+        }, child: const Text("Static Exercise")),
+        const SizedBox(height: itemSeparation),
+        ElevatedButton(onPressed: dynamicExerciseIssues.isNotEmpty ? null : () {
+          Navigator.of(context).pop("OK");
+          _showSaveDialog(model, ExerciseType.dynamic);
+        }, child: const Text("Dynamic Exercise")),
+
+        const SizedBox(height: itemSeparation * 2),
+        if (dynamicExerciseIssues.isNotEmpty) ConstrainedBox(constraints: const BoxConstraints.tightFor(width: maxDialogWidth), child: const Text(
+            "This chart cannot be saved as a dynamic exercise for the following reasons:")),
+        ...dynamicExerciseIssues.map((issue) => Text("\u2022 $issue")),
+      ],),
+    ));
+  }
+
+  void _showSaveDialog(ChartListViewModel model, ExerciseType exerciseType) {
+    showDialog(context: context, builder: (context) {
+      final formKey = GlobalKey<FormState>();
+      void saveForm() {
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          Navigator.of(context).pop("OK");
+        }
+      }
+      return Consumer<ExerciseListViewModel>(builder: (context, exerciseModel, child) => AlertDialog(
+        title: Text("Save Chart as ${toBeginningOfSentenceCase(exerciseType.name)} Exercises"),
+        content: Form(
+          key: formKey,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Text("Please provide a name for the exercise."),
+            TextFormField(
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return "Name required";
+                }
+                return null;
+              },
+              onSaved: (name) {
+                switch (exerciseType) {
+                  case ExerciseType.static:
+                    // TODO: Handle this case.
+                    break;
+                  case ExerciseType.dynamic:
+                    // TODO: Handle this case.
+                    break;
+                }
+              },
+              onFieldSubmitted: (name) {
+                saveForm();
+              },
+            ),
+
+          ]),
+        ),
+        actions: [
+          TextButton(onPressed: () => saveForm(), child: const Text("Save")),
+        ],
+      ));
     });
   }
 
