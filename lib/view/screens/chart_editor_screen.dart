@@ -7,9 +7,10 @@ import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
-import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/fup_form_widget.dart';
+import 'package:fmfu/view/widgets/recipe_control_widget.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
+import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -41,15 +42,15 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
             actions: _actions(model),
           ),
           // TODO: figure out how to make horizontal scrolling work...
-          body: Consumer<ChartListViewModel>(
-            builder: (context, model, child) => Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-              ),
-              child: Column(
-                children: [
-                  if (model.showCycleControlBar) ControlBarWidget(model: model),
+          body: Consumer2<ChartListViewModel, RecipeControlViewModel>(
+            builder: (context, model, recipeModel, child) {
+              model.updateCharts(recipeModel.getRecipe());
+              return Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                ),
+                child: Row(children: [
                   Expanded(child: Center(child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Column(children: [
@@ -57,9 +58,9 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
                         if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
                       ]))
                   )),
-                ],
-              ),
-            ),
+                  if (model.showCycleControlBar) const RecipeControlWidget(),
+                ]),
+              );},
           )
       );
     });
@@ -210,7 +211,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
         SizedBox(height: 10),
         Text("When you're done editing, click the play button to run a follow up simulation or select \"Run Correcting Exercise\" to practice chart corrections.", style: TextStyle(fontStyle: FontStyle.italic)),
         SizedBox(height: 10),
-        Text("If you'd like to save this chart as an exercise which can be revisited later, clicke the save button above.", style: TextStyle(fontStyle: FontStyle.italic)),
+        Text("If you'd like to save this chart as an exercise which can be revisited later, click the save button above.", style: TextStyle(fontStyle: FontStyle.italic)),
       ],
     ));
   }

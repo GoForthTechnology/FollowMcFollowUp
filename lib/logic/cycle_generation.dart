@@ -2,6 +2,7 @@
 import 'dart:math';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/distributions.dart';
+import 'package:fmfu/view_model/recipe_control_view_model.dart';
 
 abstract class Recipe {
   List<Observation> getObservations({bool askESQ = false});
@@ -88,11 +89,15 @@ class CycleRecipe extends Recipe {
       throw Exception("Invalid postPeakLength $postPeakLength");
     }
     final preBuildupDischargeGenerator = DischargeSummaryGenerator(
-      nonMucusDischargeSummary, [
-        AlternativeDischarge(
-            postPeakPasty ? pastyCloudyDischargeSummary : nonPeakTypeDischargeSummary,
-            prePeakMucusPatchProbability),
-        AlternativeDischarge(peakTypeDischargeSummary, prePeakPeakTypeProbability),
+      nonMucusDischargeSummary, alternatives: [
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(postPeakPasty ? pastyCloudyDischargeSummary : nonPeakTypeDischargeSummary),
+          probability: prePeakMucusPatchProbability,
+        ),
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(peakTypeDischargeSummary),
+          probability: prePeakPeakTypeProbability,
+        ),
       ],
     );
     final unusualBleedingGenerator = NormalAnomalyGenerator(
@@ -110,10 +115,6 @@ class CycleRecipe extends Recipe {
     final preBuildUpRecipe = PreBuildUpRecipe(
       NormalDistribution(preBuildUpLength, stdDev),
       nonMucusDischargeGenerator,
-      UniformAnomalyGenerator(
-        prePeakMucusPatchProbability,
-      ),
-      preBuildupDischargeGenerator,
       unusualBleedingGenerator,
     );
 
@@ -133,78 +134,81 @@ class CycleRecipe extends Recipe {
       nonMucusDischargeGenerator: postPeakPasty
           ? pastyCloudyDischargeGenerator : nonMucusDischargeGenerator,
       abnormalBleedingGenerator: unusualBleedingGenerator,
-      mucusPatchGenerator: UniformAnomalyGenerator(
-        postPeakMucusPatchProbability,
-      ),
     );
 
     return CycleRecipe(flowRecipe, preBuildUpRecipe, buildUpRecipe, postPeakRecipe);
   }
 
-  static final nonMucusDischargeSummary = DischargeSummary(
+  static final nonMucusDischargeSummary = DischargeRecipe(
       dischargeType: DischargeType.dry,
-      dischargeFrequency: DischargeFrequency.allDay,
+      dischargeFrequencies: {DischargeFrequency.allDay},
   );
   static final nonMucusDischargeGenerator = DischargeSummaryGenerator(
-      nonMucusDischargeSummary, [
-        AlternativeDischarge(
-            DischargeSummary(
+      nonMucusDischargeSummary, alternatives: [
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(
+            DischargeRecipe(
                 dischargeType: DischargeType.shinyWithoutLubrication,
-                dischargeFrequency: DischargeFrequency.twice,
+                dischargeFrequencies: {DischargeFrequency.twice},
             ),
-            0.5,
-        )
+          ),
+          probability: 0.5,
+        ),
       ]);
 
-  static final peakTypeDischargeSummary = DischargeSummary(
+  static final peakTypeDischargeSummary = DischargeRecipe(
       dischargeType: DischargeType.stretchy,
-      dischargeFrequency: DischargeFrequency.twice,
-      dischargeDescriptors: [DischargeDescriptor.clear],
+      dischargeFrequencies: {DischargeFrequency.twice},
+      dischargeDescriptors: {DischargeDescriptor.clear},
   );
   static final peakTypeDischargeGenerator = DischargeSummaryGenerator(
-      peakTypeDischargeSummary,
-      [
-        AlternativeDischarge(
-          DischargeSummary(
-              dischargeType: DischargeType.tacky,
-              dischargeFrequency: DischargeFrequency.once,
-              dischargeDescriptors: [DischargeDescriptor.clear],
+      peakTypeDischargeSummary, alternatives: [
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(
+            DischargeRecipe(
+                dischargeType: DischargeType.tacky,
+                dischargeFrequencies: {DischargeFrequency.once},
+                dischargeDescriptors: {DischargeDescriptor.clear},
+            ),
           ),
-          0.5,
+          probability: 0.5,
         ),
-        AlternativeDischarge(
-          DischargeSummary(
-              dischargeType: DischargeType.stretchy,
-              dischargeFrequency: DischargeFrequency.once,
-              dischargeDescriptors: [DischargeDescriptor.cloudy],
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(
+            DischargeRecipe(
+                dischargeType: DischargeType.stretchy,
+                dischargeFrequencies: {DischargeFrequency.once},
+                dischargeDescriptors: {DischargeDescriptor.cloudy},
+            ),
           ),
-          0.5,
+          probability: 0.5,
         ),
       ],
   );
 
-  static final nonPeakTypeDischargeSummary = DischargeSummary(
+  static final nonPeakTypeDischargeSummary = DischargeRecipe(
       dischargeType: DischargeType.sticky,
-      dischargeFrequency: DischargeFrequency.twice,
-      dischargeDescriptors: [DischargeDescriptor.cloudy],
+      dischargeFrequencies: {DischargeFrequency.twice},
+      dischargeDescriptors: {DischargeDescriptor.cloudy},
   );
   static final nonPeakTypeDischargeGenerator = DischargeSummaryGenerator(
-      nonPeakTypeDischargeSummary, [
-        AlternativeDischarge(
-          DischargeSummary(
+      nonPeakTypeDischargeSummary, alternatives: [
+        AlternativeDischargeSummaryGenerator(
+          DischargeSummaryGenerator(
+            DischargeRecipe(
               dischargeType: DischargeType.tacky,
-              dischargeFrequency: DischargeFrequency.once,
-              dischargeDescriptors: [DischargeDescriptor.cloudy],
-          ),
-          0.5,
-        )]);
-  static final pastyCloudyDischargeSummary = DischargeSummary(
+              dischargeFrequencies: {DischargeFrequency.once},
+              dischargeDescriptors: {DischargeDescriptor.cloudy},
+            )),
+          probability: 0.5),
+        ]);
+  static final pastyCloudyDischargeSummary = DischargeRecipe(
     dischargeType: DischargeType.sticky,
-    dischargeFrequency: DischargeFrequency.twice,
-    dischargeDescriptors: [DischargeDescriptor.pasty, DischargeDescriptor.cloudy],
+    dischargeFrequencies: {DischargeFrequency.twice},
+    dischargeDescriptors: {DischargeDescriptor.pasty, DischargeDescriptor.cloudy},
   );
   static final pastyCloudyDischargeGenerator = DischargeSummaryGenerator(
-      pastyCloudyDischargeSummary, []);
+      pastyCloudyDischargeSummary);
 }
 
 class ESQPostProcessor extends PostProcessor {
@@ -278,21 +282,17 @@ class FlowRecipe extends Recipe {
 class PreBuildUpRecipe extends Recipe {
   final NormalDistribution _length;
   final DischargeSummaryGenerator _nonMucusDischargeGenerator;
-  final AnomalyGenerator _mucusPatchGenerator;
-  final DischargeSummaryGenerator _nonPeakMucusDischargeGenerator;
   final AnomalyGenerator _abnormalBleedingGenerator;
 
-  PreBuildUpRecipe(this._length, this._nonMucusDischargeGenerator, this._mucusPatchGenerator, this._nonPeakMucusDischargeGenerator, this._abnormalBleedingGenerator);
+  PreBuildUpRecipe(this._length, this._nonMucusDischargeGenerator, this._abnormalBleedingGenerator);
 
   @override
   List<Observation> getObservations({bool askESQ = false}) {
     int periodLength = _length.get();
-    List<bool> mucusPatchField = _mucusPatchGenerator.generate(periodLength);
     List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(periodLength);
     List<Observation> observation = [];
     for (int i=0; i<periodLength; i++) {
-      var dischargeSummary = mucusPatchField[i] ?
-          _nonPeakMucusDischargeGenerator.get() : _nonMucusDischargeGenerator.get();
+      var dischargeSummary = _nonMucusDischargeGenerator.get();
       var flow = abnormalBleedingField[i] ? Flow.light : null;
       var essentiallyTheSame = dischargeSummary.hasMucus && askESQ ? true : null;
       observation.add(Observation(
@@ -336,7 +336,6 @@ class PostPeakRecipe extends Recipe {
   final DischargeSummaryGenerator mucusDischargeGenerator;
   final DischargeSummaryGenerator nonMucusDischargeGenerator;
   final AnomalyGenerator abnormalBleedingGenerator;
-  final AnomalyGenerator mucusPatchGenerator;
   final NormalDistribution preMenstrualSpottingLengthDist;
 
   PostPeakRecipe({
@@ -345,7 +344,6 @@ class PostPeakRecipe extends Recipe {
     required this.mucusDischargeGenerator,
     required this.nonMucusDischargeGenerator,
     required this.abnormalBleedingGenerator,
-    required this.mucusPatchGenerator,
     required this.preMenstrualSpottingLengthDist,
   });
 
@@ -358,7 +356,6 @@ class PostPeakRecipe extends Recipe {
     int startOfPreMenstrualSpotting = postPeakLength - preMenstrualSpottingLength;
 
     List<bool> abnormalBleedingField = abnormalBleedingGenerator.generate(nonMucusLength);
-    List<bool> mucusPatchField = mucusPatchGenerator.generate(nonMucusLength);
 
     List<Observation> observation = [];
     for (int i=0; i<postPeakLength; i++) {
@@ -377,8 +374,7 @@ class PostPeakRecipe extends Recipe {
         continue;
       }
       var flow = abnormalBleedingField[i-mucusLength] ? Flow.light : null;
-      var dischargeSummary = mucusPatchField[i-mucusLength] ?
-          mucusDischargeGenerator.get() : nonMucusDischargeGenerator.get();
+      var dischargeSummary = nonMucusDischargeGenerator.get();
       observation.add(Observation(
           flow: flow,
           dischargeSummary: dischargeSummary,
@@ -457,25 +453,25 @@ class NormalAnomalyGenerator extends AnomalyGenerator {
 }
 
 class DischargeSummaryGenerator {
-  final DischargeSummary _typicalDischarge;
-  final List<AlternativeDischarge> _alternatives;
+  final DischargeRecipe typicalDischarge;
+  final List<AlternativeDischargeSummaryGenerator> alternatives;
 
-  DischargeSummaryGenerator(this._typicalDischarge, this._alternatives);
+  DischargeSummaryGenerator(this.typicalDischarge, {this.alternatives = const []});
 
 
   DischargeSummary get() {
-    for (var alternative in List.from(_alternatives)..shuffle()) {
+    for (var alternative in List.from(alternatives)..shuffle()) {
       if (Random().nextDouble() < alternative.probability) {
-        return alternative.summary;
+        return alternative.generator.get();
       }
     }
-    return _typicalDischarge;
+    return typicalDischarge.getSummary();
   }
 }
 
-class AlternativeDischarge {
-  final DischargeSummary summary;
+class AlternativeDischargeSummaryGenerator {
+  final DischargeSummaryGenerator generator;
   final double probability;
 
-  AlternativeDischarge(this.summary, this.probability);
+  AlternativeDischargeSummaryGenerator(this.generator, {required this.probability});
 }

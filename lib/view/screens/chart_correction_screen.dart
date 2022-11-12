@@ -5,7 +5,6 @@ import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
-import 'package:fmfu/view/widgets/control_bar_widget.dart';
 import 'package:fmfu/view/widgets/correction_exercise_bar.dart';
 import 'package:fmfu/view/widgets/sticker_widget.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
@@ -41,7 +40,6 @@ class ChartCorrectingScreen extends ScreenWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (model.showCycleControlBar) ControlBarWidget(model: model),
               ChartWidget(
                 chart: model.charts[0],
                 model: model,

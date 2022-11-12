@@ -59,6 +59,20 @@ enum Flow {
   light,
   veryLight;
 
+  static Flow? fromCode(String code) {
+    switch (code) {
+      case "H":
+        return Flow.heavy;
+      case "M":
+        return Flow.medium;
+      case "L":
+        return Flow.light;
+      case "VL":
+        return Flow.veryLight;
+    }
+    return null;
+  }
+
   String get code {
     switch (this) {
       case Flow.heavy:
@@ -141,7 +155,7 @@ class DischargeSummary {
 
 }
 
-enum DischargeType {
+enum DischargeType with DischargeComponent {
   dry,
   wetWithoutLubrication,
   dampWithoutLubrication,
@@ -153,6 +167,7 @@ enum DischargeType {
   shinyWithLubrication,
   stretchy;
 
+  @override
   String get code {
     switch (this) {
       case DischargeType.dry:
@@ -230,12 +245,13 @@ enum DischargeType {
   }
 }
 
-enum DischargeFrequency {
+enum DischargeFrequency with DischargeComponent {
   once,
   twice,
   thrice,
   allDay;
 
+  @override
   String get code {
     switch (this) {
       case DischargeFrequency.once:
@@ -250,7 +266,11 @@ enum DischargeFrequency {
   }
 }
 
-enum DischargeDescriptor {
+abstract class DischargeComponent {
+  String get code;
+}
+
+enum DischargeDescriptor with DischargeComponent {
   brown,
   red,
   cloudyClear, // It's important this comes before "cloudy" for parsing
@@ -261,6 +281,7 @@ enum DischargeDescriptor {
   pasty,
   yellow;
 
+  @override
   String get code {
     switch (this) {
       case DischargeDescriptor.brown:

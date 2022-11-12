@@ -1,0 +1,245 @@
+
+import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/logic/cycle_generation.dart';
+import 'package:fmfu/utils/distributions.dart';
+import 'package:fmfu/model/observation.dart';
+import 'package:fmfu/utils/non_negative_integer.dart';
+
+class RecipeControlViewModel extends ChangeNotifier {
+  final FlowModel flowModel = FlowModel(dryDischargeRecipe);
+  final PreBuildUpModel preBuildUpModel = PreBuildUpModel(dryDischargeRecipe);
+  final BuildUpModel buildUpModel = BuildUpModel(nonPeakTypeDischargeRecipe, peakTypeDischargeRecipe);
+  final PostPeakModel postPeakModel = PostPeakModel(dryDischargeRecipe, nonPeakTypeDischargeRecipe);
+
+  var _unusualBleedingProbability = 0.0;
+  final NonNegativeInteger preMenstrualSpottingLength = NonNegativeInteger(0);
+
+  RecipeControlViewModel() {
+    for (var notifier in [flowModel, preBuildUpModel, buildUpModel, postPeakModel, preMenstrualSpottingLength]) {
+      notifier.addListener(() => notifyListeners());
+    }
+  }
+
+  double unusualBleedingProbability() {
+    return _unusualBleedingProbability;
+  }
+
+  void updateUnusualBleedingProbability(double value) {
+    _unusualBleedingProbability = value;
+    notifyListeners();
+  }
+
+  CycleRecipe getRecipe() {
+    final unusualBleedingGenerator = NormalAnomalyGenerator(
+      lengthDist: NormalDistribution(1, 1),
+      probability: _unusualBleedingProbability / 100,
+    );
+
+    var flowRecipe = FlowRecipe(
+      NormalDistribution(flowModel.length.get(), 1),
+      flowModel.maxFlow(),
+      flowModel.minFlow(),
+      flowModel.dischargeModel.asGenerator(),
+    );
+
+    final preBuildUpRecipe = PreBuildUpRecipe(
+      NormalDistribution(preBuildUpModel.length.get(), 1),
+      preBuildUpModel.dischargeModel.asGenerator(),
+      unusualBleedingGenerator,
+    );
+
+    final buildUpRecipe = BuildUpRecipe(
+      NormalDistribution(buildUpModel.length.get(), 1),
+      NormalDistribution(buildUpModel.peakTypeLength.get(), 2),
+      buildUpModel.peakTypeDischargeModel.asGenerator(),
+      buildUpModel.dischargeModel.asGenerator(),
+    );
+
+    final postPeakRecipe = PostPeakRecipe(
+      lengthDist: NormalDistribution(postPeakModel.length.get(), 1),
+      mucusLengthDist: NormalDistribution(1, 1),
+      mucusDischargeGenerator: postPeakModel.mucusDischargeModel.asGenerator(),
+      nonMucusDischargeGenerator: postPeakModel.dischargeModel.asGenerator(),
+      abnormalBleedingGenerator: unusualBleedingGenerator,
+      preMenstrualSpottingLengthDist: NormalDistribution(preMenstrualSpottingLength.get(), 1),
+    );
+
+    return CycleRecipe(flowRecipe, preBuildUpRecipe, buildUpRecipe, postPeakRecipe);
+  }
+
+}
+
+class FlowModel extends BaseModel {
+  var _maxFlow = Flow.heavy;
+  var _minFlow = Flow.veryLight;
+
+  FlowModel(super.defaultDischargeRecipe) : super(length: 4) {
+    dischargeModel.addListener(() => notifyListeners());
+  }
+
+  Flow minFlow() {
+    return _minFlow;
+  }
+
+  void setMinFlow(Flow flow) {
+    _minFlow = flow;
+    notifyListeners();
+  }
+
+  Flow maxFlow() {
+    return _maxFlow;
+  }
+
+  void setMaxFlow(Flow flow) {
+    _maxFlow = flow;
+    notifyListeners();
+  }
+}
+
+class PreBuildUpModel extends BaseModel {
+  PreBuildUpModel(super.defaultDischargeRecipe) : super(length: 4);
+}
+
+class BuildUpModel extends BaseModel {
+  final NonNegativeInteger peakTypeLength = NonNegativeInteger(3);
+  final DischargeModel peakTypeDischargeModel;
+
+  BuildUpModel(super.defaultDischargeRecipe, DischargeRecipe peakTypeDischargeRecipe)
+      : peakTypeDischargeModel = DischargeModel(peakTypeDischargeRecipe), super(length: 6) {
+    peakTypeLength.addListener(() => notifyListeners());
+    peakTypeDischargeModel.addListener(() => notifyListeners());
+  }
+}
+
+class PostPeakModel extends BaseModel {
+  PostPeakModel(super.defaultDischargeRecipe, DischargeRecipe mucusDischargeRecipe)
+      : mucusDischargeModel = DischargeModel(mucusDischargeRecipe), super(length: 12) {
+    mucusLength.addListener(() => notifyListeners());
+    mucusDischargeModel.addListener(() => notifyListeners());
+  }
+
+  final NonNegativeInteger mucusLength = NonNegativeInteger(1);
+  final DischargeModel mucusDischargeModel;
+}
+
+abstract class BaseModel extends ChangeNotifier {
+  final NonNegativeInteger length;
+  final DischargeModel dischargeModel;
+
+  BaseModel(DischargeRecipe defaultDischargeRecipe, {
+    required int length,
+  }) : length = NonNegativeInteger(length), dischargeModel = DischargeModel(defaultDischargeRecipe) {
+    this.length.addListener(() => notifyListeners());
+    dischargeModel.addListener(() => notifyListeners());
+  }
+}
+
+class DischargeInterface extends ChangeNotifier {
+  DischargeRecipe _recipe;
+
+  DischargeInterface(this._recipe);
+
+  DischargeRecipe getRecipe() {
+    return _recipe;
+  }
+
+  void setRecipe(DischargeRecipe recipe) {
+    _recipe = recipe;
+    notifyListeners();
+  }
+}
+
+class DischargeModel extends ChangeNotifier {
+  DischargeInterface defaultDischarge;
+  final List<AdditionalDischargeRecipe> _additionalRecipes = [];
+
+  DischargeModel(DischargeRecipe defaultRecipe)
+  : defaultDischarge = DischargeInterface(defaultRecipe) {
+    defaultDischarge.addListener(() => notifyListeners());
+  }
+
+  DischargeSummaryGenerator asGenerator() {
+    return DischargeSummaryGenerator(
+      defaultDischarge.getRecipe(),
+      alternatives: _additionalRecipes.map((r) => AlternativeDischargeSummaryGenerator(
+        DischargeSummaryGenerator(r.recipe.defaultDischarge.getRecipe()),
+        probability: r.probability,
+      )).toList(),
+    );
+  }
+
+  void addAdditionalRecipe(DischargeRecipe recipe, double probability) {
+    _additionalRecipes.add(AdditionalDischargeRecipe(DischargeModel(recipe), probability));
+    notifyListeners();
+  }
+
+  void updateAdditionalRecipe(int index, DischargeRecipe recipe, double probability) {
+    _additionalRecipes[index] = AdditionalDischargeRecipe(DischargeModel(recipe), probability);
+    notifyListeners();
+  }
+
+  void removeAdditionalRecipe(int index) {
+    _additionalRecipes.removeAt(index);
+    notifyListeners();
+  }
+
+  List<AdditionalDischargeRecipe> additionalRecipes() {
+    return _additionalRecipes;
+  }
+}
+
+class AdditionalDischargeRecipe {
+  final DischargeModel recipe;
+  final double probability;
+
+  AdditionalDischargeRecipe(this.recipe, this.probability);
+}
+
+class DischargeRecipe {
+  final DischargeType dischargeType;
+  final Set<DischargeDescriptor> dischargeDescriptors;
+  final Set<DischargeFrequency> dischargeFrequencies;
+
+  DischargeRecipe({required this.dischargeType, required this.dischargeFrequencies, this.dischargeDescriptors = const {}});
+
+  List<String> getObservations() {
+    List<String> observations = [];
+    var descriptors = dischargeDescriptors.join("");
+    for (var frequency in dischargeFrequencies) {
+      observations.add("${dischargeType.code}$descriptors ${frequency.code}");
+    }
+    return observations;
+  }
+
+  DischargeSummary getSummary() {
+    var frequencies = dischargeFrequencies.toList();
+    frequencies.shuffle();
+    return DischargeSummary(
+      dischargeType: dischargeType,
+      dischargeDescriptors: dischargeDescriptors.toList(),
+      dischargeFrequency: dischargeFrequencies.first,
+    );
+  }
+
+}
+
+final dryDischargeRecipe = DischargeRecipe(
+  dischargeType: DischargeType.dry,
+  dischargeFrequencies: {DischargeFrequency.allDay},
+);
+
+final nonPeakTypeDischargeRecipe = DischargeRecipe(
+  dischargeType: DischargeType.sticky,
+  dischargeFrequencies: {DischargeFrequency.twice},
+  dischargeDescriptors: {DischargeDescriptor.cloudy},
+);
+final peakTypeDischargeRecipe = DischargeRecipe(
+  dischargeType: DischargeType.stretchy,
+  dischargeFrequencies: {DischargeFrequency.twice},
+  dischargeDescriptors: {DischargeDescriptor.clear},
+);
+final pastyCloudyDischargeRecipe = DischargeRecipe(
+  dischargeType: DischargeType.sticky,
+  dischargeFrequencies: {DischargeFrequency.twice},
+  dischargeDescriptors: {DischargeDescriptor.pasty, DischargeDescriptor.cloudy},
+);
