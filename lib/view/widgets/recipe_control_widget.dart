@@ -31,6 +31,7 @@ class RecipeControlWidget extends StatelessWidget {
   }
 
   List<Widget> _additionalCircumstanceWidgets(RecipeControlViewModel model) {
+    print("FOO: ${model.unusualBleedingProbability()}");
     return [
       _subSectionHeader("Additional Circumstances"),
       _subSubSectionHeader("Unusual Bleeding Frequency"),
@@ -237,7 +238,7 @@ class RecipeControlWidget extends StatelessWidget {
   }
 
   Widget _frequencyControl({required double currentValue, required Function(double) updateValue}) {
-    double value = 100 * currentValue.floorToDouble();
+    double value = (100 * currentValue).floorToDouble();
     return Row(children: [
       Text("Frequency: $value%"),
       Slider(
