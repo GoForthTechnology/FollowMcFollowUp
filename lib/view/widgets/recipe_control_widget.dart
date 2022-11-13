@@ -19,9 +19,13 @@ class RecipeControlWidget extends StatelessWidget {
         const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
         _templateSelector(model),
         ..._flowWidgets(context, model.flowModel),
+        const Divider(),
         ..._preBuildUpWidgets(context, model.preBuildUpModel),
+        const Divider(),
         ..._buildUpWidgets(context, model.buildUpModel),
+        const Divider(),
         ..._postPeakWidgets(context, model.postPeakModel),
+        const Divider(),
         ..._additionalCircumstanceWidgets(model),
       ]))))));
   }
@@ -47,7 +51,7 @@ class RecipeControlWidget extends StatelessWidget {
   List<Widget> _postPeakWidgets(BuildContext context, PostPeakModel model) {
     return [
       _subSectionHeader("Post-Peak"),
-      _lengthControl("Mucus Length", model.mucusLength),
+      _lengthControl("Mucus Length", model.mucusLength, hint: "The number of days of mucus which follow peak day"),
       _subSubSectionHeader("Default Observation"),
       _observation(
         context: context,
@@ -56,7 +60,7 @@ class RecipeControlWidget extends StatelessWidget {
         canRemove: false,
       ),
       ..._additionalObservations(context, model.mucusDischargeModel),
-      _lengthControl("Length", model.length),
+      _lengthControl("Length", model.length, hint: "The overall length of the post peak phase"),
       _subSubSectionHeader("Default Observation"),
       _observation(
         context: context,
@@ -158,7 +162,7 @@ class RecipeControlWidget extends StatelessWidget {
           .getCustomExercises(ExerciseType.dynamic)
           .cast<DynamicExercise>());
       return Row(children: [
-        const Text("Template"),
+        const Tooltip(message: "Select a standard scenario to preset the controls below", child: Text("Template")),
         Padding(padding: const EdgeInsets.all(10), child: DropdownButton<int>(
           value: model.templateIndex(),
           items: exercises.mapIndexed((i, e) => DropdownMenuItem<int>(
@@ -246,10 +250,14 @@ class RecipeControlWidget extends StatelessWidget {
     ]);
   }
 
-  Widget _lengthControl(String title, NonNegativeInteger value) {
+  Widget _lengthControl(String title, NonNegativeInteger value, {String? hint}) {
+    Widget titleWidget = Text("$title: ${value.get().toString()}");
+    if (hint != null) {
+      titleWidget = Tooltip(message: hint, child: titleWidget);
+    }
     bool canDecrement = value.get() > 0;
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-      Text("$title: ${value.get().toString()}"),
+      titleWidget,
       const Spacer(),
       Padding(
         padding: const EdgeInsets.only(left: 10),
