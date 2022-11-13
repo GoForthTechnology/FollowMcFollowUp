@@ -161,6 +161,10 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
                   recipe: model.recipe,
                   errorScenarios: errorScenarios,
                 );
+                int numExercises = exerciseModel.getExercises(exerciseType).where((e) => e.enabled).length;
+                numExercises += exerciseModel.getCustomExercises(exerciseType).where((e) => e.enabled).length;
+                // This is brittle and will surely backfire sooner or later...
+                Provider.of<RecipeControlViewModel>(context, listen: false).updateTemplateIndex(numExercises - 1);
                 _showSnackBar("Saved \"$name\" as a ${exerciseType.name} exercise");
               },
               onFieldSubmitted: (name) {

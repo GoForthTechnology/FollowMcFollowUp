@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';
+import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -13,9 +14,10 @@ class RecipeControlWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RecipeControlViewModel>(builder: (context, model, child) => Container(
       decoration: BoxDecoration(color: Colors.grey[200]),
-      child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 300),
+      child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 350),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+        _templateSelector(model),
         ..._flowWidgets(context, model.flowModel),
         ..._preBuildUpWidgets(context, model.preBuildUpModel),
         ..._buildUpWidgets(context, model.buildUpModel),
@@ -45,15 +47,15 @@ class RecipeControlWidget extends StatelessWidget {
   List<Widget> _postPeakWidgets(BuildContext context, PostPeakModel model) {
     return [
       _subSectionHeader("Post-Peak"),
-      _lengthControl("Length", model.length),
+      _lengthControl("Mucus Length", model.mucusLength),
       _subSubSectionHeader("Default Observation"),
       _observation(
         context: context,
-        discharge: model.dischargeModel.defaultDischarge,
+        discharge: model.mucusDischargeModel.defaultDischarge,
         removeRecipe: () {},
         canRemove: false,
       ),
-      ..._additionalObservations(context, model.dischargeModel),
+      ..._additionalObservations(context, model.mucusDischargeModel),
       _lengthControl("Length", model.length),
       _subSubSectionHeader("Default Observation"),
       _observation(
@@ -145,6 +147,43 @@ class RecipeControlWidget extends StatelessWidget {
     return out;
   }
 
+  Widget _templateSelector(RecipeControlViewModel model) {
+    return Consumer<ExerciseListViewModel>(builder: (context, exerciseModel, child) {
+      List<DynamicExercise> exercises = [];
+      exercises.addAll(exerciseModel
+          .getExercises(ExerciseType.dynamic)
+          .cast<DynamicExercise>()
+          .where((e) => e.recipe != null));
+      exercises.addAll(exerciseModel
+          .getCustomExercises(ExerciseType.dynamic)
+          .cast<DynamicExercise>());
+      return Row(children: [
+        const Text("Template"),
+        Padding(padding: const EdgeInsets.all(10), child: DropdownButton<int>(
+          value: model.templateIndex(),
+          items: exercises.mapIndexed((i, e) => DropdownMenuItem<int>(
+            value: i,
+            child: Text(e.name),
+          )).toList(),
+          onChanged: (i) {
+            if (i == null) {
+              print("Null value");
+              return;
+            }
+            if (i == model.templateIndex()) {
+              print("Same index");
+              return;
+            }
+            final exercise = exercises[i];
+            print("Applying exercise: ${exercise.name}");
+            model.updateTemplateIndex(i);
+            model.applyTemplate(exercise.recipe!);
+          },
+        ))
+      ]);
+    });
+  }
+
   Widget _dropDownSelector(String title, List<String> items, Flow Function() getFlow, Function(Flow) setFlow) {
     return Row(children: [
       Text(title),
@@ -194,7 +233,7 @@ class RecipeControlWidget extends StatelessWidget {
   }
 
   Widget _frequencyControl({required double currentValue, required Function(double) updateValue}) {
-    double value = currentValue * 100;
+    double value = 100 * currentValue.floorToDouble();
     return Row(children: [
       Text("Frequency: $value%"),
       Slider(

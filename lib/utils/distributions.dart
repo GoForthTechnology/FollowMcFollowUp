@@ -16,14 +16,14 @@ class UniformRange {
 }
 
 class NormalDistribution {
-  final int _mean;
-  final double _stdDev;
+  final int mean;
+  final double stdDev;
   final Random _r = Random();
 
-  NormalDistribution(this._mean, this._stdDev);
+  NormalDistribution(this.mean, this.stdDev);
 
   int get() {
-    if (_mean == 0) {
+    if (mean == 0) {
       return 0;
     }
     double u = _r.nextDouble() * 2 - 1;
@@ -33,7 +33,7 @@ class NormalDistribution {
       return get();
     }
     double c = sqrt(-2 * log(r) / r);
-    double d = _mean + _stdDev * u * c;
+    double d = mean + stdDev * u * c;
     return d.round();
   }
 }

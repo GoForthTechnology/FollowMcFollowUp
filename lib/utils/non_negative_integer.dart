@@ -9,6 +9,11 @@ class NonNegativeInteger extends ChangeNotifier {
     return _value;
   }
 
+  void set(int value) {
+    _value = value;
+    notifyListeners();
+  }
+
   void increment() {
     _value++;
     notifyListeners();

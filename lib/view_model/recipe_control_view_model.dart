@@ -11,13 +11,45 @@ class RecipeControlViewModel extends ChangeNotifier {
   final BuildUpModel buildUpModel = BuildUpModel(nonPeakTypeDischargeRecipe, peakTypeDischargeRecipe);
   final PostPeakModel postPeakModel = PostPeakModel(dryDischargeRecipe, nonPeakTypeDischargeRecipe);
 
+  int _templateIndex = 0;
+
+  final List<BaseModel> _models = [];
+
   var _unusualBleedingProbability = 0.0;
   final NonNegativeInteger preMenstrualSpottingLength = NonNegativeInteger(0);
 
   RecipeControlViewModel() {
-    for (var notifier in [flowModel, preBuildUpModel, buildUpModel, postPeakModel, preMenstrualSpottingLength]) {
-      notifier.addListener(() => notifyListeners());
+    _models.addAll([flowModel, preBuildUpModel, buildUpModel, postPeakModel]);
+    for (var notifier in [preMenstrualSpottingLength, ..._models]) {
+      notifier.addListener(forwardNotification);
     }
+  }
+
+  int templateIndex() {
+    return _templateIndex;
+  }
+
+  void updateTemplateIndex(int value) {
+    _templateIndex = value;
+    notifyListeners();
+  }
+
+  bool _preempt = false;
+
+  void forwardNotification() {
+    if (!_preempt) {
+      notifyListeners();
+    }
+  }
+
+  void applyTemplate(CycleRecipe recipe) {
+    _preempt = true;
+    for (var model in _models) {
+      model.applyTemplate(recipe);
+    }
+    preMenstrualSpottingLength.set(recipe.postPeakRecipe.preMenstrualSpottingLengthDist.mean);
+    _preempt = false;
+    notifyListeners();
   }
 
   double unusualBleedingProbability() {
@@ -76,6 +108,14 @@ class FlowModel extends BaseModel {
   FlowModel(super.defaultDischargeRecipe) : super(length: 4) {
     dischargeModel.addListener(() => notifyListeners());
   }
+  
+  @override
+  void applyTemplate(CycleRecipe recipe) {
+    setMinFlow(recipe.flowRecipe.minFlow);
+    setMaxFlow(recipe.flowRecipe.maxFlow);
+    length.set(recipe.flowRecipe.flowLength.mean);
+    dischargeModel.fromGenerator(recipe.flowRecipe.dischargeSummaryGenerator);
+  }
 
   Flow minFlow() {
     return _minFlow;
@@ -98,6 +138,12 @@ class FlowModel extends BaseModel {
 
 class PreBuildUpModel extends BaseModel {
   PreBuildUpModel(super.defaultDischargeRecipe) : super(length: 4);
+
+  @override
+  void applyTemplate(CycleRecipe recipe) {
+    length.set(recipe.preBuildUpRecipe.length.mean);
+    dischargeModel.fromGenerator(recipe.preBuildUpRecipe.nonMucusDischargeGenerator);
+  }
 }
 
 class BuildUpModel extends BaseModel {
@@ -109,17 +155,35 @@ class BuildUpModel extends BaseModel {
     peakTypeLength.addListener(() => notifyListeners());
     peakTypeDischargeModel.addListener(() => notifyListeners());
   }
+
+  @override
+  void applyTemplate(CycleRecipe recipe) {
+    length.set(recipe.buildUpRecipe.lengthDist.mean);
+    dischargeModel.fromGenerator(recipe.buildUpRecipe.nonPeakTypeDischargeGenerator);
+
+    peakTypeLength.set(recipe.buildUpRecipe.peakTypeLengthDist.mean);
+    peakTypeDischargeModel.fromGenerator(recipe.buildUpRecipe.peakTypeDischargeGenerator);
+  }
 }
 
 class PostPeakModel extends BaseModel {
+  final NonNegativeInteger mucusLength = NonNegativeInteger(1);
+  final DischargeModel mucusDischargeModel;
+
   PostPeakModel(super.defaultDischargeRecipe, DischargeRecipe mucusDischargeRecipe)
       : mucusDischargeModel = DischargeModel(mucusDischargeRecipe), super(length: 12) {
     mucusLength.addListener(() => notifyListeners());
     mucusDischargeModel.addListener(() => notifyListeners());
   }
 
-  final NonNegativeInteger mucusLength = NonNegativeInteger(1);
-  final DischargeModel mucusDischargeModel;
+  @override
+  void applyTemplate(CycleRecipe recipe) {
+    length.set(recipe.postPeakRecipe.lengthDist.mean);
+    dischargeModel.fromGenerator(recipe.postPeakRecipe.nonMucusDischargeGenerator);
+
+    mucusLength.set(recipe.postPeakRecipe.mucusLengthDist.mean);
+    mucusDischargeModel.fromGenerator(recipe.postPeakRecipe.mucusDischargeGenerator);
+  }
 }
 
 abstract class BaseModel extends ChangeNotifier {
@@ -132,6 +196,8 @@ abstract class BaseModel extends ChangeNotifier {
     this.length.addListener(() => notifyListeners());
     dischargeModel.addListener(() => notifyListeners());
   }
+
+  void applyTemplate(CycleRecipe recipe);
 }
 
 class DischargeInterface extends ChangeNotifier {
@@ -158,6 +224,14 @@ class DischargeModel extends ChangeNotifier {
     defaultDischarge.addListener(() => notifyListeners());
   }
 
+  void fromGenerator(DischargeSummaryGenerator generator) {
+    removeAllAdditionalRecipes();
+    defaultDischarge.setRecipe(generator.typicalDischarge);
+    for (var a in generator.alternatives) {
+      addAdditionalRecipe(a.generator.typicalDischarge, a.probability);
+    }
+  }
+
   DischargeSummaryGenerator asGenerator() {
     return DischargeSummaryGenerator(
       defaultDischarge.getRecipe(),
@@ -175,6 +249,11 @@ class DischargeModel extends ChangeNotifier {
 
   void updateAdditionalRecipe(int index, DischargeRecipe recipe, double probability) {
     _additionalRecipes[index] = AdditionalDischargeRecipe(DischargeModel(recipe), probability);
+    notifyListeners();
+  }
+
+  void removeAllAdditionalRecipes() {
+    _additionalRecipes.clear();
     notifyListeners();
   }
 

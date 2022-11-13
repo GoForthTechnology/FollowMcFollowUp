@@ -15,6 +15,10 @@ class ExerciseListViewModel extends ChangeNotifier {
   final Map<String, StaticExercise> _customStaticExercises = {};
   final Map<String, DynamicExercise> _customDynamicExercises = {};
 
+  int numExercises(ExerciseType exerciseType) {
+    return getExercises(exerciseType).length + getCustomExercises(exerciseType).length;
+  }
+
   List<Exercise> getExercises(ExerciseType exerciseType) {
     switch (exerciseType) {
       case ExerciseType.static:
@@ -156,6 +160,8 @@ class StaticExercise extends Exercise {
 const preBuildUpLengthRange = UniformRange(4, 6);
 
 final dynamicExerciseList = [
+  DynamicExercise(name: "Typical Cycles", recipe: CycleRecipe.create()),
+
   const DynamicExercise(name: "Over reading lubrication"),
 
   DynamicExercise(name: "Continuous Mucus", recipe: CycleRecipe.create(
