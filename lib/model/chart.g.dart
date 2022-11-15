@@ -12,16 +12,14 @@ Cycle _$CycleFromJson(Map<String, dynamic> json) => Cycle(
           .map((e) => ChartEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
       stickerCorrections:
-          (json['stickerCorrections'] as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(int.parse(k),
-                    StickerWithText.fromJson(e as Map<String, dynamic>)),
-              ) ??
-              const {},
+          (json['stickerCorrections'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+            int.parse(k), StickerWithText.fromJson(e as Map<String, dynamic>)),
+      ),
       observationCorrections:
-          (json['observationCorrections'] as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(int.parse(k), e as String),
-              ) ??
-              const {},
+          (json['observationCorrections'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(int.parse(k), e as String),
+      ),
       cycleStats: json['cycleStats'] == null
           ? CycleStats.empty
           : CycleStats.fromJson(json['cycleStats'] as Map<String, dynamic>),

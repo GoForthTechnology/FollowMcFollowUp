@@ -1,6 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/auth.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
@@ -25,7 +27,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-final _appRouter = AppRouter();
+final _appRouter = AppRouter(authGuard: AuthGuard());
 
 class MyApp extends StatelessWidget {
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -35,6 +37,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    FirebaseUIAuth.configureProviders([
+      EmailAuthProvider(),
+    ]);
+
     analytics.logAppOpen();
     return MultiProvider(
       providers: [

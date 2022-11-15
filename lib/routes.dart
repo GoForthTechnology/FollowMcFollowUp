@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fmfu/auth.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/exercise_list_screen.dart';
@@ -7,6 +8,7 @@ import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view/screens/landing_screen.dart';
 import 'package:fmfu/view/screens/list_programs_screen.dart';
+import 'package:fmfu/view/screens/login_screen.dart';
 
 @AdaptiveAutoRouter(
   replaceInRouteName: 'Page,Route,Screen',
@@ -22,6 +24,7 @@ import 'package:fmfu/view/screens/list_programs_screen.dart';
     AutoRoute(
       path: '/home',
       page: HomeScreen,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -77,6 +80,14 @@ import 'package:fmfu/view/screens/list_programs_screen.dart';
     AutoRoute(
       path: '/exercises/dynamic',
       page: DynamicExerciseListScreen,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+
+    AutoRoute(
+      path: '/login',
+      page: LoginScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],

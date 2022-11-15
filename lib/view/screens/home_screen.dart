@@ -1,6 +1,7 @@
 
 
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
@@ -14,9 +15,16 @@ class HomeScreen extends ScreenWidget {
   @override
   Widget build(BuildContext context) {
     logScreenView("HomeScreen");
+    final router = AutoRouter.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
+        actions: [
+          IconButton(onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            router.push(const LoginScreenRoute());
+          }, icon: const Icon(Icons.logout)),
+        ],
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(
         children: [
@@ -52,7 +60,7 @@ class HomeScreen extends ScreenWidget {
     return ButtonWidget(
       title: "Static Exercises",
       onPressed: () {
-        AutoRouter.of(context).push(const StaticExerciseListScreenRoute());
+        AutoRouter.of(context).push(StaticExerciseListScreenRoute());
       },
     );
   }
