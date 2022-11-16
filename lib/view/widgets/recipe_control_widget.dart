@@ -1,6 +1,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
@@ -31,7 +32,6 @@ class RecipeControlWidget extends StatelessWidget {
   }
 
   List<Widget> _additionalCircumstanceWidgets(RecipeControlViewModel model) {
-    print("FOO: ${model.unusualBleedingProbability()}");
     return [
       _subSectionHeader("Additional Circumstances"),
       _subSubSectionHeader("Unusual Bleeding Frequency"),
@@ -172,15 +172,12 @@ class RecipeControlWidget extends StatelessWidget {
           )).toList(),
           onChanged: (i) {
             if (i == null) {
-              print("Null value");
               return;
             }
             if (i == model.templateIndex()) {
-              print("Same index");
               return;
             }
             final exercise = exercises[i];
-            print("Applying exercise: ${exercise.name}");
             model.updateTemplateIndex(i);
             model.applyTemplate(exercise.recipe!);
           },
@@ -192,7 +189,7 @@ class RecipeControlWidget extends StatelessWidget {
   Widget _dropDownSelector(String title, List<String> items, Flow Function() getFlow, Function(Flow) setFlow) {
     return Row(children: [
       Text(title),
-      Padding(padding: EdgeInsets.all(10), child: DropdownButton<String>(
+      Padding(padding: const EdgeInsets.all(10), child: DropdownButton<String>(
         value: getFlow().code.toUpperCase(),
         items: items.map((item) => DropdownMenuItem(
           value: item,

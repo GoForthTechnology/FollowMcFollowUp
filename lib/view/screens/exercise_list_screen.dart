@@ -2,6 +2,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
+import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/files.dart';
