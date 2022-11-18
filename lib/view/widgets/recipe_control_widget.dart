@@ -1,6 +1,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';

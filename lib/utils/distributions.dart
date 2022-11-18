@@ -2,6 +2,9 @@
 import 'dart:math';
 
 import 'package:fmfu/utils/gamma.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'distributions.g.dart';
 
 class UniformRange {
   final double lowerBound;
@@ -15,6 +18,7 @@ class UniformRange {
   }
 }
 
+@JsonSerializable(explicitToJson: true)
 class NormalDistribution {
   final int mean;
   final double stdDev;
@@ -36,6 +40,9 @@ class NormalDistribution {
     double d = mean + stdDev * u * c;
     return d.round();
   }
+
+  factory NormalDistribution.fromJson(Map<String, dynamic> json) => _$NormalDistributionFromJson(json);
+  Map<String, dynamic> toJson() => _$NormalDistributionToJson(this);
 }
 
 class GamaDistribution {

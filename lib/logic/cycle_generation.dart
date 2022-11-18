@@ -2,7 +2,9 @@
 import 'dart:math';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/distributions.dart';
-import 'package:fmfu/view_model/recipe_control_view_model.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'cycle_generation.g.dart';
 
 abstract class Recipe {
   List<Observation> getObservations({bool askESQ = false});
@@ -12,6 +14,7 @@ abstract class PostProcessor {
   void process(List<Observation> observations);
 }
 
+@JsonSerializable(explicitToJson: true)
 class CycleRecipe extends Recipe {
   final FlowRecipe flowRecipe;
   final PreBuildUpRecipe preBuildUpRecipe;
@@ -37,6 +40,9 @@ class CycleRecipe extends Recipe {
     }
     return observations;
   }
+
+  factory CycleRecipe.fromJson(Map<String, dynamic> json) => _$CycleRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$CycleRecipeToJson(this);
 
   static const double defaultUnusualBleedingFrequency = 0;
   static const double defaultMucusPatchFrequency = 0;
@@ -239,6 +245,7 @@ class ESQPostProcessor extends PostProcessor {
   }
 }
 
+@JsonSerializable(explicitToJson: true)
 class FlowRecipe extends Recipe {
   final Flow maxFlow;
   final Flow minFlow;
@@ -289,19 +296,23 @@ class FlowRecipe extends Recipe {
     }
     return flows;
   }
+
+  factory FlowRecipe.fromJson(Map<String, dynamic> json) => _$FlowRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$FlowRecipeToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class PreBuildUpRecipe extends Recipe {
   final NormalDistribution length;
   final DischargeSummaryGenerator nonMucusDischargeGenerator;
-  final AnomalyGenerator _abnormalBleedingGenerator;
+  final NormalAnomalyGenerator abnormalBleedingGenerator;
 
-  PreBuildUpRecipe(this.length, this.nonMucusDischargeGenerator, this._abnormalBleedingGenerator);
+  PreBuildUpRecipe(this.length, this.nonMucusDischargeGenerator, this.abnormalBleedingGenerator);
 
   @override
   List<Observation> getObservations({bool askESQ = false}) {
     int periodLength = length.get();
-    List<bool> abnormalBleedingField = _abnormalBleedingGenerator.generate(periodLength);
+    List<bool> abnormalBleedingField = abnormalBleedingGenerator.generate(periodLength);
     List<Observation> observation = [];
     for (int i=0; i<periodLength; i++) {
       var dischargeSummary = nonMucusDischargeGenerator.get();
@@ -315,8 +326,12 @@ class PreBuildUpRecipe extends Recipe {
     }
     return observation;
   }
+
+  factory PreBuildUpRecipe.fromJson(Map<String, dynamic> json) => _$PreBuildUpRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$PreBuildUpRecipeToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class BuildUpRecipe extends Recipe {
   final NormalDistribution lengthDist;
   final NormalDistribution peakTypeLengthDist;
@@ -340,14 +355,18 @@ class BuildUpRecipe extends Recipe {
     }
     return observation;
   }
+
+  factory BuildUpRecipe.fromJson(Map<String, dynamic> json) => _$BuildUpRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$BuildUpRecipeToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class PostPeakRecipe extends Recipe {
   final NormalDistribution lengthDist;
   final NormalDistribution mucusLengthDist;
   final DischargeSummaryGenerator mucusDischargeGenerator;
   final DischargeSummaryGenerator nonMucusDischargeGenerator;
-  final AnomalyGenerator abnormalBleedingGenerator;
+  final NormalAnomalyGenerator abnormalBleedingGenerator;
   final NormalDistribution preMenstrualSpottingLengthDist;
 
   PostPeakRecipe({
@@ -394,6 +413,9 @@ class PostPeakRecipe extends Recipe {
     }
     return observation;
   }
+
+  factory PostPeakRecipe.fromJson(Map<String, dynamic> json) => _$PostPeakRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$PostPeakRecipeToJson(this);
 }
 
 class FlowIntensityDistribution {
@@ -438,6 +460,7 @@ class UniformAnomalyGenerator extends AnomalyGenerator {
     return anomalyField;
   }}
 
+@JsonSerializable(explicitToJson: true)
 class NormalAnomalyGenerator extends AnomalyGenerator {
   final Random _r = Random();
   final NormalDistribution lengthDist;
@@ -462,8 +485,43 @@ class NormalAnomalyGenerator extends AnomalyGenerator {
     }
     return anomalyField;
   }
+
+  factory NormalAnomalyGenerator.fromJson(Map<String, dynamic> json) => _$NormalAnomalyGeneratorFromJson(json);
+  Map<String, dynamic> toJson() => _$NormalAnomalyGeneratorToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class DischargeRecipe {
+  final DischargeType dischargeType;
+  final Set<DischargeDescriptor> dischargeDescriptors;
+  final Set<DischargeFrequency> dischargeFrequencies;
+
+  DischargeRecipe({required this.dischargeType, required this.dischargeFrequencies, this.dischargeDescriptors = const {}});
+
+  List<String> getObservations() {
+    List<String> observations = [];
+    var descriptors = dischargeDescriptors.join("");
+    for (var frequency in dischargeFrequencies) {
+      observations.add("${dischargeType.code}$descriptors ${frequency.code}");
+    }
+    return observations;
+  }
+
+  DischargeSummary getSummary() {
+    var frequencies = dischargeFrequencies.toList();
+    frequencies.shuffle();
+    return DischargeSummary(
+      dischargeType: dischargeType,
+      dischargeDescriptors: dischargeDescriptors.toList(),
+      dischargeFrequency: dischargeFrequencies.first,
+    );
+  }
+
+  factory DischargeRecipe.fromJson(Map<String, dynamic> json) => _$DischargeRecipeFromJson(json);
+  Map<String, dynamic> toJson() => _$DischargeRecipeToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class DischargeSummaryGenerator {
   final DischargeRecipe typicalDischarge;
   final List<AlternativeDischargeSummaryGenerator> alternatives;
@@ -479,11 +537,18 @@ class DischargeSummaryGenerator {
     }
     return typicalDischarge.getSummary();
   }
+
+  factory DischargeSummaryGenerator.fromJson(Map<String, dynamic> json) => _$DischargeSummaryGeneratorFromJson(json);
+  Map<String, dynamic> toJson() => _$DischargeSummaryGeneratorToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class AlternativeDischargeSummaryGenerator {
   final DischargeSummaryGenerator generator;
   final double probability;
 
   AlternativeDischargeSummaryGenerator(this.generator, {required this.probability});
+
+  factory AlternativeDischargeSummaryGenerator.fromJson(Map<String, dynamic> json) => _$AlternativeDischargeSummaryGeneratorFromJson(json);
+  Map<String, dynamic> toJson() => _$AlternativeDischargeSummaryGeneratorToJson(this);
 }

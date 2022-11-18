@@ -274,34 +274,6 @@ class AdditionalDischargeRecipe {
   AdditionalDischargeRecipe(this.recipe, this.probability);
 }
 
-class DischargeRecipe {
-  final DischargeType dischargeType;
-  final Set<DischargeDescriptor> dischargeDescriptors;
-  final Set<DischargeFrequency> dischargeFrequencies;
-
-  DischargeRecipe({required this.dischargeType, required this.dischargeFrequencies, this.dischargeDescriptors = const {}});
-
-  List<String> getObservations() {
-    List<String> observations = [];
-    var descriptors = dischargeDescriptors.join("");
-    for (var frequency in dischargeFrequencies) {
-      observations.add("${dischargeType.code}$descriptors ${frequency.code}");
-    }
-    return observations;
-  }
-
-  DischargeSummary getSummary() {
-    var frequencies = dischargeFrequencies.toList();
-    frequencies.shuffle();
-    return DischargeSummary(
-      dischargeType: dischargeType,
-      dischargeDescriptors: dischargeDescriptors.toList(),
-      dischargeFrequency: dischargeFrequencies.first,
-    );
-  }
-
-}
-
 final dryDischargeRecipe = DischargeRecipe(
   dischargeType: DischargeType.dry,
   dischargeFrequencies: {DischargeFrequency.allDay},

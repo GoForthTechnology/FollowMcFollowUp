@@ -8,6 +8,31 @@ abstract class ExerciseService {
   void updateCustomStaticExercise(String name, StaticExercise exercise);
 }
 
+class RemoteExerciseService extends ExerciseService {
+
+  @override
+  List<Exercise> getCustomExercises(ExerciseType exerciseType) {
+    // TODO: implement getCustomExercises
+    throw UnimplementedError();
+  }
+
+  @override
+  bool hasCustomExercise(String name, ExerciseType exerciseType) {
+    // TODO: implement hasCustomExercise
+    throw UnimplementedError();
+  }
+
+  @override
+  void updateCustomDynamicExercise(String name, DynamicExercise exercise) {
+    // TODO: implement updateCustomDynamicExercise
+  }
+
+  @override
+  void updateCustomStaticExercise(String name, StaticExercise exercise) {
+    // TODO: implement updateCustomStaticExercise
+  }
+}
+
 class LocalExerciseService extends ExerciseService {
   final Map<String, StaticExercise> _customStaticExercises = {};
   final Map<String, DynamicExercise> _customDynamicExercises = {};

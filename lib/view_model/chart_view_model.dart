@@ -39,6 +39,13 @@ abstract class ChartViewModel with GlobalLoggy {
     return jsonEncode(ExerciseState.fromChartViewModel(this).toJson());
   }
 
+  String getRecipeAsJson() {
+    if (recipe == null) {
+      return "";
+    }
+    return jsonEncode(recipe!.toJson());
+  }
+
   List<String> dynamicExerciseIssues() {
     List<String> issues = [];
     if (recipe == null) {

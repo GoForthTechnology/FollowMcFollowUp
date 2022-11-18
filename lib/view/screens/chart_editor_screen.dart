@@ -80,7 +80,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
         _promptForSaveType(model);
       }, tooltip: "Save chart as an exercise",),
       IconButton(icon: const Icon(Icons.file_download, color: Colors.white), onPressed: () async {
-        downloadJson(model.getStateAsJson(), "exercise.json");
+        _promptForDownloadType(model);
       }, tooltip: "Download current chart",),
       IconButton(icon: const Icon(Icons.file_upload, color: Colors.white), onPressed: () async {
         openJsonFile().then((file) async {
@@ -94,6 +94,37 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
         }, onError: (error) => _showSnackBar(error.toString()));
       }, tooltip: "Load chart from file",),
     ];
+  }
+
+  void _promptForDownloadType(ChartListViewModel model) {
+    const itemSeparation = 10.0;
+    const maxDialogWidth = 300.0;
+    List<String> dynamicExerciseIssues = model.dynamicExerciseIssues();
+    showDialog(context: context, builder: (context) => AlertDialog(
+      title: const Text("Choose Exercise Type"),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        ConstrainedBox(constraints: const BoxConstraints.tightFor(width: maxDialogWidth), child: const Text(
+            "Exercises can be downloaded as \"static exercises\" which will always show the same chart or \"dynamic exercises\" which will show charts using the recipe you have configured in the editor.")),
+        const SizedBox(height: itemSeparation),
+        const Text("Which exercise would you like to download?"),
+
+        const SizedBox(height: itemSeparation * 2),
+        ElevatedButton(onPressed: () {
+          Navigator.of(context).pop("OK");
+          downloadJson(model.getStateAsJson(), "exercise.json");
+        }, child: const Text("Static Exercise")),
+        const SizedBox(height: itemSeparation),
+        ElevatedButton(onPressed: dynamicExerciseIssues.isNotEmpty ? null : () {
+          Navigator.of(context).pop("OK");
+          downloadJson(model.getRecipeAsJson(), "recipe.json");
+        }, child: const Text("Dynamic Exercise")),
+
+        const SizedBox(height: itemSeparation * 2),
+        if (dynamicExerciseIssues.isNotEmpty) ConstrainedBox(constraints: const BoxConstraints.tightFor(width: maxDialogWidth), child: const Text(
+            "This chart cannot be saved as a dynamic exercise for the following reasons:")),
+        ...dynamicExerciseIssues.map((issue) => Text("\u2022 $issue")),
+      ],),
+    ));
   }
 
   void _promptForSaveType(ChartListViewModel model) {
