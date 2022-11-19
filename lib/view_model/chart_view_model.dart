@@ -8,12 +8,15 @@ import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:fmfu/model/stickers.dart';
+import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:loggy/loggy.dart';
 import 'package:time_machine/time_machine.dart';
 
 abstract class ChartViewModel with GlobalLoggy {
   static final List<Instruction> _defaultInstructions = _getActiveInstructions(false, false);
   static final LocalDate _startDate = LocalDate(DateTime.now().year, 1, 1);
+
+  final RecipeControlViewModel recipeControlViewModel = RecipeControlViewModel();
 
   final int numCyclesPerChart;
   bool incrementalMode = false;
@@ -31,12 +34,16 @@ abstract class ChartViewModel with GlobalLoggy {
   LocalDate? _currentFollowup;
   LocalDate _startOfCharting = _startDate;
 
-  ChartViewModel(this.numCyclesPerChart);
+  ChartViewModel(this.numCyclesPerChart) {
+    recipeControlViewModel.addListener(() {
+      updateCharts(recipeControlViewModel.getRecipe());
+    });
+  }
 
   void onChartChange();
 
   String getStateAsJson() {
-    return jsonEncode(ExerciseState.fromChartViewModel(this).toJson());
+    return const JsonEncoder.withIndent("  ").convert(ExerciseState.fromChartViewModel(this).toJson());
   }
 
   String getRecipeAsJson() {

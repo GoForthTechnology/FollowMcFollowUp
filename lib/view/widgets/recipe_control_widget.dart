@@ -5,6 +5,7 @@ import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';
+import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:provider/provider.dart';
@@ -14,21 +15,21 @@ class RecipeControlWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RecipeControlViewModel>(builder: (context, model, child) => Container(
+    return Consumer<ChartListViewModel>(builder: (context, model, child) => Container(
       decoration: BoxDecoration(color: Colors.grey[200]),
       child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 350),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-        _templateSelector(model),
-        ..._flowWidgets(context, model.flowModel),
+        _templateSelector(model.recipeControlViewModel),
+        ..._flowWidgets(context, model.recipeControlViewModel.flowModel),
         const Divider(),
-        ..._preBuildUpWidgets(context, model.preBuildUpModel),
+        ..._preBuildUpWidgets(context, model.recipeControlViewModel.preBuildUpModel),
         const Divider(),
-        ..._buildUpWidgets(context, model.buildUpModel),
+        ..._buildUpWidgets(context, model.recipeControlViewModel.buildUpModel),
         const Divider(),
-        ..._postPeakWidgets(context, model.postPeakModel),
+        ..._postPeakWidgets(context, model.recipeControlViewModel.postPeakModel),
         const Divider(),
-        ..._additionalCircumstanceWidgets(model),
+        ..._additionalCircumstanceWidgets(model.recipeControlViewModel),
       ]))))));
   }
 

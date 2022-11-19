@@ -45,7 +45,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
           // TODO: figure out how to make horizontal scrolling work...
           body: Consumer2<ChartListViewModel, RecipeControlViewModel>(
             builder: (context, model, recipeModel, child) {
-              model.updateCharts(recipeModel.getRecipe());
+              //model.updateCharts(recipeModel.getRecipe());
               return Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
