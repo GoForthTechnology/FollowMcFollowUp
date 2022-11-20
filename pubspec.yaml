@@ -55,6 +55,8 @@ dependencies:
   firebase_ui_auth: ^1.0.5
   firebase_auth: ^4.1.2
   firebase_database: ^10.0.5
+  g_recaptcha_v3: ^0.0.5
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

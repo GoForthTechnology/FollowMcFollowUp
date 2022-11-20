@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/api/recaptcha_service.dart';
 import 'package:fmfu/auth.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await RecaptchaService.initiate();
 
   runApp(MyApp());
 }
