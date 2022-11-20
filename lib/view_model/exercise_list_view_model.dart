@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fmfu/api/exercise_service.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
@@ -6,12 +7,24 @@ import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/stickers.dart';
+import 'package:loggy/loggy.dart';
 
-class ExerciseListViewModel extends ChangeNotifier {
-  final ExerciseService _exerciseService = LocalExerciseService();
+class ExerciseListViewModel extends ChangeNotifier with GlobalLoggy {
+  late ExerciseService _exerciseService;
 
-  int numExercises(ExerciseType exerciseType) {
-    return getExercises(exerciseType).length + getCustomExercises(exerciseType).length;
+  ExerciseListViewModel(FirebaseAuth auth) {
+    loggy.debug("Initializing with user: ${auth.currentUser != null}");
+    _exerciseService = ExerciseService.create(auth.currentUser);
+    auth.authStateChanges().forEach((user) {
+      loggy.debug("Re-initializing service with user: ${user != null}");
+      _exerciseService = ExerciseService.create(user);
+    });
+  }
+
+  Future<int> numExercises(ExerciseType exerciseType) async {
+    int numExercises = getExercises(exerciseType).length;
+    int numCustomExercises = getExercises(exerciseType).length;
+    return numExercises + numCustomExercises;
   }
 
   List<Exercise> getExercises(ExerciseType exerciseType) {
@@ -23,21 +36,25 @@ class ExerciseListViewModel extends ChangeNotifier {
     }
   }
 
-  List<Exercise> getCustomExercises(ExerciseType exerciseType) {
+  Future<List<Exercise>> getCustomExercises(ExerciseType exerciseType) {
     return _exerciseService.getCustomExercises(exerciseType);
   }
 
-  bool hasCustomExercise(String name, ExerciseType exerciseType) {
-    return _exerciseService.hasCustomExercise(name, exerciseType);
+  Future<void> removeExercise(String name, ExerciseType exerciseType) {
+    return _exerciseService.removeExercise(name, exerciseType)
+        .whenComplete(() => notifyListeners());
   }
 
-  void addCustomExercise({
+  Future<void> addCustomExercise({
     required String name,
     required ExerciseType exerciseType,
     required Chart chart,
     CycleRecipe? recipe,
     Map<ErrorScenario, double> errorScenarios = const {},
-  }) {
+  }) async {
+    if (await _exerciseService.hasCustomExercise(name, exerciseType)) {
+      throw Exception("Exercise already exists with name '$name'");
+    }
     switch (exerciseType) {
       case ExerciseType.static:
         var cycles = chart.cycles
@@ -50,16 +67,14 @@ class ExerciseListViewModel extends ChangeNotifier {
                         entry.renderedObservation?.getStickerText())))
                 .toList())
             .toList();
-        _exerciseService.updateCustomStaticExercise(name, StaticExercise(name, cycles));
-        break;
+        return _exerciseService.updateCustomStaticExercise(name, StaticExercise(name, cycles))
+            .then((value) => notifyListeners());
       case ExerciseType.dynamic:
-        _exerciseService.updateCustomDynamicExercise(name, DynamicExercise(
+        return _exerciseService.updateCustomDynamicExercise(name, DynamicExercise(
           name: name,
           recipe: recipe,
           errorScenarios: errorScenarios,
-        ));
-        break;
+        )).then((value) => notifyListeners());
     }
-    notifyListeners();
   }
 }

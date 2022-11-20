@@ -13,13 +13,14 @@ import 'package:fmfu/view/widgets/recipe_control_widget.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:intl/intl.dart';
+import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 
-class ChartEditorPage extends StatefulWidget {
+class ChartEditorPage extends StatefulWidget with UiLoggy {
   static const String routeName = "charts";
 
   const ChartEditorPage({Key? key}) : super(key: key);
@@ -192,12 +193,21 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
                   chart: model.charts[0],
                   recipe: model.recipe,
                   errorScenarios: errorScenarios,
-                );
-                int numExercises = exerciseModel.getExercises(exerciseType).where((e) => e.enabled).length;
-                numExercises += exerciseModel.getCustomExercises(exerciseType).where((e) => e.enabled).length;
-                // This is brittle and will surely backfire sooner or later...
-                Provider.of<RecipeControlViewModel>(context, listen: false).updateTemplateIndex(numExercises - 1);
-                _showSnackBar("Saved \"$name\" as a ${exerciseType.name} exercise");
+                ).then((val) {
+                  int numExercises = exerciseModel.getExercises(exerciseType).where((e) => e.enabled).length;
+                  exerciseModel.getCustomExercises(exerciseType)
+                      .then((exercises) => exercises.where((e) => e.enabled).length)
+                      .then((numCustomExercises) {
+                    numExercises += numCustomExercises;
+                    // This is brittle and will surely backfire sooner or later...
+                    Provider.of<RecipeControlViewModel>(context, listen: false).updateTemplateIndex(numExercises - 1);
+                    _showSnackBar("Saved \"$name\" as a ${exerciseType.name} exercise");
+                  });
+                }, onError: (exception) {
+                  widget.loggy.warning(exception.toString());
+                  _showSnackBar(exception.toString());
+                  _showSaveDialog(model, exerciseType);
+                });
               },
               onFieldSubmitted: (name) {
                 saveForm();

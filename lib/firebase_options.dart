@@ -58,6 +58,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '103213342463',
     projectId: 'follow-mcfollowup',
     authDomain: 'follow-mcfollowup.firebaseapp.com',
+    databaseURL: 'https://follow-mcfollowup-default-rtdb.firebaseio.com',
     storageBucket: 'follow-mcfollowup.appspot.com',
     measurementId: 'G-T8RG45D7EM',
   );

@@ -23,7 +23,7 @@ class HomeScreen extends ScreenWidget {
           IconButton(onPressed: () async {
             await FirebaseAuth.instance.signOut();
             router.push(const LoginScreenRoute());
-          }, icon: const Icon(Icons.logout)),
+          }, icon: const Icon(Icons.logout,), tooltip: "Sign Out",),
         ],
       ),
       body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Column(

@@ -8,7 +8,10 @@ import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/utils/distributions.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:time_machine/time_machine.dart';
+
+part 'exercises.g.dart';
 
 abstract class Exercise {
   final String name;
@@ -63,13 +66,18 @@ final staticExerciseList = [
   const StaticExercise("Book 1: Figure 11-4", []),
 ];
 
+@JsonSerializable(explicitToJson: true)
 class ExerciseObservation {
   final StickerWithText? stamp;
   final String observationText;
 
   ExerciseObservation(this.observationText, this.stamp);
+
+  factory ExerciseObservation.fromJson(Map<String, dynamic> json) => _$ExerciseObservationFromJson(json);
+  Map<String, dynamic> toJson() => _$ExerciseObservationToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class StaticExercise extends Exercise {
   final List<List<ExerciseObservation>> cycles;
 
@@ -96,6 +104,9 @@ class StaticExercise extends Exercise {
     }
     return ExerciseState([], {}, cycles, [], LocalDate.today());
   }
+
+  factory StaticExercise.fromJson(Map<String, dynamic> json) => _$StaticExerciseFromJson(json);
+  Map<String, dynamic> toJson() => _$StaticExerciseToJson(this);
 }
 const preBuildUpLengthRange = UniformRange(4, 6);
 
@@ -162,6 +173,7 @@ final dynamicExerciseList = [
   }),
 ];
 
+@JsonSerializable(explicitToJson: true)
 class DynamicExercise extends Exercise {
   final CycleRecipe? recipe;
   final Map<ErrorScenario, double> errorScenarios;
@@ -224,6 +236,8 @@ class DynamicExercise extends Exercise {
     return ExerciseState([], activeScenarios, cycles, followUps, startingDay);
   }
 
+  factory DynamicExercise.fromJson(Map<String, dynamic> json) => _$DynamicExerciseFromJson(json);
+  Map<String, dynamic> toJson() => _$DynamicExerciseToJson(this);
 }
 
 const followUpSequence = [14, 14, 14, 14, 28, 84, 84, 84];

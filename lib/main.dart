@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
-        ChangeNotifierProvider.value(value: ExerciseListViewModel()),
+        ChangeNotifierProvider.value(value: ExerciseListViewModel(FirebaseAuth.instance)),
         ChangeNotifierProvider.value(value: ProgramListViewModel()),
         ChangeNotifierProvider.value(value: RecipeControlViewModel()),
       ], child: MaterialApp.router(

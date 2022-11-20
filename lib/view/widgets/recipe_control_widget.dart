@@ -156,35 +156,39 @@ class RecipeControlWidget extends StatelessWidget {
 
   Widget _templateSelector(RecipeControlViewModel model) {
     return Consumer<ExerciseListViewModel>(builder: (context, exerciseModel, child) {
-      List<DynamicExercise> exercises = [];
-      exercises.addAll(exerciseModel
-          .getExercises(ExerciseType.dynamic)
-          .cast<DynamicExercise>()
-          .where((e) => e.recipe != null));
-      exercises.addAll(exerciseModel
-          .getCustomExercises(ExerciseType.dynamic)
-          .cast<DynamicExercise>());
-      return Row(children: [
-        const Tooltip(message: "Select a standard scenario to preset the controls below", child: Text("Template")),
-        Padding(padding: const EdgeInsets.all(10), child: DropdownButton<int>(
-          value: model.templateIndex(),
-          items: exercises.mapIndexed((i, e) => DropdownMenuItem<int>(
-            value: i,
-            child: Text(e.name),
-          )).toList(),
-          onChanged: (i) {
-            if (i == null) {
-              return;
-            }
-            if (i == model.templateIndex()) {
-              return;
-            }
-            final exercise = exercises[i];
-            model.updateTemplateIndex(i);
-            model.applyTemplate(exercise.recipe!);
-          },
-        ))
-      ]);
+      return FutureBuilder<List<Exercise>>(
+        future: exerciseModel.getCustomExercises(ExerciseType.dynamic),
+        builder: (context, snapshot) {
+          List<DynamicExercise> customExercises = snapshot.data!.cast();
+          List<DynamicExercise> exercises = [];
+          exercises.addAll(exerciseModel
+              .getExercises(ExerciseType.dynamic)
+              .cast<DynamicExercise>()
+              .where((e) => e.recipe != null));
+          exercises.addAll(customExercises);
+          return Row(children: [
+            const Tooltip(message: "Select a standard scenario to preset the controls below", child: Text("Template")),
+            Padding(padding: const EdgeInsets.all(10), child: DropdownButton<int>(
+              value: model.templateIndex(),
+              items: exercises.mapIndexed((i, e) => DropdownMenuItem<int>(
+                value: i,
+                child: Text(e.name),
+              )).toList(),
+              onChanged: (i) {
+                if (i == null) {
+                  return;
+                }
+                if (i == model.templateIndex()) {
+                  return;
+                }
+                final exercise = exercises[i];
+                model.updateTemplateIndex(i);
+                model.applyTemplate(exercise.recipe!);
+              },
+            ))
+          ]);
+        },
+      );
     });
   }
 
