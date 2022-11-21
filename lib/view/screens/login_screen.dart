@@ -24,6 +24,13 @@ class LoginScreen extends StatelessWidget {
           VerifyPhoneAction((context, _) {
             Navigator.pushNamed(context, '/phone');
           }),
+          AuthStateChangeAction<SignedIn>((context, state) {
+            if (!state.user!.emailVerified) {
+              AutoRouter.of(context).push(const EmailVerifyScreenRoute());
+            } else {
+              AutoRouter.of(context).push(HomeScreenRoute());
+            }
+          }),
           AuthStateChangeAction<UserCreated>((context, state) {
             if (!state.credential.user!.emailVerified) {
               AutoRouter.of(context).push(const EmailVerifyScreenRoute());
