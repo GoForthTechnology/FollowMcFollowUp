@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fmfu/auth.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/view/screens/email_verify_screen.dart';
 import 'package:fmfu/view/screens/exercise_list_screen.dart';
 import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
@@ -91,6 +92,11 @@ import 'package:fmfu/view/screens/login_screen.dart';
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
+    ),
+
+    AutoRoute(
+      path: '/verify-email',
+      page: EmailVerifyScreen,
     ),
 
     // redirect all other paths

@@ -14,10 +14,25 @@ class LoginScreen extends StatelessWidget {
       ),
       body: SignInScreen(
         actions: [
-          AuthStateChangeAction<SignedIn>((context, state) {
-            if (state.user != null) {
+          ForgotPasswordAction((context, email) {
+            Navigator.pushNamed(
+              context,
+              '/forgot-password',
+              arguments: {'email': email},
+            );
+          }),
+          VerifyPhoneAction((context, _) {
+            Navigator.pushNamed(context, '/phone');
+          }),
+          AuthStateChangeAction<UserCreated>((context, state) {
+            if (!state.credential.user!.emailVerified) {
+              AutoRouter.of(context).push(const EmailVerifyScreenRoute());
+            } else {
               AutoRouter.of(context).push(HomeScreenRoute());
             }
+          }),
+          EmailLinkSignInAction((context) {
+            Navigator.pushReplacementNamed(context, '/email-link-sign-in');
           }),
         ],
       ),
