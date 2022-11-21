@@ -11,7 +11,7 @@ class EmailVerifyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return EmailVerificationScreen(
       actionCodeSettings: ActionCodeSettings(
-        url: 'app.bloomcyclecare.com',
+        url: 'https://app.bloomcyclecare.com',
         handleCodeInApp: true,
       ),
       actions: [
