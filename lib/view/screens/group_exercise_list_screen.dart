@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/program.dart';
 import 'package:fmfu/utils/screen_widget.dart';
-import 'package:fmfu/view_model/program_list_view_model.dart';
+import 'package:fmfu/view_model/group_exercise_list_view_model.dart';
 import 'package:provider/provider.dart';
 
-class ListProgramsScreen extends ScreenWidget {
-  ListProgramsScreen({super.key});
+class GroupExerciseListScreen extends ScreenWidget {
+  GroupExerciseListScreen({super.key});
 
-  Widget _body(BuildContext context, ProgramListViewModel model) {
+  Widget _body(BuildContext context, GroupExerciseListViewModel model) {
     if (model.programs.isEmpty) {
       return const Text("No programs found");
     }
@@ -33,11 +33,11 @@ class ListProgramsScreen extends ScreenWidget {
 
   @override
   Widget build(BuildContext context) {
-    logScreenView("ManageProgramScreen");
+    logScreenView("GroupExerciseListScreen");
 
-    return Consumer<ProgramListViewModel>(builder: (context, model, child) => Scaffold(
+    return Consumer<GroupExerciseListViewModel>(builder: (context, model, child) => Scaffold(
       appBar: AppBar(
-        title: const Text("Programs"),
+        title: const Text("Group Exercises"),
       ),
       body: Center(child: _body(context, model)),
       floatingActionButton: FloatingActionButton(

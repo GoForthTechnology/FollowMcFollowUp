@@ -48,9 +48,9 @@ class HomeScreen extends ScreenWidget {
 
   Widget manageProgram(BuildContext context) {
     return ButtonWidget(
-      title: "Manage Program",
+      title: "Group Exercises",
       onPressed: () {
-        AutoRouter.of(context).push(ListProgramsScreenRoute());
+        AutoRouter.of(context).push(GroupExerciseListScreenRoute());
       },
       backgroundColor: Colors.pinkAccent,
     );

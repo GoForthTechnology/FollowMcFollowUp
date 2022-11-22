@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fmfu/model/program.dart';
 
-class ProgramListViewModel extends ChangeNotifier {
+class GroupExerciseListViewModel extends ChangeNotifier {
   final List<Program> programs = [];
 
   void addProgram(Program program) {

@@ -8,7 +8,7 @@ import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view/screens/landing_screen.dart';
-import 'package:fmfu/view/screens/list_programs_screen.dart';
+import 'package:fmfu/view/screens/group_exercise_list_screen.dart';
 import 'package:fmfu/view/screens/login_screen.dart';
 
 @AdaptiveAutoRouter(
@@ -63,10 +63,10 @@ import 'package:fmfu/view/screens/login_screen.dart';
     ),
 
     AutoRoute(
-      path: '/programs',
-      page: ListProgramsScreen,
+      path: '/exercises/group',
+      page: GroupExerciseListScreen,
       children: [
-        RedirectRoute(path: '*', redirectTo: '/programs'),
+        RedirectRoute(path: '*', redirectTo: ''),
       ],
     ),
 

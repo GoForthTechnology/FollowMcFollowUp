@@ -13,19 +13,18 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i11;
 import 'package:flutter/material.dart' as _i12;
-import 'package:flutter/widgets.dart' as _i14;
 import 'package:fmfu/auth.dart' as _i13;
-import 'package:fmfu/model/chart.dart' as _i16;
-import 'package:fmfu/model/exercise.dart' as _i15;
+import 'package:fmfu/model/chart.dart' as _i15;
+import 'package:fmfu/model/exercise.dart' as _i14;
 import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i6;
 import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i5;
 import 'package:fmfu/view/screens/email_verify_screen.dart' as _i10;
 import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i8;
 import 'package:fmfu/view/screens/fup_simulator_screen.dart' as _i4;
 import 'package:fmfu/view/screens/fupf_screen.dart' as _i3;
+import 'package:fmfu/view/screens/group_exercise_list_screen.dart' as _i7;
 import 'package:fmfu/view/screens/home_screen.dart' as _i2;
 import 'package:fmfu/view/screens/landing_screen.dart' as _i1;
-import 'package:fmfu/view/screens/list_programs_screen.dart' as _i7;
 import 'package:fmfu/view/screens/login_screen.dart' as _i9;
 
 class AppRouter extends _i11.RootStackRouter {
@@ -88,12 +87,12 @@ class AppRouter extends _i11.RootStackRouter {
         ),
       );
     },
-    ListProgramsScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<ListProgramsScreenRouteArgs>(
-          orElse: () => const ListProgramsScreenRouteArgs());
+    GroupExerciseListScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<GroupExerciseListScreenRouteArgs>(
+          orElse: () => const GroupExerciseListScreenRouteArgs());
       return _i11.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i7.ListProgramsScreen(key: args.key),
+        child: _i7.GroupExerciseListScreen(key: args.key),
       );
     },
     StaticExerciseListScreenRoute.name: (routeData) {
@@ -208,14 +207,14 @@ class AppRouter extends _i11.RootStackRouter {
           ],
         ),
         _i11.RouteConfig(
-          ListProgramsScreenRoute.name,
-          path: '/programs',
+          GroupExerciseListScreenRoute.name,
+          path: '/exercises/group',
           children: [
             _i11.RouteConfig(
               '*#redirect',
               path: '*',
-              parent: ListProgramsScreenRoute.name,
-              redirectTo: '/programs',
+              parent: GroupExerciseListScreenRoute.name,
+              redirectTo: '',
               fullMatch: true,
             )
           ],
@@ -276,7 +275,7 @@ class AppRouter extends _i11.RootStackRouter {
 /// [_i1.LandingScreen]
 class LandingScreenRoute extends _i11.PageRouteInfo<LandingScreenRouteArgs> {
   LandingScreenRoute({
-    _i14.Key? key,
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           LandingScreenRoute.name,
@@ -291,7 +290,7 @@ class LandingScreenRoute extends _i11.PageRouteInfo<LandingScreenRouteArgs> {
 class LandingScreenRouteArgs {
   const LandingScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {
@@ -303,7 +302,7 @@ class LandingScreenRouteArgs {
 /// [_i2.HomeScreen]
 class HomeScreenRoute extends _i11.PageRouteInfo<HomeScreenRouteArgs> {
   HomeScreenRoute({
-    _i14.Key? key,
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           HomeScreenRoute.name,
@@ -318,7 +317,7 @@ class HomeScreenRoute extends _i11.PageRouteInfo<HomeScreenRouteArgs> {
 class HomeScreenRouteArgs {
   const HomeScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {
@@ -330,7 +329,7 @@ class HomeScreenRouteArgs {
 /// [_i3.FupFormScreen]
 class FupFormScreenRoute extends _i11.PageRouteInfo<FupFormScreenRouteArgs> {
   FupFormScreenRoute({
-    _i14.Key? key,
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           FupFormScreenRoute.name,
@@ -345,7 +344,7 @@ class FupFormScreenRoute extends _i11.PageRouteInfo<FupFormScreenRouteArgs> {
 class FupFormScreenRouteArgs {
   const FupFormScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {
@@ -358,8 +357,8 @@ class FupFormScreenRouteArgs {
 class FollowUpSimulatorPageRoute
     extends _i11.PageRouteInfo<FollowUpSimulatorPageRouteArgs> {
   FollowUpSimulatorPageRoute({
-    _i14.Key? key,
-    required _i15.ExerciseState exerciseState,
+    _i12.Key? key,
+    required _i14.ExerciseState exerciseState,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           FollowUpSimulatorPageRoute.name,
@@ -380,9 +379,9 @@ class FollowUpSimulatorPageRouteArgs {
     required this.exerciseState,
   });
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
-  final _i15.ExerciseState exerciseState;
+  final _i14.ExerciseState exerciseState;
 
   @override
   String toString() {
@@ -408,8 +407,8 @@ class ChartEditorPageRoute extends _i11.PageRouteInfo<void> {
 class ChartCorrectingScreenRoute
     extends _i11.PageRouteInfo<ChartCorrectingScreenRouteArgs> {
   ChartCorrectingScreenRoute({
-    _i14.Key? key,
-    required _i16.Cycle? cycle,
+    _i12.Key? key,
+    required _i15.Cycle? cycle,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           ChartCorrectingScreenRoute.name,
@@ -430,9 +429,9 @@ class ChartCorrectingScreenRouteArgs {
     required this.cycle,
   });
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
-  final _i16.Cycle? cycle;
+  final _i15.Cycle? cycle;
 
   @override
   String toString() {
@@ -441,30 +440,30 @@ class ChartCorrectingScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i7.ListProgramsScreen]
-class ListProgramsScreenRoute
-    extends _i11.PageRouteInfo<ListProgramsScreenRouteArgs> {
-  ListProgramsScreenRoute({
-    _i14.Key? key,
+/// [_i7.GroupExerciseListScreen]
+class GroupExerciseListScreenRoute
+    extends _i11.PageRouteInfo<GroupExerciseListScreenRouteArgs> {
+  GroupExerciseListScreenRoute({
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-          ListProgramsScreenRoute.name,
-          path: '/programs',
-          args: ListProgramsScreenRouteArgs(key: key),
+          GroupExerciseListScreenRoute.name,
+          path: '/exercises/group',
+          args: GroupExerciseListScreenRouteArgs(key: key),
           initialChildren: children,
         );
 
-  static const String name = 'ListProgramsScreenRoute';
+  static const String name = 'GroupExerciseListScreenRoute';
 }
 
-class ListProgramsScreenRouteArgs {
-  const ListProgramsScreenRouteArgs({this.key});
+class GroupExerciseListScreenRouteArgs {
+  const GroupExerciseListScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {
-    return 'ListProgramsScreenRouteArgs{key: $key}';
+    return 'GroupExerciseListScreenRouteArgs{key: $key}';
   }
 }
 
@@ -473,7 +472,7 @@ class ListProgramsScreenRouteArgs {
 class StaticExerciseListScreenRoute
     extends _i11.PageRouteInfo<StaticExerciseListScreenRouteArgs> {
   StaticExerciseListScreenRoute({
-    _i14.Key? key,
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           StaticExerciseListScreenRoute.name,
@@ -488,7 +487,7 @@ class StaticExerciseListScreenRoute
 class StaticExerciseListScreenRouteArgs {
   const StaticExerciseListScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {
@@ -501,7 +500,7 @@ class StaticExerciseListScreenRouteArgs {
 class DynamicExerciseListScreenRoute
     extends _i11.PageRouteInfo<DynamicExerciseListScreenRouteArgs> {
   DynamicExerciseListScreenRoute({
-    _i14.Key? key,
+    _i12.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           DynamicExerciseListScreenRoute.name,
@@ -516,7 +515,7 @@ class DynamicExerciseListScreenRoute
 class DynamicExerciseListScreenRouteArgs {
   const DynamicExerciseListScreenRouteArgs({this.key});
 
-  final _i14.Key? key;
+  final _i12.Key? key;
 
   @override
   String toString() {

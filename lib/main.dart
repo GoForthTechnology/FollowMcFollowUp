@@ -1,19 +1,16 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fmfu/api/recaptcha_service.dart';
 import 'package:fmfu/auth.dart';
-import 'package:fmfu/config/recaptcha.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:fmfu/view_model/fup_simulator_view_model.dart';
-import 'package:fmfu/view_model/program_list_view_model.dart';
+import 'package:fmfu/view_model/group_exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
@@ -25,13 +22,14 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Loggy.initLoggy();
-  await RecaptchaService.initiate();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // TODO: re-enable ReCAPTCH
+  /*await RecaptchaService.initiate();
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: Config.siteKey,
-  );
+  );*/
 
   runApp(MyApp());
 }
@@ -59,7 +57,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
         ChangeNotifierProvider.value(value: ExerciseListViewModel(FirebaseAuth.instance)),
-        ChangeNotifierProvider.value(value: ProgramListViewModel()),
+        ChangeNotifierProvider.value(value: GroupExerciseListViewModel()),
         ChangeNotifierProvider.value(value: RecipeControlViewModel()),
       ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
