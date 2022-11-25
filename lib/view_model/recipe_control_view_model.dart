@@ -5,6 +5,8 @@ import 'package:fmfu/utils/distributions.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';
 
+import '../logic/cycle_error_simulation.dart';
+
 class RecipeControlViewModel extends ChangeNotifier {
   final FlowModel flowModel = FlowModel(dryDischargeRecipe);
   final PreBuildUpModel preBuildUpModel = PreBuildUpModel(dryDischargeRecipe);
@@ -18,11 +20,18 @@ class RecipeControlViewModel extends ChangeNotifier {
   var _unusualBleedingProbability = 0.0;
   final NonNegativeInteger preMenstrualSpottingLength = NonNegativeInteger(0);
 
+  final Map<ErrorScenario, double> errorScenarios = {};
+
   RecipeControlViewModel() {
     _models.addAll([flowModel, preBuildUpModel, buildUpModel, postPeakModel]);
     for (var notifier in [preMenstrualSpottingLength, ..._models]) {
       notifier.addListener(forwardNotification);
     }
+  }
+
+  void updateErrorScenario(ErrorScenario scenario, double? value) {
+    errorScenarios[scenario] = value ?? 0;
+    notifyListeners();
   }
 
   int templateIndex() {

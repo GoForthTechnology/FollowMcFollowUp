@@ -1,6 +1,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/observation.dart';
@@ -30,7 +31,28 @@ class RecipeControlWidget extends StatelessWidget {
         ..._postPeakWidgets(context, model.recipeControlViewModel.postPeakModel),
         const Divider(),
         ..._additionalCircumstanceWidgets(model.recipeControlViewModel),
+        const Divider(),
+        ..._errorScenarioWidgets(model.recipeControlViewModel),
       ]))))));
+  }
+
+  List<Widget> _errorScenarioWidgets(RecipeControlViewModel model) {
+    List<Widget> rowForScenario(ErrorScenario scenario) {
+      return [
+        _subSubSectionHeader(scenario.name),
+        _frequencyControl(
+          currentValue: model.errorScenarios[scenario] ?? 0,
+          updateValue: (update) => model.updateErrorScenario(scenario, update),
+        ),
+      ];
+    }
+    return [
+      _subSectionHeader("Error Scenarios"),
+      ...ErrorScenario.values
+          .map((v) => rowForScenario(v))
+          .toList()
+          .expand((e) => e),
+    ];
   }
 
   List<Widget> _additionalCircumstanceWidgets(RecipeControlViewModel model) {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
@@ -36,7 +37,14 @@ abstract class ChartViewModel with GlobalLoggy {
 
   ChartViewModel(this.numCyclesPerChart) {
     recipeControlViewModel.addListener(() {
-      updateCharts(recipeControlViewModel.getRecipe());
+      final r = Random();
+      Set<ErrorScenario> activeScenarios = {};
+      recipeControlViewModel.errorScenarios.forEach((key, value) {
+        if (r.nextDouble() < value) {
+          activeScenarios.add(key);
+        }
+      });
+      updateCharts(recipeControlViewModel.getRecipe(), errorScenarios: activeScenarios);
     });
   }
 
@@ -286,22 +294,6 @@ abstract class ChartViewModel with GlobalLoggy {
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
     charts = getCharts(cycles, numCyclesPerChart);
-    onChartChange();
-  }
-
-  void updateErrors(Set<ErrorScenario> errorScenarios) {
-    List<Cycle> updatedCycles = [];
-    for (var cycle in cycles) {
-      updatedCycles.add(Cycle(
-        index: cycle.index,
-        observationCorrections: cycle.observationCorrections,
-        stickerCorrections: cycle.stickerCorrections,
-        entries: introduceErrors(cycle.entries, errorScenarios),
-      ));
-    }
-    cycles = updatedCycles;
-    charts = getCharts(cycles, numCyclesPerChart);
-    this.errorScenarios = errorScenarios;
     onChartChange();
   }
 

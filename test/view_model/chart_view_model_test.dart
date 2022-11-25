@@ -1,5 +1,4 @@
 
-import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/stickers.dart';
@@ -434,17 +433,6 @@ void main() {
       viewModel.addCycle(CycleRecipe.create());
       expect(viewModel.charts.length, 2);
     });
-  });
-
-  test("Update Error", () {
-    var viewModel = ChartViewModelForTest();
-
-    expect(viewModel.errorScenarios.length, 0);
-
-    viewModel.updateErrors({ErrorScenario.forgetObservationOnFlow});
-    expect(viewModel.errorScenarios.length, 1);
-
-    expect(viewModel.numUpdates, 1);
   });
 }
 
