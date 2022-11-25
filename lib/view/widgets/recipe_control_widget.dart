@@ -159,7 +159,7 @@ class RecipeControlWidget extends StatelessWidget {
       return FutureBuilder<List<Exercise>>(
         future: exerciseModel.getCustomExercises(ExerciseType.dynamic),
         builder: (context, snapshot) {
-          List<DynamicExercise> customExercises = snapshot.data!.cast();
+          List<DynamicExercise> customExercises = snapshot.data?.cast() ?? [];
           List<DynamicExercise> exercises = [];
           exercises.addAll(exerciseModel
               .getExercises(ExerciseType.dynamic)
