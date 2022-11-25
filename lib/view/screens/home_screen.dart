@@ -113,7 +113,7 @@ class HomeScreen extends ScreenWidget {
             title: "Exercises",
             text: "Get some extra practice with generic scenarios and specific exercises.",
             onClick: () {
-              // TODO: open exercise screen
+              AutoRouter.of(context).push(const ExerciseScreenRoute());
             },
           ),
           _tile(
