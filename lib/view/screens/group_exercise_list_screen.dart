@@ -50,25 +50,33 @@ class GroupExerciseListScreen extends ScreenWidget {
             }
           }
           showDialog(context: context, builder: (context) => AlertDialog(
-            title: const Text("Enter Program Title"),
+            title: const Text("New Group Exercise"),
             content: Form(
               key: formKey,
-              child: TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Value required";
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (value) => saveForm(),
-                onSaved: (value) {
-                  if (value == null) {
-                    throw Exception("Title required to create a program");
-                  }
-                  final program = Program(value);
-                  model.addProgram(program);
-                  Navigator.pop(context, 'OK');
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Exercise Name',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Value required";
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (value) => saveForm(),
+                    onSaved: (value) {
+                      if (value == null) {
+                        throw Exception("Title required to create a program");
+                      }
+                      final program = Program(value);
+                      model.addProgram(program);
+                      Navigator.pop(context, 'OK');
+                    },
+                  ),
+                ],
               ),
             ),
             actions: [
