@@ -23,6 +23,7 @@ class RecipeControlWidget extends StatelessWidget {
       child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 350),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+        // TODO: make this an ExpansionPanelList
         _templateSelector(model.recipeControlViewModel),
         ..._flowWidgets(context, model.recipeControlViewModel.flowModel),
         const Divider(),
