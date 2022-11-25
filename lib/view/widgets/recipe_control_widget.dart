@@ -7,9 +7,11 @@ import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/non_negative_integer.dart';
 import 'package:fmfu/view_model/chart_list_view_model.dart';
+import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:time_machine/time_machine.dart';
 
 class RecipeControlWidget extends StatelessWidget {
   const RecipeControlWidget({super.key});
@@ -33,7 +35,107 @@ class RecipeControlWidget extends StatelessWidget {
         ..._additionalCircumstanceWidgets(model.recipeControlViewModel),
         const Divider(),
         ..._errorScenarioWidgets(model.recipeControlViewModel),
+        const Divider(),
+        ..._followUpScheduleWidgets(context, model),
+        const Divider(),
+        ..._instructionWidgets(context, model),
       ]))))));
+  }
+
+  List<Widget> _followUpScheduleWidgets(BuildContext context, ChartViewModel model) {
+    List<Widget> followUpChips = model.followUps().mapIndexed((index, date) => Tooltip(
+      message: "Follow Up #${index + 1}",
+      child: Chip(
+        label: Text(date.toString("MM/dd")),
+        onDeleted: () {
+          model.removeFollowUp(date);
+        },
+      ),
+    )).toList();
+
+    Widget addFollowUpButton = Padding(padding: const EdgeInsets.all(10), child: Center(child: TextButton(
+      onPressed: () {
+        showDatePicker(
+            context: context,
+            initialDate: model.nextFollowUpDate().toDateTimeUnspecified(),
+            firstDate: model.startOfCharting().toDateTimeUnspecified(),
+            lastDate: model.latestStartOfCharting().toDateTimeUnspecified(),
+            selectableDayPredicate: (day) {
+              var date = LocalDate.dateTime(day);
+              if (date < model.startOfCharting()) {
+                return false;
+              }
+              return !model.hasFollowUp(LocalDate.dateTime(day));
+            }).then((date) {
+          if (date != null) {
+            model.addFollowUp(LocalDate.dateTime(date));
+          }
+        });
+      }, child: const Text("Add Follow Up"),
+    )));
+
+    Widget startOfCharting = Row(children: [
+      const Text("Start of Charting: "),
+      const Spacer(),
+      ElevatedButton(
+        onPressed: () {
+          showDatePicker(
+            context: context,
+            initialDate: model.startOfCharting().toDateTimeUnspecified(),
+            firstDate: model.earliestStartOfCharting().toDateTimeUnspecified(),
+            lastDate: model.latestStartOfCharting().toDateTimeUnspecified(),
+          ).then((date) {
+            if (date != null) {
+              model.setStartOfCharting(LocalDate.dateTime(date));
+            }
+          });
+        },
+        child: Text(model.startOfCharting().toString()),
+      ),
+    ]);
+
+    return [
+      _subSectionHeader("Follow Up Schedule"),
+      startOfCharting,
+      Wrap(children: followUpChips,),
+      addFollowUpButton,
+    ];
+  }
+
+  List<Widget> _instructionWidgets(BuildContext context, ChartViewModel model) {
+    void promptForDate(LocalDate? currentDate, Function(LocalDate) onChange) {
+      final initialDate = currentDate ?? model.startOfCharting();
+      showDatePicker(
+        context: context,
+        initialDate: initialDate.toDateTimeUnspecified(),
+        firstDate: model.earliestStartOfCharting().toDateTimeUnspecified(),
+        lastDate: model.latestStartOfCharting().toDateTimeUnspecified(),
+      ).then((date) {
+        if (date != null) {
+          onChange(LocalDate.dateTime(date));
+        }
+      });
+    }
+    Widget instructionWidget(String title, LocalDate? startingDate, Function(LocalDate?) onDateChange) {
+      return Row(children: [
+        Text(title),
+        const Spacer(),
+        Switch(value: startingDate != null, onChanged: (value) {
+          if (value) {
+            promptForDate(startingDate, onDateChange);
+          } else {
+            onDateChange(null);
+          }
+        }),
+        if (startingDate != null) ElevatedButton(onPressed: () {
+          promptForDate(startingDate, onDateChange);
+        }, child: Text(startingDate.toString())),
+      ]);
+    }
+    return [
+      _subSectionHeader("Instructions"),
+      instructionWidget("Ask EsQ?", model.startOfAskingEsQ, model.updateAskEsQ),
+    ];
   }
 
   List<Widget> _errorScenarioWidgets(RecipeControlViewModel model) {

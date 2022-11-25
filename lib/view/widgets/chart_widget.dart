@@ -84,7 +84,6 @@ class ChartWidget extends StatelessWidget with UiLoggy {
         rightWidgetFn: rightWidgetFn,
       ));
     }
-    loggy.debug("Created ${rows.length} rows");
     return rows;
   }
 

@@ -228,6 +228,9 @@ class ObservationPainter extends CustomPainter {
     RenderedObservation? observation = entry?.renderedObservation;
     bool hasObservationCorrection = (observation != null || entry?.manualSticker != null) && observationCorrection != null;
     String? dateString = entry?.renderedObservation?.date?.toString("MM/dd");
+    String observationText = [entry?.observationText, entry?.additionalText]
+        .where((e) => e != null)
+        .join("\n");
     return TextSpan(
       style: const TextStyle(fontSize: 10, color: Colors.black),
       children: [
@@ -239,7 +242,7 @@ class ObservationPainter extends CustomPainter {
           style: TextStyle(fontSize: 5),
         ),
         TextSpan(
-          text: entry?.observationText ?? "",
+          text: observationText,
           style: hasObservationCorrection ? const TextStyle(decoration: TextDecoration.lineThrough, fontSize: 10) : null,
         ),
         if (hasObservationCorrection) TextSpan(

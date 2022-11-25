@@ -50,6 +50,8 @@ DynamicExercise _$DynamicExerciseFromJson(Map<String, dynamic> json) =>
                 $enumDecode(_$ErrorScenarioEnumMap, k), (e as num).toDouble()),
           ) ??
           const {},
+      startOfAskingEsQ: _$JsonConverterFromJson<int, LocalDate>(
+          json['startOfAskingEsQ'], const LocalDateJsonConverter().fromJson),
       name: json['name'],
     );
 
@@ -57,6 +59,8 @@ Map<String, dynamic> _$DynamicExerciseToJson(DynamicExercise instance) =>
     <String, dynamic>{
       'name': instance.name,
       'recipe': instance.recipe?.toJson(),
+      'startOfAskingEsQ': _$JsonConverterToJson<int, LocalDate>(
+          instance.startOfAskingEsQ, const LocalDateJsonConverter().toJson),
       'errorScenarios': instance.errorScenarios
           .map((k, e) => MapEntry(_$ErrorScenarioEnumMap[k]!, e)),
     };
@@ -69,3 +73,15 @@ const _$ErrorScenarioEnumMap = {
   ErrorScenario.forgetCountOfThreeForUnusualBleeding:
       'forgetCountOfThreeForUnusualBleeding',
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);

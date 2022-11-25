@@ -21,7 +21,8 @@ List<ChartEntry> introduceErrors(List<ChartEntry> entries, Set<ErrorScenario> sc
   List<ChartEntry> out = [];
   for (var entry in entries) {
     out.add(ChartEntry(
-      observationText: entry.renderedObservation?.getObservationText() ?? "",
+      observationText: entry.renderedObservation?.observationText ?? "",
+      additionalText: entry.additionalText,
       renderedObservation: entry.renderedObservation,
     ));
   }
@@ -62,6 +63,7 @@ List<ChartEntry> runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entrie
       }
       out[i] = ChartEntry(
         observationText: entry.observationText,
+        additionalText: entry.additionalText,
         renderedObservation: entry.renderedObservation,
         manualSticker: StickerWithText(updatedStamp, null),
       );
@@ -91,6 +93,7 @@ List<ChartEntry> runForgetRedStampForUnusualBleeding(List<ChartEntry> entries) {
       }
       out[i] = ChartEntry(
         observationText: entry.observationText,
+        additionalText: entry.additionalText,
         renderedObservation: entry.renderedObservation,
         manualSticker: StickerWithText(updatedStamp, observation.getStickerText()),
       );
@@ -112,7 +115,12 @@ List<ChartEntry> runForgetObservationOnFlow(List<ChartEntry> entries) {
       } else if (entry.observationText.startsWith("B")) {
         updatedObservationText = "B";
       }
-      out[i] = ChartEntry(observationText: updatedObservationText, renderedObservation: entry.renderedObservation, manualSticker: entry.manualSticker);
+      out[i] = ChartEntry(
+        observationText: updatedObservationText,
+        additionalText: entry.additionalText,
+        renderedObservation: entry.renderedObservation,
+        manualSticker: entry.manualSticker,
+      );
     }
   }
   return out;
@@ -135,6 +143,7 @@ List<ChartEntry> runForgetD4(List<ChartEntry> entries) {
     if (!entry.renderedObservation!.hasMucus) {
       entries[i] = ChartEntry(
         observationText: entry.observationText,
+        additionalText: entry.additionalText,
         renderedObservation: entry.renderedObservation,
         manualSticker: StickerWithText(
           Sticker.green, null
@@ -143,6 +152,7 @@ List<ChartEntry> runForgetD4(List<ChartEntry> entries) {
     } else if (entry.renderedObservation!.fertilityReasons.contains(Instruction.d4)) {
       entries[i] = ChartEntry(
         observationText: entry.observationText,
+        additionalText: entry.additionalText,
         renderedObservation: entry.renderedObservation,
         manualSticker: StickerWithText(
             entry.renderedObservation!.getSticker(), null

@@ -93,6 +93,7 @@ class StaticExercise extends Exercise {
       final entries = observations.map((o) =>
           ChartEntry(
             observationText: o.observationText,
+            additionalText: "",
             manualSticker: o.stamp ?? StickerWithText(Sticker.white, null),
           )).toList();
       cycles.add(Cycle(
@@ -176,9 +177,11 @@ final dynamicExerciseList = [
 @JsonSerializable(explicitToJson: true)
 class DynamicExercise extends Exercise {
   final CycleRecipe? recipe;
+  @LocalDateJsonConverter()
+  final LocalDate? startOfAskingEsQ;
   final Map<ErrorScenario, double> errorScenarios;
 
-  const DynamicExercise({this.recipe, this.errorScenarios = const {}, name}) : super(name);
+  const DynamicExercise({this.recipe, this.errorScenarios = const {}, this.startOfAskingEsQ, name}) : super(name);
 
   @override
   bool get enabled => recipe != null;
@@ -197,7 +200,7 @@ class DynamicExercise extends Exercise {
     });
 
     final startDate = LocalDate(LocalDate.today().year, 1, 1);
-    final firstCycleObservations = recipe!.getObservations();
+    final firstCycleObservations = recipe!.getObservations(startingDate: startDate, startOfAskingEsQ: startOfAskingEsQ);
     final startingDayOffset = UniformRange(0, firstCycleObservations.length.toDouble()).get().round();
 
     var currentDate = startDate;
@@ -210,12 +213,11 @@ class DynamicExercise extends Exercise {
         }
         observations.addAll(renderObservations(firstCycleObservations.sublist(startingDayOffset), [], startDate: startDate.addDays(startingDayOffset)));
       } else {
-        observations = renderObservations(recipe!.getObservations(), [], startDate: currentDate);
+        observations = renderObservations(recipe!.getObservations(startingDate: currentDate, startOfAskingEsQ: startOfAskingEsQ), [], startDate: currentDate);
       }
       currentDate = currentDate.addDays(observations.length);
 
-      var entries = List.of(observations.map((o) => ChartEntry(
-          renderedObservation: o, observationText: o.observationText)));
+      var entries = List.of(observations.map(ChartEntry.fromRenderedObservation));
       entries = introduceErrors(entries, activeScenarios);
       return Cycle(
         index: index,

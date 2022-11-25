@@ -21,6 +21,7 @@ abstract class ChartViewModel with GlobalLoggy {
 
   final int numCyclesPerChart;
   bool incrementalMode = false;
+  LocalDate? startOfAskingEsQ;
   List<Instruction> activeInstructions = _defaultInstructions;
   Set<ErrorScenario> errorScenarios = {};
   CycleRecipe? recipe;
@@ -44,8 +45,16 @@ abstract class ChartViewModel with GlobalLoggy {
           activeScenarios.add(key);
         }
       });
-      updateCharts(recipeControlViewModel.getRecipe(), errorScenarios: activeScenarios);
+      errorScenarios = activeScenarios;
+      updateCharts(recipeControlViewModel.getRecipe());
     });
+  }
+
+  void updateAskEsQ(LocalDate? date) {
+    loggy.debug("Updating startOfAskingEsQ: $date");
+    startOfAskingEsQ = date;
+    updateCharts(recipeControlViewModel.getRecipe());
+    onChartChange();
   }
 
   void onChartChange();
@@ -235,7 +244,6 @@ abstract class ChartViewModel with GlobalLoggy {
   void updateCharts(
       CycleRecipe recipe, {
         int numCycles = 50,
-        bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
         Set<ErrorScenario> errorScenarios = const {},
@@ -245,14 +253,13 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     this.recipe = recipe;
-    cycles = _getCycles(recipe, numCycles, askESQ, activeInstructions, errorScenarios);
+    cycles = _getCycles(recipe, numCycles, startOfAskingEsQ, activeInstructions, errorScenarios);
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
 
   void swapLastCycle(
       CycleRecipe recipe, {
-        bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
         Set<ErrorScenario> errorScenarios = const {},
@@ -268,7 +275,7 @@ abstract class ChartViewModel with GlobalLoggy {
     this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     int lastIndex = cycles.length - 1;
-    cycles[lastIndex] = _getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios)[0];
+    cycles[lastIndex] = _getCycles(recipe, 1, startOfAskingEsQ, activeInstructions, errorScenarios)[0];
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
@@ -281,7 +288,6 @@ abstract class ChartViewModel with GlobalLoggy {
 
   void addCycle(
       CycleRecipe recipe, {
-        bool askESQ = false,
         bool prePeakYellowStamps = false,
         bool postPeakYellowStamps = false,
         Set<ErrorScenario> errorScenarios = const {},
@@ -292,7 +298,7 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
-    cycles.addAll(_getCycles(recipe, 1, askESQ, activeInstructions, errorScenarios));
+    cycles.addAll(_getCycles(recipe, 1, startOfAskingEsQ, activeInstructions, errorScenarios));
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
@@ -331,6 +337,7 @@ abstract class ChartViewModel with GlobalLoggy {
     var existingEntry = cycle.entries[entryIndex];
     cycle.entries[entryIndex] = ChartEntry(
       observationText: existingEntry.observationText,
+      additionalText: existingEntry.additionalText,
       renderedObservation: existingEntry.renderedObservation,
       manualSticker: edit,
     );
@@ -354,6 +361,7 @@ abstract class ChartViewModel with GlobalLoggy {
       for (int i=0; i<renderedObservations.length; i++) {
         newEntries.add(ChartEntry(
           observationText: inputs[i],
+          additionalText: renderedObservations[i].additionalText(),
           renderedObservation: renderedObservations[i],
           //manualSticker: cycle.entries[i].manualSticker,
         ));
@@ -365,6 +373,7 @@ abstract class ChartViewModel with GlobalLoggy {
       var existingEntry = cycle.entries[entryIndex];
       cycle.entries[entryIndex] = ChartEntry(
         observationText: observationText,
+        additionalText: existingEntry.additionalText,
         renderedObservation: existingEntry.renderedObservation,
         //manualSticker: cycle.entries[entryIndex].manualSticker,
       );
@@ -388,19 +397,16 @@ abstract class ChartViewModel with GlobalLoggy {
   static List<Cycle> _getCycles(
       CycleRecipe  recipe,
       int numCycles,
-      bool askESQ,
+      LocalDate? startOfAskEsQ,
       List<Instruction> instructions,
       Set<ErrorScenario> errorScenarios) {
     List<Cycle> cycles = [];
     LocalDate currentDate = _startDate;
     for (int i=0; i<numCycles; i++) {
-      var observations = recipe.getObservations(askESQ: askESQ);
+      var observations = recipe.getObservations(startingDate: currentDate, startOfAskingEsQ: startOfAskEsQ);
       var renderedObservations = renderObservations(observations, instructions, startDate: currentDate);
       currentDate = currentDate.addDays(renderedObservations.length);
-      var chartEntries = renderedObservations.map((o) => ChartEntry(
-          observationText: o.observationText,
-          renderedObservation: o,
-      )).toList();
+      var chartEntries = renderedObservations.map(ChartEntry.fromRenderedObservation).toList();
       chartEntries = introduceErrors(chartEntries, errorScenarios);
       cycles.add(Cycle(
         index: i,
@@ -439,7 +445,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void _initCharts() {
-    cycles = _getCycles(CycleRecipe.create(), 10, false, _defaultInstructions, {});
+    cycles = _getCycles(CycleRecipe.create(), 10, startOfAskingEsQ, _defaultInstructions, {});
     charts = getCharts(cycles, numCyclesPerChart);
   }
 

@@ -49,6 +49,7 @@ Map<String, dynamic> _$CycleStatsToJson(CycleStats instance) =>
 
 ChartEntry _$ChartEntryFromJson(Map<String, dynamic> json) => ChartEntry(
       observationText: json['observationText'] as String,
+      additionalText: json['additionalText'] as String,
       renderedObservation: json['renderedObservation'] == null
           ? null
           : RenderedObservation.fromJson(
@@ -62,6 +63,7 @@ ChartEntry _$ChartEntryFromJson(Map<String, dynamic> json) => ChartEntry(
 Map<String, dynamic> _$ChartEntryToJson(ChartEntry instance) =>
     <String, dynamic>{
       'observationText': instance.observationText,
+      'additionalText': instance.additionalText,
       'renderedObservation': instance.renderedObservation?.toJson(),
       'manualSticker': instance.manualSticker?.toJson(),
     };

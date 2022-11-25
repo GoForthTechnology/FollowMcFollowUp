@@ -437,7 +437,7 @@ void main() {
 }
 
 Cycle fakeCycle(int numEntries) {
-  List<ChartEntry> entries = List.generate(numEntries, (index) => ChartEntry(observationText: "0 AD"));
+  List<ChartEntry> entries = List.generate(numEntries, (index) => ChartEntry(observationText: "0 AD", additionalText: ""));
   return Cycle(index: 0, entries: entries, observationCorrections: {}, stickerCorrections: {});
 }
 

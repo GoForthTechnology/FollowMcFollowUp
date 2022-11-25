@@ -31,6 +31,16 @@ class RenderedObservation {
     return "{debugInfo: $debugInfo, essentiallyTheSame: $essentiallyTheSame, fertilityReasons: $fertilityReasons, infertilityReasons: $infertilityReasons}";
   }
 
+  String additionalText() {
+    if (essentiallyTheSame == null) {
+      return "";
+    }
+    if (essentiallyTheSame!) {
+      return "Y";
+    }
+    return "N";
+  }
+
   String getObservationText() {
     String text = observationText;
     if (essentiallyTheSame == null) {

@@ -1,13 +1,15 @@
 
 import 'dart:math';
+import 'package:collection/collection.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/utils/distributions.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:time_machine/time_machine.dart';
 
 part 'cycle_generation.g.dart';
 
 abstract class Recipe {
-  List<Observation> getObservations({bool askESQ = false});
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ});
 }
 
 abstract class PostProcessor {
@@ -30,10 +32,16 @@ class CycleRecipe extends Recipe {
   : _recipes = [flowRecipe, preBuildUpRecipe, buildUpRecipe, postPeakRecipe];
 
   @override
-  List<Observation> getObservations({bool askESQ = false}) {
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ}) {
     List<Observation> observations = [];
+    LocalDate currentDate = startingDate;
     for (var recipe in _recipes) {
-      observations.addAll(recipe.getObservations(askESQ: askESQ));
+      final newObservations = recipe.getObservations(
+        startingDate: startingDate,
+        startOfAskingEsQ: startOfAskingEsQ,
+      );
+      observations.addAll(newObservations);
+      currentDate.addDays(newObservations.length);
     }
     for (var processor in [ESQPostProcessor()]) {
       processor.process(observations);
@@ -259,21 +267,23 @@ class FlowRecipe extends Recipe {
         );
 
   @override
-  List<Observation> getObservations({bool askESQ = false}) {
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ}) {
     List<Observation> observations = [];
-    for (var flow in _flowDistribution.get(flowLength.get())) {
+    _flowDistribution.get(flowLength.get()).forEachIndexed((index, flow) {
+      LocalDate observationDate = startingDate.addDays(index);
       DischargeSummary? dischargeSummary;
       if (flow.requiresDischargeSummary) {
         dischargeSummary = dischargeSummaryGenerator.get();
       }
       bool hasMucus = dischargeSummary?.hasMucus ?? false;
+      bool askESQ = startOfAskingEsQ != null && observationDate >= startOfAskingEsQ;
       bool? essentiallyTheSame = askESQ && hasMucus ? true : null;
       observations.add(Observation(
-          flow: flow,
-          dischargeSummary: dischargeSummary,
-          essentiallyTheSame: essentiallyTheSame,
+        flow: flow,
+        dischargeSummary: dischargeSummary,
+        essentiallyTheSame: essentiallyTheSame,
       ));
-    }
+    });
     return observations;
   }
 
@@ -310,13 +320,15 @@ class PreBuildUpRecipe extends Recipe {
   PreBuildUpRecipe(this.length, this.nonMucusDischargeGenerator, this.abnormalBleedingGenerator);
 
   @override
-  List<Observation> getObservations({bool askESQ = false}) {
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ}) {
     int periodLength = length.get();
     List<bool> abnormalBleedingField = abnormalBleedingGenerator.generate(periodLength);
     List<Observation> observation = [];
     for (int i=0; i<periodLength; i++) {
+      LocalDate observationDate = startingDate.addDays(i);
       var dischargeSummary = nonMucusDischargeGenerator.get();
       var flow = abnormalBleedingField[i] ? Flow.light : null;
+      bool askESQ = startOfAskingEsQ != null && observationDate >= startOfAskingEsQ;
       var essentiallyTheSame = dischargeSummary.hasMucus && askESQ ? true : null;
       observation.add(Observation(
           flow: flow,
@@ -341,16 +353,18 @@ class BuildUpRecipe extends Recipe {
   BuildUpRecipe(this.lengthDist, this.peakTypeLengthDist, this.peakTypeDischargeGenerator, this.nonPeakTypeDischargeGenerator);
 
   @override
-  List<Observation> getObservations({bool askESQ = false}) {
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ}) {
     List<Observation> observation = [];
     int length = lengthDist.get();
     int nonPeakTypeLength = length - peakTypeLengthDist.get();
     for (int i=0; i<length; i++) {
+      LocalDate observationDate = startingDate.addDays(i);
       var dischargeSummary = observation.length < nonPeakTypeLength ?
           nonPeakTypeDischargeGenerator.get() : peakTypeDischargeGenerator.get();
+      bool askESQ = startOfAskingEsQ != null && observationDate >= startOfAskingEsQ;
       observation.add(Observation(
           dischargeSummary: dischargeSummary,
-          essentiallyTheSame: askESQ ? false : null,
+          essentiallyTheSame: askESQ ? i != 0 : null,
       ));
     }
     return observation;
@@ -379,7 +393,7 @@ class PostPeakRecipe extends Recipe {
   });
 
   @override
-  List<Observation> getObservations({bool askESQ = false}) {
+  List<Observation> getObservations({required LocalDate startingDate, LocalDate? startOfAskingEsQ}) {
     int postPeakLength = lengthDist.get();
     int mucusLength = mucusLengthDist.get();
     int nonMucusLength = postPeakLength - mucusLength;

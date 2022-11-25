@@ -17,7 +17,7 @@ void main() {
       ];
       var renderedObservations = renderObservations(observations, []);
       var entries = renderedObservations
-          .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
+          .map((observation) => ChartEntry(observationText: observation.observationText, additionalText: observation.additionalText(), renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null),))
           .toList();
       var correctedEntries = introduceErrors(entries, {});
       for (var entry in correctedEntries) {
@@ -33,7 +33,7 @@ void main() {
       ];
       var renderedObservations = renderObservations(observations, []);
       var entries = renderedObservations
-          .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
+          .map((observation) => ChartEntry(observationText: observation.observationText, additionalText: observation.additionalText(), renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
           .toList();
       var correctedEntries = introduceErrors(entries, {ErrorScenario.forgetObservationOnFlow});
       expect(correctedEntries[3].observationText, "L");
@@ -61,7 +61,7 @@ void main() {
       ];
       var renderedObservations = renderObservations(observations, []);
       var entries = renderedObservations
-          .map((observation) => ChartEntry(observationText: observation.observationText, renderedObservation: observation,))
+          .map(ChartEntry.fromRenderedObservation)
           .toList();
       var updatedEntries = introduceErrors(entries, {ErrorScenario.forgetD4});
 

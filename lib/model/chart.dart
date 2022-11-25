@@ -76,13 +76,18 @@ class CycleStats {
 @JsonSerializable(explicitToJson: true)
 class ChartEntry {
   final String observationText;
+  final String additionalText;
   final RenderedObservation? renderedObservation;
   final StickerWithText? manualSticker;
 
-  ChartEntry({required this.observationText, this.renderedObservation, this.manualSticker});
+  ChartEntry({required this.observationText, required this.additionalText, this.renderedObservation, this.manualSticker});
 
   static ChartEntry fromRenderedObservation(RenderedObservation renderedObservation) {
-    return ChartEntry(observationText: renderedObservation.observationText, renderedObservation: renderedObservation);
+    return ChartEntry(
+      observationText: renderedObservation.observationText,
+      additionalText: renderedObservation.additionalText(),
+      renderedObservation: renderedObservation,
+    );
   }
 
   bool isValidObservation() {
@@ -90,6 +95,7 @@ class ChartEntry {
       parseObservation(observationText);
       return true;
     } catch (e) {
+      print("Invalid observation: $e");
       return false;
     }
   }
