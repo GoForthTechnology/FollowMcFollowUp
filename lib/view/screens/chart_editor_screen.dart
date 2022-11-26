@@ -69,10 +69,14 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
   }
 
   List<Widget> _actions(ChartListViewModel model) {
+    final canRefresh = model.dynamicExerciseIssues().isEmpty;
+    final refreshAction = canRefresh ? () {
+      model.refreshCycles();
+    } : null;
+    final refreshTooltip = canRefresh ? "Refresh cycle from recipe" : "Refresh disabled to preserve edits";
     return [
-      IconButton(icon: const Icon(Icons.refresh, color: Colors.white), onPressed: () {
-        model.refreshCycles();
-      }, tooltip: "Run simulation with this chart",),
+      IconButton(icon: const Icon(Icons.refresh, color: Colors.white),
+        onPressed: refreshAction, tooltip: refreshTooltip),
       IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
         model.toggleControlBar();
       }, tooltip: "Open cycle settings panel",),
