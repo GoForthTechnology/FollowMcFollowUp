@@ -179,9 +179,20 @@ class DynamicExercise extends Exercise {
   final CycleRecipe? recipe;
   @LocalDateJsonConverter()
   final LocalDate? startOfAskingEsQ;
+  @LocalDateJsonConverter()
+  final LocalDate? startOfPrePeakYellowStamps;
+  @LocalDateJsonConverter()
+  final LocalDate? startOfPostPeakYellowStamps;
   final Map<ErrorScenario, double> errorScenarios;
 
-  const DynamicExercise({this.recipe, this.errorScenarios = const {}, this.startOfAskingEsQ, name}) : super(name);
+  const DynamicExercise({
+    this.recipe,
+    this.errorScenarios = const {},
+    this.startOfAskingEsQ,
+    this.startOfPrePeakYellowStamps,
+    this.startOfPostPeakYellowStamps,
+    name
+  }) : super(name);
 
   @override
   bool get enabled => recipe != null;
@@ -211,9 +222,19 @@ class DynamicExercise extends Exercise {
         for (int i=0; i < startingDayOffset - 1; i++) {
           observations.add(RenderedObservation.blank(startDate.addDays(i)));
         }
-        observations.addAll(renderObservations(firstCycleObservations.sublist(startingDayOffset), [], startDate: startDate.addDays(startingDayOffset)));
+        observations.addAll(renderObservations(
+          firstCycleObservations.sublist(startingDayOffset),
+          startOfPrePeakYellowStamps,
+          startOfPostPeakYellowStamps,
+          startDate: startDate.addDays(startingDayOffset),
+        ));
       } else {
-        observations = renderObservations(recipe!.getObservations(startingDate: currentDate, startOfAskingEsQ: startOfAskingEsQ), [], startDate: currentDate);
+        observations = renderObservations(
+          recipe!.getObservations(startingDate: currentDate, startOfAskingEsQ: startOfAskingEsQ),
+          startOfPrePeakYellowStamps,
+          startOfPostPeakYellowStamps,
+          startDate: currentDate,
+        );
       }
       currentDate = currentDate.addDays(observations.length);
 

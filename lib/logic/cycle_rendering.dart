@@ -4,7 +4,7 @@ import 'package:fmfu/model/rendered_observation.dart';
 import 'package:fmfu/model/instructions.dart';
 import 'package:time_machine/time_machine.dart';
 
-List<RenderedObservation> renderObservations(List<Observation> observations, List<Instruction> activeInstructions, {LocalDate? startDate}) {
+List<RenderedObservation> renderObservations(List<Observation> observations, LocalDate? startOfPrePeakYellowStamps, LocalDate? startOfPostPeak, {LocalDate? startDate}) {
   int daysOfFlow = 0;
   int daysOfMucus = 0;
   int consecutiveDaysOfNonPeakMucus = 0;
@@ -13,7 +13,6 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
   //bool yesterdayWasEssentiallyTheSame = false;
   LocalDate? currentDate = startDate;
   bool inEssentialSamenessPattern = true;
-  bool canAskESQ = activeInstructions.contains(Instruction.k1);
   List<int> pointsOfChange = [];
 
   List<RenderedObservation> renderedObservations = [];
@@ -24,6 +23,13 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     if (observation.hasMucus) {
       daysOfMucus++;
     }
+    bool prePeakYellowEnabled = startOfPrePeakYellowStamps != null && (
+      currentDate == null || currentDate >= startOfPrePeakYellowStamps
+    );
+    bool postPeakYellowEnabled = startOfPostPeak != null && (
+        currentDate == null || currentDate >= startOfPostPeak
+    );
+    bool canAskESQ = prePeakYellowEnabled;
     var shouldAskESQ = canAskESQ && daysOfMucus > 1 && !(countsOfThree.getCount(CountOfThreeReason.peakDay, i) > 3);
     var isPointOfChange = shouldAskESQ && /*yesterdayWasEssentiallyTheSame &&*/ !(observation.essentiallyTheSame ?? false);
     if (isPointOfChange) {
@@ -87,14 +93,14 @@ List<RenderedObservation> renderObservations(List<Observation> observations, Lis
     }
 
     List<Instruction> infertilityReasons = [];
-    if (activeInstructions.contains(Instruction.k2) && isPostPeak) {
+    if (postPeakYellowEnabled && isPostPeak) {
       infertilityReasons.add(Instruction.k2);
       // I REALLY don't like how this is done...
       if (!countsOfThree.inCountOfThree(CountOfThreeReason.peakDay, i)) {
         fertilityReasons.remove(Instruction.d2);
       }
     }
-    if (activeInstructions.contains(Instruction.k1) && !isPostPeak && inEssentialSamenessPattern) {
+    if (prePeakYellowEnabled && !isPostPeak && inEssentialSamenessPattern) {
       infertilityReasons.add(Instruction.k1);
       fertilityReasons.remove(Instruction.d2);
       fertilityReasons.remove(Instruction.d3);

@@ -22,6 +22,8 @@ abstract class ChartViewModel with GlobalLoggy {
   final int numCyclesPerChart;
   bool incrementalMode = false;
   LocalDate? startOfAskingEsQ;
+  LocalDate? startOfPrePeakYellowStamps;
+  LocalDate? startOfPostPeakYellowStamps;
   List<Instruction> activeInstructions = _defaultInstructions;
   Set<ErrorScenario> errorScenarios = {};
   CycleRecipe? recipe;
@@ -58,6 +60,18 @@ abstract class ChartViewModel with GlobalLoggy {
   void updateAskEsQ(LocalDate? date) {
     loggy.debug("Updating startOfAskingEsQ: $date");
     startOfAskingEsQ = date;
+    refreshCycles();
+  }
+
+  void updatePrePeakYellowStamps(LocalDate? date) {
+    loggy.debug("Updating prePeakYellowStamps: $date");
+    startOfPrePeakYellowStamps = date;
+    refreshCycles();
+  }
+
+  void updatePostPeakYellowStamps(LocalDate? date) {
+    loggy.debug("Updating postPeakYellowStamps: $date");
+    startOfPostPeakYellowStamps = date;
     refreshCycles();
   }
 
@@ -248,16 +262,13 @@ abstract class ChartViewModel with GlobalLoggy {
   void updateCharts(
       CycleRecipe recipe, {
         int numCycles = 50,
-        bool prePeakYellowStamps = false,
-        bool postPeakYellowStamps = false,
         Set<ErrorScenario> errorScenarios = const {},
       }) {
     if (incrementalMode) {
       return;
     }
-    activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     this.recipe = recipe;
-    cycles = _getCycles(recipe, numCycles, startOfAskingEsQ, activeInstructions, errorScenarios);
+    cycles = _getCycles(recipe, numCycles, startOfAskingEsQ, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps, errorScenarios);
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
@@ -279,7 +290,7 @@ abstract class ChartViewModel with GlobalLoggy {
     this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
     int lastIndex = cycles.length - 1;
-    cycles[lastIndex] = _getCycles(recipe, 1, startOfAskingEsQ, activeInstructions, errorScenarios)[0];
+    cycles[lastIndex] = _getCycles(recipe, 1, startOfAskingEsQ, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps, errorScenarios)[0];
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
@@ -302,7 +313,7 @@ abstract class ChartViewModel with GlobalLoggy {
     }
     this.recipe = null;
     activeInstructions = _getActiveInstructions(prePeakYellowStamps, postPeakYellowStamps);
-    cycles.addAll(_getCycles(recipe, 1, startOfAskingEsQ, activeInstructions, errorScenarios));
+    cycles.addAll(_getCycles(recipe, 1, startOfAskingEsQ, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps, errorScenarios));
     charts = getCharts(cycles, numCyclesPerChart);
     onChartChange();
   }
@@ -360,7 +371,7 @@ abstract class ChartViewModel with GlobalLoggy {
       var inputs = cycle.entries.map((e) => e.observationText).toList();
       inputs[entryIndex] = observationText;
       var observations = inputs.map((input) => parseObservation(input)).toList();
-      var renderedObservations = renderObservations(observations, activeInstructions);
+      var renderedObservations = renderObservations(observations, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps);
       List<ChartEntry> newEntries = [];
       for (int i=0; i<renderedObservations.length; i++) {
         newEntries.add(ChartEntry(
@@ -402,13 +413,14 @@ abstract class ChartViewModel with GlobalLoggy {
       CycleRecipe  recipe,
       int numCycles,
       LocalDate? startOfAskEsQ,
-      List<Instruction> instructions,
+      LocalDate? startOfPrePeakYellowStamps,
+      LocalDate? startOfPostPeakYellowStamps,
       Set<ErrorScenario> errorScenarios) {
     List<Cycle> cycles = [];
     LocalDate currentDate = _startDate;
     for (int i=0; i<numCycles; i++) {
       var observations = recipe.getObservations(startingDate: currentDate, startOfAskingEsQ: startOfAskEsQ);
-      var renderedObservations = renderObservations(observations, instructions, startDate: currentDate);
+      var renderedObservations = renderObservations(observations, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps, startDate: currentDate);
       currentDate = currentDate.addDays(renderedObservations.length);
       var chartEntries = renderedObservations.map(ChartEntry.fromRenderedObservation).toList();
       chartEntries = introduceErrors(chartEntries, errorScenarios);
@@ -449,7 +461,7 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void _initCharts() {
-    cycles = _getCycles(CycleRecipe.create(), 10, startOfAskingEsQ, _defaultInstructions, {});
+    cycles = _getCycles(CycleRecipe.create(), 10, startOfAskingEsQ, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps, {});
     charts = getCharts(cycles, numCyclesPerChart);
   }
 

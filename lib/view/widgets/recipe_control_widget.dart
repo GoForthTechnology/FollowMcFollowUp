@@ -130,12 +130,14 @@ class RecipeControlWidget extends StatelessWidget {
         }),
         if (startingDate != null) ElevatedButton(onPressed: () {
           promptForDate(startingDate, onDateChange);
-        }, child: Text(startingDate.toString())),
+        }, child: Text(startingDate.toString("MM/dd/yyyy"))),
       ]);
     }
     return [
       _subSectionHeader("Instructions"),
       instructionWidget("Ask EsQ?", model.startOfAskingEsQ, model.updateAskEsQ),
+      instructionWidget("Pre-Peak Yellow Stamps", model.startOfPrePeakYellowStamps, model.updatePrePeakYellowStamps),
+      instructionWidget("Post-Peak Yellow Stamps", model.startOfPostPeakYellowStamps, model.updatePostPeakYellowStamps),
     ];
   }
 

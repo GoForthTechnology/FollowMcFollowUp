@@ -15,7 +15,7 @@ void main() {
         parseObservation("M"),     //2
         parseObservation("0 AD"),  //3
       ];
-      var renderedObservations = renderObservations(observations, []);
+      var renderedObservations = renderObservations(observations, null, null);
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, additionalText: observation.additionalText(), renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null),))
           .toList();
@@ -31,7 +31,7 @@ void main() {
         parseObservation("M"),     //2
         parseObservation("L 6C X1"),  //3
       ];
-      var renderedObservations = renderObservations(observations, []);
+      var renderedObservations = renderObservations(observations, null, null);
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, additionalText: observation.additionalText(), renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
           .toList();
@@ -59,7 +59,7 @@ void main() {
         parseObservation("0 AD"),  //9
         parseObservation("0 AD"),  //10
       ];
-      var renderedObservations = renderObservations(observations, []);
+      var renderedObservations = renderObservations(observations, null, null);
       var entries = renderedObservations
           .map(ChartEntry.fromRenderedObservation)
           .toList();

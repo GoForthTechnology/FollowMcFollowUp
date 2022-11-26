@@ -10,6 +10,7 @@ import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 import 'package:test/test.dart';
+import 'package:time_machine/time_machine.dart';
 
 void main() {
   group("Count of three", ()
@@ -25,7 +26,7 @@ void main() {
         parseObservation("6C AD"), //6
         parseObservation("0 AD"),  //7
       ];
-      var renderedObservations = renderObservations(observations, []);
+      var renderedObservations = renderObservations(observations, null, null);
       expect(renderedObservations[7].getSticker(), Sticker.greenBaby);
       expect(renderedObservations[7].getStickerText(), "1");
     });
@@ -451,7 +452,11 @@ class TrainingCycle extends GlobalLoggy {
           );
         })
         .toList();
-    return renderObservations(observations, activeInstructions)
+
+    LocalDate? startOfPrePeakYellowStamps = activeInstructions.contains(Instruction.k1) ? LocalDate.today() : null;
+    LocalDate? startOfPostPeakYellowStamps = activeInstructions.contains(Instruction.k2) ? LocalDate.today() : null;
+
+    return renderObservations(observations, startOfPrePeakYellowStamps, startOfPostPeakYellowStamps)
         .map((o) => ChartEntry.fromRenderedObservation(o))
         .toList();
   }

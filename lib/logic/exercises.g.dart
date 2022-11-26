@@ -52,6 +52,12 @@ DynamicExercise _$DynamicExerciseFromJson(Map<String, dynamic> json) =>
           const {},
       startOfAskingEsQ: _$JsonConverterFromJson<int, LocalDate>(
           json['startOfAskingEsQ'], const LocalDateJsonConverter().fromJson),
+      startOfPrePeakYellowStamps: _$JsonConverterFromJson<int, LocalDate>(
+          json['startOfPrePeakYellowStamps'],
+          const LocalDateJsonConverter().fromJson),
+      startOfPostPeakYellowStamps: _$JsonConverterFromJson<int, LocalDate>(
+          json['startOfPostPeakYellowStamps'],
+          const LocalDateJsonConverter().fromJson),
       name: json['name'],
     );
 
@@ -61,6 +67,12 @@ Map<String, dynamic> _$DynamicExerciseToJson(DynamicExercise instance) =>
       'recipe': instance.recipe?.toJson(),
       'startOfAskingEsQ': _$JsonConverterToJson<int, LocalDate>(
           instance.startOfAskingEsQ, const LocalDateJsonConverter().toJson),
+      'startOfPrePeakYellowStamps': _$JsonConverterToJson<int, LocalDate>(
+          instance.startOfPrePeakYellowStamps,
+          const LocalDateJsonConverter().toJson),
+      'startOfPostPeakYellowStamps': _$JsonConverterToJson<int, LocalDate>(
+          instance.startOfPostPeakYellowStamps,
+          const LocalDateJsonConverter().toJson),
       'errorScenarios': instance.errorScenarios
           .map((k, e) => MapEntry(_$ErrorScenarioEnumMap[k]!, e)),
     };
