@@ -46,15 +46,19 @@ abstract class ChartViewModel with GlobalLoggy {
         }
       });
       errorScenarios = activeScenarios;
-      updateCharts(recipeControlViewModel.getRecipe());
+      refreshCycles();
     });
+  }
+
+  void refreshCycles() {
+    updateCharts(recipeControlViewModel.getRecipe());
+    onChartChange();
   }
 
   void updateAskEsQ(LocalDate? date) {
     loggy.debug("Updating startOfAskingEsQ: $date");
     startOfAskingEsQ = date;
-    updateCharts(recipeControlViewModel.getRecipe());
-    onChartChange();
+    refreshCycles();
   }
 
   void onChartChange();

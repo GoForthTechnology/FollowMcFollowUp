@@ -70,9 +70,8 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
 
   List<Widget> _actions(ChartListViewModel model) {
     return [
-      IconButton(icon: const Icon(Icons.play_arrow, color: Colors.white), onPressed: () {
-        final state = ExerciseState.fromChartViewModel(model);
-        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: state));
+      IconButton(icon: const Icon(Icons.refresh, color: Colors.white), onPressed: () {
+        model.refreshCycles();
       }, tooltip: "Run simulation with this chart",),
       IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
         model.toggleControlBar();
