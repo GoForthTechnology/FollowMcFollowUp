@@ -111,10 +111,14 @@ class _RecipeControlWidgetState extends State<RecipeControlWidget> {
                   break;
               }
               return ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return _subSectionHeader(item.panelType.title);
-                },
-                body: Column(children: body),
+                headerBuilder: (BuildContext context, bool isExpanded) => Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: _subSectionHeader(item.panelType.title),
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Column(children: body),
+                ),
                 isExpanded: item.isExpanded,
               );
             }).toList(),

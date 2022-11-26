@@ -52,7 +52,7 @@ class _ChartEditorPageState extends State<ChartEditorPage> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
                 ),
-                child: Row(children: [
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(child: Center(child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Column(children: [
