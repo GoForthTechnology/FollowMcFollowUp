@@ -13,34 +13,115 @@ import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:time_machine/time_machine.dart';
 
-class RecipeControlWidget extends StatelessWidget {
+class RecipeControlWidget extends StatefulWidget {
   const RecipeControlWidget({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _RecipeControlWidgetState();
+}
+
+class Item {
+  bool isExpanded = false;
+  final PanelType panelType;
+
+  Item(this.panelType);
+}
+
+enum PanelType {
+  flow,
+  preBuildUp,
+  buildUp,
+  postPeak,
+  additionalCircumstances,
+  errorScenarios,
+  followUpSchedule,
+  instructions,
+  ;
+
+  String get title {
+    switch(this) {
+      case PanelType.flow:
+        return "Flow";
+      case PanelType.preBuildUp:
+        return "Pre-Buildup";
+      case PanelType.buildUp:
+        return "Buildup";
+      case PanelType.postPeak:
+        return "Post-Peak";
+      case PanelType.additionalCircumstances:
+        return "Additional Circumstances";
+      case PanelType.errorScenarios:
+        return "Error Scenarios";
+      case PanelType.followUpSchedule:
+        return "Followup Schedule";
+      case PanelType.instructions:
+        return "Instructions";
+    }
+  }
+}
+
+class _RecipeControlWidgetState extends State<RecipeControlWidget> {
+
+  final List<Item> _items = PanelType.values.map((type) => Item(type)).toList();
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ChartListViewModel>(builder: (context, model, child) => Container(
       decoration: BoxDecoration(color: Colors.grey[200]),
       child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 350),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-        // TODO: make this an ExpansionPanelList
-        _templateSelector(model.recipeControlViewModel),
-        ..._flowWidgets(context, model.recipeControlViewModel.flowModel),
-        const Divider(),
-        ..._preBuildUpWidgets(context, model.recipeControlViewModel.preBuildUpModel),
-        const Divider(),
-        ..._buildUpWidgets(context, model.recipeControlViewModel.buildUpModel),
-        const Divider(),
-        ..._postPeakWidgets(context, model.recipeControlViewModel.postPeakModel),
-        const Divider(),
-        ..._additionalCircumstanceWidgets(model.recipeControlViewModel),
-        const Divider(),
-        ..._errorScenarioWidgets(model.recipeControlViewModel),
-        const Divider(),
-        ..._followUpScheduleWidgets(context, model),
-        const Divider(),
-        ..._instructionWidgets(context, model),
-      ]))))));
+        child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text("Recipe Controls", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+          _templateSelector(model.recipeControlViewModel),
+          ExpansionPanelList(
+            expansionCallback: (index, isExpanded) => setState(() {
+              _items[index].isExpanded = !isExpanded;
+              for (int i=0; i<_items.length; i++) {
+                if (i == index) {
+                  continue;
+                }
+                _items[i].isExpanded = false;
+              }
+            }),
+            children: _items.map((item) {
+              List<Widget> body;
+              switch(item.panelType) {
+                case PanelType.flow:
+                  body = _flowWidgets(context, model.recipeControlViewModel.flowModel);
+                  break;
+                case PanelType.preBuildUp:
+                  body = _preBuildUpWidgets(context, model.recipeControlViewModel.preBuildUpModel);
+                  break;
+                case PanelType.buildUp:
+                  body = _buildUpWidgets(context, model.recipeControlViewModel.buildUpModel);
+                  break;
+                case PanelType.postPeak:
+                  body = _postPeakWidgets(context, model.recipeControlViewModel.postPeakModel);
+                  break;
+                case PanelType.additionalCircumstances:
+                  body = _additionalCircumstanceWidgets(model.recipeControlViewModel);
+                  break;
+                case PanelType.errorScenarios:
+                  body = _errorScenarioWidgets(model.recipeControlViewModel);
+                  break;
+                case PanelType.followUpSchedule:
+                  body = _followUpScheduleWidgets(context, model);
+                  break;
+                case PanelType.instructions:
+                  body = _instructionWidgets(context, model);
+                  break;
+              }
+              return ExpansionPanel(
+                headerBuilder: (BuildContext context, bool isExpanded) {
+                  return _subSectionHeader(item.panelType.title);
+                },
+                body: Column(children: body),
+                isExpanded: item.isExpanded,
+              );
+            }).toList(),
+          ),
+        ]),
+      )))
+    ));
   }
 
   List<Widget> _followUpScheduleWidgets(BuildContext context, ChartViewModel model) {
@@ -96,7 +177,6 @@ class RecipeControlWidget extends StatelessWidget {
     ]);
 
     return [
-      _subSectionHeader("Follow Up Schedule"),
       startOfCharting,
       Wrap(children: followUpChips,),
       addFollowUpButton,
@@ -134,7 +214,6 @@ class RecipeControlWidget extends StatelessWidget {
       ]);
     }
     return [
-      _subSectionHeader("Instructions"),
       instructionWidget("Ask EsQ?", model.startOfAskingEsQ, model.updateAskEsQ),
       instructionWidget("Pre-Peak Yellow Stamps", model.startOfPrePeakYellowStamps, model.updatePrePeakYellowStamps),
       instructionWidget("Post-Peak Yellow Stamps", model.startOfPostPeakYellowStamps, model.updatePostPeakYellowStamps),
@@ -152,7 +231,6 @@ class RecipeControlWidget extends StatelessWidget {
       ];
     }
     return [
-      _subSectionHeader("Error Scenarios"),
       ...ErrorScenario.values
           .map((v) => rowForScenario(v))
           .toList()
@@ -162,7 +240,6 @@ class RecipeControlWidget extends StatelessWidget {
 
   List<Widget> _additionalCircumstanceWidgets(RecipeControlViewModel model) {
     return [
-      _subSectionHeader("Additional Circumstances"),
       _subSubSectionHeader("Unusual Bleeding Frequency"),
       _frequencyControl(
         currentValue: model.unusualBleedingProbability(),
@@ -180,7 +257,6 @@ class RecipeControlWidget extends StatelessWidget {
 
   List<Widget> _postPeakWidgets(BuildContext context, PostPeakModel model) {
     return [
-      _subSectionHeader("Post-Peak"),
       _lengthControl("Mucus Length", model.mucusLength, hint: "The number of days of mucus which follow peak day"),
       _subSubSectionHeader("Default Observation"),
       _observation(
@@ -204,7 +280,6 @@ class RecipeControlWidget extends StatelessWidget {
 
   List<Widget> _buildUpWidgets(BuildContext context, BuildUpModel model) {
     return [
-      _subSectionHeader("Buildup"),
       _lengthControl("Non Peak-Type Length", model.length),
       _subSubSectionHeader("Default Observation"),
       _observation(
@@ -228,7 +303,6 @@ class RecipeControlWidget extends StatelessWidget {
 
   List<Widget> _preBuildUpWidgets(BuildContext context, PreBuildUpModel model) {
     return [
-      _subSectionHeader("Pre-Buildup"),
       _lengthControl("Length", model.length),
       _subSubSectionHeader("Default Observation"),
       _observation(
@@ -243,7 +317,6 @@ class RecipeControlWidget extends StatelessWidget {
 
   List<Widget> _flowWidgets(BuildContext context, FlowModel model) {
     return [
-      _subSectionHeader("Flow", padTop: false),
       _lengthControl("Length", model.length),
       Row(children: [
         _dropDownSelector("Min Flow", ["H", "M", "L", "VL"], model.minFlow, model.setMinFlow),
