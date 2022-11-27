@@ -52,7 +52,7 @@ class HomeScreen extends ScreenWidget {
           }, icon: const Icon(Icons.logout,), tooltip: "Sign Out",),
         ],
       ),
-      body: Center(child: ConstrainedBox(constraints: BoxConstraints.tightFor(width: 400), child: GridView.extent(
+      body: Center(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 400), child: GridView.extent(
         primary: false,
         padding: const EdgeInsets.all(16),
         crossAxisSpacing: 10,

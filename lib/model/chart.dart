@@ -95,7 +95,6 @@ class ChartEntry {
       parseObservation(observationText);
       return true;
     } catch (e) {
-      print("Invalid observation: $e");
       return false;
     }
   }

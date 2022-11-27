@@ -59,9 +59,9 @@ class ExerciseScreen extends StatelessWidget {
             }
             final scrollView = CustomScrollView(
               slivers: [
-                _makeHeader("Scenarios"),
+                _makeHeader("Scenarios", "Each exercise is a random chart which exhibits certain characteristics."),
                 _makeGrid(scenarios, constraints),
-                _makeHeader("Exercises"),
+                _makeHeader("Exercises", "Each exercise has the same preconfigured chart."),
                 _makeGrid(exercises, constraints),
               ],
             );
@@ -92,15 +92,18 @@ class ExerciseScreen extends StatelessWidget {
     ));
   }
 
-  SliverPersistentHeader _makeHeader(String headerText) {
+  SliverPersistentHeader _makeHeader(String headerText, String subTitle) {
     return SliverPersistentHeader(
       delegate: _SliverAppBarDelegate(
         minHeight: 60.0,
         maxHeight: 60.0,
-        child: Center(child: Text(headerText, style: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ))),
+        child: Center(child: Column(children: [
+          Text(headerText, style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          )),
+          Text(subTitle),
+        ])),
       ),
     );
   }

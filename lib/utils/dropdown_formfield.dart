@@ -16,7 +16,7 @@ class DropDownFormField extends FormField<dynamic> {
   final EdgeInsets contentPadding;
 
   DropDownFormField(
-      {required FormFieldSetter<dynamic> onSaved,
+      {super.key, required FormFieldSetter<dynamic> onSaved,
         required FormFieldValidator<dynamic> validator,
         AutovalidateMode autovalidate = AutovalidateMode.disabled,
         this.titleText = 'Title',
