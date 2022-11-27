@@ -31,6 +31,13 @@ class HomeScreen extends ScreenWidget {
     ));
   }
 
+  void _comingSoonSnackBar(BuildContext context) {
+    const snackBar = SnackBar(
+      content: Text("Coming Soon!"),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     logScreenView("HomeScreen");
@@ -54,21 +61,12 @@ class HomeScreen extends ScreenWidget {
         children: <Widget>[
           _tile(
             color: Colors.lightBlue,
-            icon: Icons.grid_on,
-            title: "Chart Editor",
-            text: "Some text about what assignments are.",
+            icon: Icons.person,
+            title: "Exercises",
+            text: "Get some extra practice.",
             onClick: () {
-              AutoRouter.of(context).push(const ChartEditorPageRoute());
-            }
-          ),
-          _tile(
-            color: Colors.lightBlue,
-            icon: Icons.assignment,
-            title: "Assignments",
-            text: "Some text about what assignments are.",
-            onClick: () {
-              // TODO: open assignment screen
-            }
+              AutoRouter.of(context).push(const ExerciseScreenRoute());
+            },
           ),
           _tile(
             color: Colors.lightBlue,
@@ -93,7 +91,7 @@ class HomeScreen extends ScreenWidget {
                       },
                       onFieldSubmitted: (value) => saveForm(),
                       onSaved: (value) {
-                        // TODO: trigger exercise
+                        _comingSoonSnackBar(context);
                       },
                     ),
                   ),
@@ -109,12 +107,20 @@ class HomeScreen extends ScreenWidget {
           ),
           _tile(
             color: Colors.lightBlue,
-            icon: Icons.person,
-            title: "Exercises",
-            text: "Get some extra practice with generic scenarios and specific exercises.",
+            icon: Icons.edit,
+            title: "Exercise Builder",
+            text: "Create an exercise.",
             onClick: () {
-              AutoRouter.of(context).push(const ExerciseScreenRoute());
-            },
+              AutoRouter.of(context).push(const ChartEditorPageRoute());
+            }
+          ),
+          _tile(
+            color: Colors.grey[300]!,
+            icon: Icons.engineering,
+            //icon: Icons.assignment,
+            title: "Assignments",
+            text: "Under Construction",
+            onClick: () => _comingSoonSnackBar(context),
           ),
           _tile(
             color: Colors.grey[300]!,
@@ -122,9 +128,7 @@ class HomeScreen extends ScreenWidget {
             //icon: Icons.edit_calendar,
             title: "Manage Program",
             text: "Under construction.",
-            onClick: () {
-              // TODO: open manage program screen
-            },
+            onClick: () => _comingSoonSnackBar(context),
           ),
           _tile(
             color: Colors.grey[300]!,
