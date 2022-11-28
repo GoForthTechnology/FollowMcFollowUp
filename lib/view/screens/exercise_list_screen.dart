@@ -7,6 +7,8 @@ import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'chart_editor_screen.dart';
+
 class ExerciseScreen extends StatelessWidget {
   const ExerciseScreen({super.key});
 
@@ -59,10 +61,13 @@ class ExerciseScreen extends StatelessWidget {
             }
             final scrollView = CustomScrollView(
               slivers: [
-                _makeHeader("Scenarios", "Each exercise is a random chart which exhibits certain characteristics."),
+                _makeTitleHeader("Scenarios", "Each exercise is a random chart which exhibits certain characteristics."),
                 _makeGrid(scenarios, constraints),
-                _makeHeader("Exercises", "Each exercise has the same preconfigured chart."),
+                _makeTitleHeader("Exercises", "Each exercise has the same preconfigured chart."),
                 _makeGrid(exercises, constraints),
+                _makeHeader(TextButton(onPressed: () {
+                  ChartEditorPage.route(context).then((route) => AutoRouter.of(context).push(route));
+                }, child: const Text("Create an exercise"))),
               ],
             );
             return Center(child: scrollView);
@@ -92,18 +97,24 @@ class ExerciseScreen extends StatelessWidget {
     ));
   }
 
-  SliverPersistentHeader _makeHeader(String headerText, String subTitle) {
+  SliverPersistentHeader _makeTitleHeader(String headerText, String subTitle) {
+    return _makeHeader(
+      Center(child: Column(children: [
+        Text(headerText, style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        )),
+        Text(subTitle),
+      ]))
+    );
+  }
+
+  SliverPersistentHeader _makeHeader(Widget child) {
     return SliverPersistentHeader(
       delegate: _SliverAppBarDelegate(
         minHeight: 60.0,
         maxHeight: 60.0,
-        child: Center(child: Column(children: [
-          Text(headerText, style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          )),
-          Text(subTitle),
-        ])),
+        child: child,
       ),
     );
   }

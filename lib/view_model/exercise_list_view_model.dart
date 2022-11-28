@@ -21,6 +21,12 @@ class ExerciseListViewModel extends ChangeNotifier with GlobalLoggy {
     });
   }
 
+  Future<List<DynamicExercise>> getTemplates() async {
+    var exercises = getExercises(ExerciseType.dynamic).where((e) => e.enabled).toList();
+    exercises.addAll(await getCustomExercises(ExerciseType.dynamic));
+    return exercises as List<DynamicExercise>;
+  }
+
   Future<int> numExercises(ExerciseType exerciseType) async {
     int numExercises = getExercises(exerciseType).length;
     int numCustomExercises = getExercises(exerciseType).length;

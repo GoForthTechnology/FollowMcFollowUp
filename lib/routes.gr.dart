@@ -14,7 +14,8 @@
 import 'package:auto_route/auto_route.dart' as _i11;
 import 'package:flutter/material.dart' as _i12;
 import 'package:fmfu/auth.dart' as _i13;
-import 'package:fmfu/model/chart.dart' as _i15;
+import 'package:fmfu/logic/cycle_generation.dart' as _i15;
+import 'package:fmfu/model/chart.dart' as _i16;
 import 'package:fmfu/model/exercise.dart' as _i14;
 import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i6;
 import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i5;
@@ -72,9 +73,14 @@ class AppRouter extends _i11.RootStackRouter {
       );
     },
     ChartEditorPageRoute.name: (routeData) {
+      final args = routeData.argsAs<ChartEditorPageRouteArgs>();
       return _i11.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i5.ChartEditorPage(),
+        child: _i5.ChartEditorPage(
+          key: args.key,
+          templateIndex: args.templateIndex,
+          template: args.template,
+        ),
       );
     },
     ChartCorrectingScreenRoute.name: (routeData) {
@@ -368,15 +374,44 @@ class FollowUpSimulatorPageRouteArgs {
 
 /// generated route for
 /// [_i5.ChartEditorPage]
-class ChartEditorPageRoute extends _i11.PageRouteInfo<void> {
-  const ChartEditorPageRoute({List<_i11.PageRouteInfo>? children})
-      : super(
+class ChartEditorPageRoute
+    extends _i11.PageRouteInfo<ChartEditorPageRouteArgs> {
+  ChartEditorPageRoute({
+    _i12.Key? key,
+    required int templateIndex,
+    required _i15.CycleRecipe template,
+    List<_i11.PageRouteInfo>? children,
+  }) : super(
           ChartEditorPageRoute.name,
           path: '/editor',
+          args: ChartEditorPageRouteArgs(
+            key: key,
+            templateIndex: templateIndex,
+            template: template,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'ChartEditorPageRoute';
+}
+
+class ChartEditorPageRouteArgs {
+  const ChartEditorPageRouteArgs({
+    this.key,
+    required this.templateIndex,
+    required this.template,
+  });
+
+  final _i12.Key? key;
+
+  final int templateIndex;
+
+  final _i15.CycleRecipe template;
+
+  @override
+  String toString() {
+    return 'ChartEditorPageRouteArgs{key: $key, templateIndex: $templateIndex, template: $template}';
+  }
 }
 
 /// generated route for
@@ -385,7 +420,7 @@ class ChartCorrectingScreenRoute
     extends _i11.PageRouteInfo<ChartCorrectingScreenRouteArgs> {
   ChartCorrectingScreenRoute({
     _i12.Key? key,
-    required _i15.Cycle? cycle,
+    required _i16.Cycle? cycle,
     List<_i11.PageRouteInfo>? children,
   }) : super(
           ChartCorrectingScreenRoute.name,
@@ -408,7 +443,7 @@ class ChartCorrectingScreenRouteArgs {
 
   final _i12.Key? key;
 
-  final _i15.Cycle? cycle;
+  final _i16.Cycle? cycle;
 
   @override
   String toString() {

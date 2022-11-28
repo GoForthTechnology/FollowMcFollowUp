@@ -1,8 +1,11 @@
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
+import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/routes.gr.dart';
@@ -23,15 +26,88 @@ import 'package:fmfu/view_model/chart_list_view_model.dart';
 class ChartEditorPage extends StatefulWidget with UiLoggy {
   static const String routeName = "charts";
 
-  const ChartEditorPage({Key? key}) : super(key: key);
+  final int templateIndex;
+  final CycleRecipe template;
+
+  const ChartEditorPage({Key? key, required this.templateIndex, required this.template}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ChartEditorPageState();
+
+  static Future<ChartEditorPageRoute> route(BuildContext context) async {
+    final completer = Completer<ChartEditorPageRoute>();
+    showDialog(context: context, builder: (context) => TemplateSelectorWidget(
+      fn: (index, recipe) {
+        completer.complete(ChartEditorPageRoute(templateIndex: index!, template: recipe!));
+      }
+    ));
+    return completer.future;
+  }
+}
+
+class TemplateSelectorWidget extends StatefulWidget {
+  final void Function(int?, CycleRecipe?) fn;
+  const TemplateSelectorWidget({super.key, required this.fn});
+
+  @override
+  State<StatefulWidget> createState() => _TemplateSelectorWidgetState();
+}
+
+class _TemplateSelectorWidgetState extends State<TemplateSelectorWidget> {
+  int? selectedItem;
+  CycleRecipe? selectedRecipe;
+
+  @override
+  Widget build(BuildContext context) {
+    final model = Provider.of<ExerciseListViewModel>(context, listen: false);
+    final formKey = GlobalKey<FormState>();
+    return AlertDialog(
+      title: Text("Please select a scenario"),
+      actions: [
+        TextButton(onPressed: () {
+          widget.fn(selectedItem, selectedRecipe);
+          Navigator.of(context).pop();
+        }, child: const Text("Submit")),
+      ],
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        const Text("This will serve as a starting point for building your exercise."),
+        FutureBuilder<List<DynamicExercise>>(
+          future: model.getTemplates(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container();
+            }
+            return Form(key: formKey, child: DropdownButtonFormField<int>(
+              value: selectedItem,
+              items: snapshot.data!.mapIndexed((index, exercise) => DropdownMenuItem<int>(
+                value: index,
+                child: Text(exercise.name),
+              )).toList(),
+              onChanged: (value) => setState(() {
+                selectedItem = value;
+                selectedRecipe = snapshot.data?[value!].recipe;
+              }),
+            ));
+          },
+        )
+      ]),
+    );
+  }
+
 }
 
 typedef Corrections = Map<int, Map<int, StickerWithText>>;
 
 class _ChartEditorPageState extends State<ChartEditorPage> {
+
+  @override
+  void initState() {
+    final model = Provider.of<ChartListViewModel>(context, listen: false);
+    model.recipeControlViewModel.updateTemplateIndex(widget.templateIndex);
+    model.recipeControlViewModel.applyTemplate(widget.template);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ChartListViewModel>(builder: (context, model, child) {

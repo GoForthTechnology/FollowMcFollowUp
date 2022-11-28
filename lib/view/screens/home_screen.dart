@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
+import 'package:fmfu/view/screens/chart_editor_screen.dart';
 
 class HomeScreen extends ScreenWidget {
   static const String routeName = "home";
@@ -110,8 +111,8 @@ class HomeScreen extends ScreenWidget {
             icon: Icons.edit,
             title: "Exercise Builder",
             text: "Create an exercise.",
-            onClick: () {
-              AutoRouter.of(context).push(const ChartEditorPageRoute());
+            onClick: () async {
+              ChartEditorPage.route(context).then((route) => AutoRouter.of(context).push(route));
             }
           ),
           _tile(
