@@ -54,7 +54,7 @@ class TemplateSelectorWidget extends StatefulWidget {
 }
 
 class _TemplateSelectorWidgetState extends State<TemplateSelectorWidget> {
-  int? selectedItem;
+  int? selectedItem = 0;
   CycleRecipe? selectedRecipe;
 
   @override
@@ -76,6 +76,9 @@ class _TemplateSelectorWidgetState extends State<TemplateSelectorWidget> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container();
+            }
+            if (selectedItem != null && selectedRecipe == null) {
+              selectedRecipe = snapshot.data?[selectedItem!].recipe;
             }
             return Form(key: formKey, child: DropdownButtonFormField<int>(
               value: selectedItem,
