@@ -118,7 +118,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     if (soloingCell && !widget.soloCell!.showSticker) {
       sticker = StickerWithText(Sticker.grey, "?");
     }
-    var showStickerDialog = observation != null || entry?.manualSticker != null;
+    var showStickerDialog = !soloingCell && (observation != null || entry?.manualSticker != null);
     Widget stickerWidget = StickerWidget(
       stickerWithText: sticker,
       onTap: showStickerDialog ? _showCorrectionDialog(context, entryIndex, null) : () {},
@@ -363,6 +363,7 @@ class StickerSelectionRow extends StatelessWidget {
 
 Widget _createDialogSticker(Sticker sticker, Sticker? selectedSticker, void Function(Sticker?) onSelect) {
   Widget child = StickerWidget(stickerWithText: StickerWithText(sticker, null), onTap: () => onSelect(sticker));
+  child = Tooltip(message: sticker.name, child: child);
   if (selectedSticker == sticker) {
     child = Container(
       decoration: BoxDecoration(
@@ -397,6 +398,8 @@ class StickerTextSelectionRow extends StatelessWidget {
 
 Widget _createDialogTextSticker(String text, String? selectedText, void Function(String?) onSelect) {
   Widget sticker = StickerWidget(stickerWithText: StickerWithText(Sticker.white, text), onTap: () => onSelect(text));
+  var message = text == "" ? "No Text" : text;
+  sticker = Tooltip(message: message, child: sticker);
   if (selectedText == text) {
     sticker = Container(
       decoration: BoxDecoration(
