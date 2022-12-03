@@ -38,10 +38,30 @@ class ExerciseScreen extends StatelessWidget {
               }
               return _tile(
                 color: color,
-                onClick: e.enabled ? () {
-                  AutoRouter.of(context).push(
-                      FollowUpSimulatorPageRoute(exerciseState: e.getState()));
-                } : () {
+                onClick: e.enabled ? () => showDialog(context: context, builder: (context) => AlertDialog(
+                  title: const Text("Select Exercise Type"),
+                  content: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Text("Practice using the VRDS and correcting a single cycle."),
+                    ElevatedButton(
+                      onPressed: () {
+                        AutoRouter.of(context).push(ChartCorrectingScreenRoute(cycle: e.getState().cycles.last));
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Correcting Drill"),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text("Practice managing a chart in the context of a follow up."),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: e.getState()));
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Follow Up Simulator"),
+                    ),
+                  ]),
+                )) : () {
                   const snackBar = SnackBar(
                     content: Text("Coming Soon!"),
                   );

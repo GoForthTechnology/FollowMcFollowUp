@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 
@@ -7,6 +8,36 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   final Map<int, StickerWithText> answerSubmissions = {};
   Sticker? currentStickerSelection;
   String? currentStickerTextSelection;
+
+  Flow? currentFlow;
+  DischargeType? currentDischargeType;
+  DischargeFrequency? currentDischargeFrequency;
+  Set<DischargeDescriptor> currentDischargeDescriptors = {};
+
+  void addDischargeDescriptor(DischargeDescriptor descriptor) {
+    currentDischargeDescriptors.add(descriptor);
+    notifyListeners();
+  }
+
+  void removeDischargeDescriptor(DischargeDescriptor descriptor) {
+    currentDischargeDescriptors.remove(descriptor);
+    notifyListeners();
+  }
+
+  void updateCurrentFlow(Flow? flow) {
+    currentFlow = flow;
+    notifyListeners();
+  }
+
+  void updateCurrentDischargeType(DischargeType? dischargeType) {
+    currentDischargeType = dischargeType;
+    notifyListeners();
+  }
+
+  void updateCurrentDischargeFrequency(DischargeFrequency? dischargeFrequency) {
+    currentDischargeFrequency = dischargeFrequency;
+    notifyListeners();
+  }
 
   List<Student> students() {
     return _students;
@@ -52,6 +83,11 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   void clearSelection() {
     currentStickerSelection = null;
     currentStickerTextSelection = null;
+    currentDischargeDescriptors.clear();
+    currentDischargeType = null;
+    currentDischargeFrequency = null;
+    currentFlow = null;
+
     notifyListeners();
   }
 
@@ -78,6 +114,8 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
 
   void clearAnswer(int entryIndex) {
     answerSubmissions.remove(entryIndex);
+    currentStickerSelection = null;
+    currentStickerTextSelection = null;
     notifyListeners();
   }
 }
