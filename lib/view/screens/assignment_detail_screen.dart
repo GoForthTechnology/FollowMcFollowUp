@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/assignment.dart';
@@ -14,11 +16,14 @@ class AssignmentDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Assignment #$id"),
       ),
-      body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600), child: ListView.builder(
-        itemBuilder: (context, index) => _questionWidget(assignment.questions[index]),
-        itemCount: assignment.questions.length,
+      body: LayoutBuilder(builder: (context , constraints ) => Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600), child: CustomScrollView(
+        slivers: [
+          _makeGrid(assignment.questions, constraints),
+          // TODO: move this to the assignment
+          _makeHeader(const Text("The following 5 cycles (A-E) represent examples for which the following questions will apply. For examples A-D, you can assume good observations and charting. For example E, the questions will relate to the chart correcting of that cycle. ")),
+        ],
       ))),
-    );
+    ));
   }
 
   Widget _questionWidget(Question question) {
@@ -26,6 +31,12 @@ class AssignmentDetailScreen extends StatelessWidget {
       return MultipleChoiceWidget(question: question);
     }
     throw Exception();
+  }
+
+  Widget _makeGrid(List<Question> questions, BoxConstraints constraints) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) => _questionWidget(questions[index]), childCount: questions.length),
+    );
   }
 }
 
@@ -70,5 +81,44 @@ class MultipleChoiceState extends State<MultipleChoiceWidget> {
         ...options.map((widget) => Padding(padding: const EdgeInsets.only(left: 20), child: widget)).toList(),
       ],
     ));
+  }
+}
+
+SliverPersistentHeader _makeHeader(Widget child) {
+  return SliverPersistentHeader(
+    delegate: _SliverAppBarDelegate(
+      minHeight: 60.0,
+      maxHeight: 60.0,
+      child: child,
+    ),
+  );
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+  @override
+  double get minExtent => minHeight;
+  @override
+  double get maxExtent => max(maxHeight, minHeight);
+  @override
+  Widget build(
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent)
+  {
+    return SizedBox.expand(child: child);
+  }
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

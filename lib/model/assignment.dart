@@ -212,7 +212,7 @@ const assignments = [
       ),
       MultipleChoiceQuestion(
         number: 19,
-        question: "",
+        question: "In couples using post-Peak yellow stamps for non-Peak type mucus, which of the following are true? ",
         options: {
           "A": "The usual beginning instruction for genital intercourse during this time is: end of day, alternate days.",
           "B": "The basic instructions for genital intercourse can be advanced to post-Peak, anytime of the day, in the fourth cycle.",

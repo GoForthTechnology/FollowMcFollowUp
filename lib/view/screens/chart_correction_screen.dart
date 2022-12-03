@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 class ChartCorrectingScreen extends StatefulWidget {
   final Cycle? cycle;
 
-  ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
+  const ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ChartCorrectionState();
