@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
@@ -11,25 +10,34 @@ import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:provider/provider.dart';
 
-class ChartCorrectingScreen extends ScreenWidget {
+class ChartCorrectingScreen extends StatefulWidget {
   final Cycle? cycle;
 
   ChartCorrectingScreen({Key? key, required this.cycle}) : super(key: key);
 
-  static const String routeName = "chartCorrection";
+  @override
+  State<StatefulWidget> createState() => ChartCorrectionState();
+}
+
+class ChartCorrectionState extends State<ChartCorrectingScreen> {
+
+  @override
+  void initState() {
+    final model = Provider.of<ChartCorrectionViewModel>(context, listen: false);
+    if (widget.cycle != null) {
+      model.setCycle(widget.cycle!, notify: false);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    logScreenView("ChartCorrectingScreen");
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
-      if (cycle != null) {
-        model.setCycle(cycle!);
-      }
       return Scaffold(
         appBar: AppBar(
           title: const Text("Basic Chart Correcting"),
           actions: [
-            if (cycle == null) IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+            if (widget.cycle == null) IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
               model.toggleControlBar();
             },),
           ],
@@ -67,7 +75,7 @@ class ChartCorrectingScreen extends ScreenWidget {
                   )),
                   Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
                     onPressed: model.showNextButton() ? () {
-                      exerciseModel.clearSelection();
+                      exerciseModel.loadNextSelection(model.entryIndex);
                       model.nextEntry();
                     } : null,
                     child: const Text("Next"),
@@ -85,7 +93,7 @@ class ChartCorrectingScreen extends ScreenWidget {
               ChartRowWidget(
                 dayOffset: 0,
                 topCellCreator: (entryIndex) => exerciseModel.hasAnswer(entryIndex) && (model.showFullCycle || entryIndex == model.entryIndex)
-                    ? StickerWidget(stickerWithText: exerciseModel.answerSubmissions[entryIndex], onTap: () {})
+                    ? StickerWidget(stickerWithText: exerciseModel.stampAnswerSubmissions[entryIndex], onTap: () {})
                     : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
                 bottomCellCreator: (entryIndex) => ChartCellWidget(
                   content: Text(

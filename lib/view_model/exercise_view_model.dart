@@ -5,7 +5,8 @@ import 'package:loggy/loggy.dart';
 
 class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   final List<Student> _students = [];
-  final Map<int, StickerWithText> answerSubmissions = {};
+  final Map<int, StickerWithText> stampAnswerSubmissions = {};
+  final Map<int, Observation> vdrsAnswerSubmissions = {};
   Sticker? currentStickerSelection;
   String? currentStickerTextSelection;
 
@@ -71,12 +72,31 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   }
 
   void loadPreviousSelection(int entryIndex) {
-    if (!hasAnswer(entryIndex - 1)) {
+    final previousIndex = entryIndex - 1;
+    if (!hasAnswer(previousIndex)) {
       return;
     }
-    var previousAnswer = answerSubmissions[entryIndex - 1];
+    _updateState(previousIndex);
+  }
+
+  void loadNextSelection(int entryIndex) {
+    final nextIndex = entryIndex + 1;
+    if (!hasAnswer(nextIndex)) {
+      clearSelection();
+      return;
+    }
+    _updateState(nextIndex);
+  }
+
+  void _updateState(int index) {
+    var previousAnswer = stampAnswerSubmissions[index];
     currentStickerTextSelection = previousAnswer?.text;
     currentStickerSelection = previousAnswer?.sticker;
+    var previousVDRS = vdrsAnswerSubmissions[index];
+    currentFlow = previousVDRS?.flow;
+    currentDischargeType = previousVDRS?.dischargeSummary?.dischargeType;
+    currentDischargeFrequency = previousVDRS?.dischargeSummary?.dischargeFrequency;
+    currentDischargeDescriptors = previousVDRS?.dischargeSummary?.dischargeDescriptors.toSet() ?? {};
     notifyListeners();
   }
 
@@ -97,23 +117,38 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   }
 
   bool hasAnswer(int entryIndex) {
-    return answerSubmissions.containsKey(entryIndex);
+    return stampAnswerSubmissions.containsKey(entryIndex);
   }
 
   bool canSaveAnswer() {
-    return currentStickerSelection != null;
+    bool hasStamp = currentStickerSelection != null;
+    bool hasVDRS = currentFlow != null || currentDischargeType != null;
+    return hasStamp && hasVDRS;
   }
 
   void submitAnswer(int entryIndex) {
     if (!canSaveAnswer()) {
       return;
     }
-    answerSubmissions[entryIndex] = StickerWithText(currentStickerSelection!, currentStickerTextSelection);
+    stampAnswerSubmissions[entryIndex] = StickerWithText(currentStickerSelection!, currentStickerTextSelection);
+    DischargeSummary? dischargeSummary;
+    if (currentDischargeType != null) {
+      dischargeSummary = DischargeSummary(
+        dischargeType: currentDischargeType!,
+        dischargeDescriptors: currentDischargeDescriptors.toList(),
+        dischargeFrequency: currentDischargeFrequency!,
+      );
+    }
+    vdrsAnswerSubmissions[entryIndex] = Observation(
+      flow: currentFlow,
+      dischargeSummary: dischargeSummary,
+    );
     notifyListeners();
   }
 
   void clearAnswer(int entryIndex) {
-    answerSubmissions.remove(entryIndex);
+    stampAnswerSubmissions.remove(entryIndex);
+    vdrsAnswerSubmissions.remove(entryIndex);
     currentStickerSelection = null;
     currentStickerTextSelection = null;
     notifyListeners();

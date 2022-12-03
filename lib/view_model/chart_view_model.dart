@@ -295,10 +295,12 @@ abstract class ChartViewModel with GlobalLoggy {
     onChartChange();
   }
 
-  void setCycle(Cycle cycle) {
+  void setCycle(Cycle cycle, {bool notify = false}) {
     cycles = [cycle];
     charts = getCharts(cycles, numCyclesPerChart);
-    onChartChange();
+    if (notify) {
+      onChartChange();
+    }
   }
 
   void addCycle(
