@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/assignment.dart';
+import 'package:fmfu/routes.gr.dart';
 
 class AssignmentListScreen extends StatelessWidget {
   const AssignmentListScreen({super.key});
@@ -40,9 +42,13 @@ class AssignmentListScreen extends StatelessWidget {
           color: assignment.enabled ? Colors.lightBlue : Colors.grey[300]!,
           icon: Icons.person,
           title: "Pre-Client Assignment #${assignment.num}",
-          text: assignment.enabled ? "" : "Coming Soon",
+          // TODO: hook up text to correctly show completion status
+          text: assignment.enabled ? "Incomplete" : "Coming Soon",
           onClick: () {
-            //AutoRouter.of(context).push(const ExerciseScreenRoute());
+            if (!assignment.enabled) {
+              return;
+            }
+            AutoRouter.of(context).push(AssignmentDetailScreenRoute(id: assignment.num, assignment: assignment));
           },
         )).toList(),
       ))),
