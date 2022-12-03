@@ -28,7 +28,7 @@ class LoginScreen extends StatelessWidget {
             if (!state.user!.emailVerified) {
               AutoRouter.of(context).push(const EmailVerifyScreenRoute());
             } else {
-              AutoRouter.of(context).push(HomeScreenRoute());
+              AutoRouter.of(context).pushAndPopUntil(HomeScreenRoute(), predicate: (r) => false);
             }
           }),
           AuthStateChangeAction<UserCreated>((context, state) {
