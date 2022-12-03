@@ -56,7 +56,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     var hasCycle = widget.cycle != null;
     if (widget.soloCell == null && hasCycle && entryIndex < widget.cycle!.entries.length) {
       return widget.cycle?.entries[entryIndex];
-    } else if (widget.soloCell != null && widget.soloCell!.entryIndex == entryIndex) {
+    } else if (widget.soloCell != null && widget.soloCell!.entryIndex >= entryIndex) {
       return widget.cycle?.entries[entryIndex];
     }
     return null;
