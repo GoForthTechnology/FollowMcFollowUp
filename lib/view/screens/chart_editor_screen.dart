@@ -62,7 +62,7 @@ class _TemplateSelectorWidgetState extends State<TemplateSelectorWidget> {
     final model = Provider.of<ExerciseListViewModel>(context, listen: false);
     final formKey = GlobalKey<FormState>();
     return AlertDialog(
-      title: Text("Please select a scenario"),
+      title: const Text("Please select a scenario"),
       actions: [
         TextButton(onPressed: () {
           widget.fn(selectedItem, selectedRecipe);
