@@ -65,9 +65,7 @@ class HomeScreen extends ScreenWidget {
             icon: Icons.person,
             title: "Exercises",
             text: "Get some extra practice.",
-            onClick: () {
-              AutoRouter.of(context).push(const ExerciseScreenRoute());
-            },
+            onClick: () => router.push(const ExerciseScreenRoute()),
           ),
           _tile(
             color: Colors.lightBlue,
@@ -112,16 +110,15 @@ class HomeScreen extends ScreenWidget {
             title: "Exercise Builder",
             text: "Create an exercise.",
             onClick: () async {
-              ChartEditorPage.route(context).then((route) => AutoRouter.of(context).push(route));
+              ChartEditorPage.route(context).then((route) => router.push(route));
             }
           ),
           _tile(
-            color: Colors.grey[300]!,
-            icon: Icons.engineering,
-            //icon: Icons.assignment,
+            color: Colors.lightBlue,
+            icon: Icons.assignment,
             title: "Assignments",
-            text: "Under Construction",
-            onClick: () => _comingSoonSnackBar(context),
+            text: "Complete your pre-client assignments",
+            onClick: () => router.push(const AssignmentListScreenRoute()),
           ),
           _tile(
             color: Colors.grey[300]!,
@@ -136,9 +133,7 @@ class HomeScreen extends ScreenWidget {
             icon: Icons.engineering,
             title: "Follow Up Form",
             text: "Under construction.",
-            onClick: () {
-              AutoRouter.of(context).push(FupFormScreenRoute());
-            },
+            onClick: () => router.push(FupFormScreenRoute()),
           ),
         ],
       ))),

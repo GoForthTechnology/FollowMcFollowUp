@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fmfu/auth.dart';
+import 'package:fmfu/view/screens/assignment_list_screen.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/email_verify_screen.dart';
@@ -25,6 +26,14 @@ import 'package:fmfu/view/screens/login_screen.dart';
     AutoRoute(
       path: '/home',
       page: HomeScreen,
+      guards: [AuthGuard],
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+    AutoRoute(
+      path: '/assignments',
+      page: AssignmentListScreen,
       guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
