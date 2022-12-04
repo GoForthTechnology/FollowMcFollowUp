@@ -48,13 +48,11 @@ class LandingScreen extends ScreenWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       RecaptchaService.isNotABot().then((isNotABot) {
-                        if (isNotABot) {
-                          formKey.currentState!.save();
+                        formKey.currentState!.save();
 
-                          Navigator.pop(context, 'OK');
-                          AutoRouter.of(context).push(HomeScreenRoute());
-                        } else {
-                          return showDialog(
+                        Navigator.pop(context, 'OK');
+                        AutoRouter.of(context).push(HomeScreenRoute());
+                          /*return showDialog(
                             barrierDismissible: true,
                             context: context,
                             builder: (context) => const AlertDialog(
@@ -62,7 +60,7 @@ class LandingScreen extends ScreenWidget {
                               content: Text('Bots not allowed!'),
                             ),
                           );
-                        }
+                        }*/
                       });
                     }
                   },
