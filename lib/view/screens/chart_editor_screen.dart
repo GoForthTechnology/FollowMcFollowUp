@@ -71,27 +71,27 @@ class _TemplateSelectorWidgetState extends State<TemplateSelectorWidget> {
       ],
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         const Text("This will serve as a starting point for building your exercise."),
-        FutureBuilder<List<DynamicExercise>>(
-          future: model.getTemplates(),
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
-              return Container();
-            }
-            if (selectedItem != null && selectedRecipe == null) {
-              selectedRecipe = snapshot.data?[selectedItem!].recipe;
-            }
-            return Form(key: formKey, child: DropdownButtonFormField<int>(
-              value: selectedItem,
-              items: snapshot.data!.mapIndexed((index, exercise) => DropdownMenuItem<int>(
-                value: index,
-                child: Text(exercise.name),
-              )).toList(),
-              onChanged: (value) => setState(() {
-                selectedItem = value;
-                selectedRecipe = snapshot.data?[value!].recipe;
-              }),
-            ));
-          },
+        FutureProvider<List<DynamicExercise>>(
+          create: (_) => model.getTemplates(),
+          initialData: const [],
+          child: Consumer<List<DynamicExercise>>(
+            builder: (context, exercises, _) {
+              if (selectedItem != null && selectedRecipe == null && exercises.isNotEmpty) {
+                selectedRecipe = exercises[selectedItem!].recipe;
+              }
+              return Form(key: formKey, child: DropdownButtonFormField<int>(
+                value: selectedItem,
+                items: exercises.mapIndexed((index, exercise) => DropdownMenuItem<int>(
+                  value: index,
+                  child: Text(exercise.name),
+                )).toList(),
+                onChanged: (value) => setState(() {
+                  selectedItem = value;
+                  selectedRecipe = exercises[value!].recipe;
+                }),
+              ));
+            },
+          ),
         )
       ]),
     );
