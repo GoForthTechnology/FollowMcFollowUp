@@ -205,7 +205,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
 
   Widget _buildNameWidget(BuildContext context, _ViewState state, _ViewModel model) {
     return InputContainer(title: "Program Name:", content: ConstrainedBox(
-      constraints: const BoxConstraints.tightFor(width: 300),
+      constraints: const BoxConstraints.tightFor(width: 200),
       child: TextFormField(
         validator: (value) {
           if (value == null) {
