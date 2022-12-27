@@ -101,7 +101,7 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
           loggy.warning("Could not find program for ID: $_initialId");
         } else {
           ep1DateController.add(program.ep1Date);
-          ep2DateController.add(program.ep1Date);
+          ep2DateController.add(program.ep2Date);
           nameTextController.text = program.name;
           for (var id in program.enrolledStudentIds) {
             studentSelections.add(Tuple2(id, true));
