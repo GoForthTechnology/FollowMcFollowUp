@@ -4,7 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/user_service.dart';
-import 'package:fmfu/model/user_profile.dart';
+import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
@@ -36,7 +36,7 @@ class HomeScreen extends ScreenWidget with UiLoggy {
     ));
   }
 
-  Widget content(BuildContext context, UserProfile? userProfile) {
+  Widget content(BuildContext context, EducatorProfile? educatorProfile) {
     final router = AutoRouter.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -85,19 +85,12 @@ class HomeScreen extends ScreenWidget with UiLoggy {
             text: "Under construction.",
             onClick: () => router.push(FupFormScreenRoute()),
           ),
-          if (userProfile?.isAnEducator() ?? false) _tile(
+          if (educatorProfile != null) _tile(
             color: Colors.pinkAccent,
             icon: Icons.edit_calendar,
             title: "Manage Program",
             text: "Create and configure education programs.",
             onClick: () => router.push(const EducationProgramListScreenRoute()),
-          ),
-          _tile(
-            color: Colors.pinkAccent,
-            icon: Icons.group,
-            title: "Manage Students",
-            text: "Create and configure students.",
-            onClick: () {},
           ),
         ],
       ))),
@@ -107,10 +100,10 @@ class HomeScreen extends ScreenWidget with UiLoggy {
   @override
   Widget build(BuildContext context) {
     logScreenView("HomeScreen");
-    return Consumer<UserService>(builder: (context, userService, _) => FutureProvider<UserProfile?>(
-      create: (_) => userService.getOrCreateProfile(),
+    return Consumer<UserService>(builder: (context, userService, _) => FutureProvider<EducatorProfile?>(
+      create: (_) => userService.getOrCreateEducatorProfile(),
       initialData: null,
-      child: Consumer<UserProfile?>(builder: (context, userProfile, _) => content(context, userProfile)),
+      child: Consumer<EducatorProfile?>(builder: (context, educatorProfile, _) => content(context, educatorProfile)),
     ));
   }
 }

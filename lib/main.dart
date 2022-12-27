@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/auth.dart';
-import 'package:fmfu/model/user_profile.dart';
-import 'package:fmfu/utils/firebase_crud_interface.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
@@ -60,14 +58,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ExerciseListViewModel(FirebaseAuth.instance)),
         ChangeNotifierProvider.value(value: RecipeControlViewModel()),
         ChangeNotifierProvider.value(value: EducationProgramService.createWithFirebase()),
-        ChangeNotifierProvider.value(value: UserService(
-          StreamingFirebaseCrud<UserProfile>(
-            directory: "users",
-            toJson: (u) => u.toJson(),
-            fromJson: UserProfile.fromJson,
-            prependUidToId: false,
-          )
-        )),
+        ChangeNotifierProvider.value(value: UserService.createWithFirebase()),
       ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'FCP Classroom',
