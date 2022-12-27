@@ -14,6 +14,7 @@ import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:time_machine/time_machine.dart';
+import 'package:tuple/tuple.dart';
 
 import '../widgets/input_container.dart';
 
@@ -24,8 +25,10 @@ class _ViewState {
   final String? name;
   final LocalDate? ep1Date;
   final LocalDate? ep2Date;
+  final List<StudentProfile> students;
+  final Map<String, bool> selectedStudents;
 
-  _ViewState(this.pageTitle, this._id, this.name, this.ep1Date, this.ep2Date);
+  _ViewState(this.pageTitle, this._id, this.name, this.ep1Date, this.ep2Date, this.students, this.selectedStudents);
 
   bool hasBeenSaved() {
     return _id != null;
@@ -40,7 +43,11 @@ class _ViewState {
   }
 
   EducationProgram program() {
-    return EducationProgram(name!, _id, ep1Date!, ep2Date!, enrolledStudentIds: []);
+    var enrolledStudents = selectedStudents.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+    return EducationProgram(name!, _id, ep1Date!, ep2Date!, enrolledStudentIds: enrolledStudents);
   }
 }
 
@@ -55,24 +62,36 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
   final ep1DateController = StreamController<LocalDate?>();
   final ep2DateController = StreamController<LocalDate?>();
   final idController = StreamController<String?>();
+  final studentSelections = StreamController<Tuple2<String, bool>>();
 
-  _ViewState createState(LocalDate? ep1Date, LocalDate? ep2Date, String? name, String? id) {
-    return _ViewState(_title(id), id, name, ep1Date, ep2Date);
-
+  _ViewState createState(
+      LocalDate? ep1Date,
+      LocalDate? ep2Date,
+      String? name,
+      String? id,
+      List<StudentProfile> students,
+      Map<String, bool>? selectedStudents) {
+    return _ViewState(_title(id), id, name, ep1Date, ep2Date, students, selectedStudents ?? {});
   }
 
-  _ViewModel(this._programService, this._initialId) {
-    Rx.combineLatest4(
+  _ViewModel(UserService userService, this._programService, this._initialId) {
+    Rx.combineLatest6(
         ep1DateController.stream,
         ep2DateController.stream,
         nameStreamController.stream,
         idController.stream,
+        userService.getAllStudents(),
+        studentSelections.stream.scan<Map<String, bool>>((accumulated, value, index) {
+          accumulated[value.item1] = value.item2;
+          return accumulated;
+        }, {}).doOnError((p0, p1) { print("bla"); }),
         createState)
     .listen(updateState);
 
     nameTextController.addListener(() => nameStreamController.add(nameTextController.text));
 
     idController.add(_initialId);
+    studentSelections.add(const Tuple2<String, bool>("", false));
     if (_initialId == null) {
       ep1DateController.add(null);
       ep2DateController.add(null);
@@ -84,6 +103,9 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
           ep1DateController.add(program.ep1Date);
           ep2DateController.add(program.ep1Date);
           nameTextController.text = program.name;
+          for (var id in program.enrolledStudentIds) {
+            studentSelections.add(Tuple2(id, true));
+          }
         }
       });
     }
@@ -91,7 +113,7 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
 
   @override
   _ViewState initialState() {
-    return _ViewState(_title(_initialId), _initialId, null, null, null);
+    return _ViewState(_title(_initialId), _initialId, null, null, null, [], {});
   }
 
   String _title(String? programId) {
@@ -128,24 +150,40 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
         _buildEp1DateWidget(context, state, model),
         _buildEp2DateWidget(context, state, model),
         _sectionHeading(context, "Student Roster"),
-        _buildStudentRoster(context, state),
+        _buildStudentRoster(context, state, model),
         _sectionHeading(context, "Assignment Information"),
         _buildAssignments(context, state),
       ])),
     ));
   }
 
-  Widget _buildStudentRoster(BuildContext context, _ViewState state) {
+  Widget _buildStudentRoster(BuildContext context, _ViewState state, _ViewModel model) {
     if (!state.canSelectStudents()) {
       return Padding(padding: const EdgeInsets.only(bottom: 20), child: Text(
         "Please save the program to begin selecting students",
         style: Theme.of(context).textTheme.bodyText2,
       ));
     }
-    return Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
-      onPressed: () => showDialog(context: context, builder: (context) => const AddStudentDialog()),
-      child: const Text("Add a Student"),
-    ));
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      ListView.builder(
+        shrinkWrap: true,
+        itemCount: state.students.length,
+        itemBuilder: (context, index) {
+          var student = state.students[index];
+          var selected = state.selectedStudents.containsKey(student.id) && state.selectedStudents[student.id]!;
+          return Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text("${student.fullName()} (${student.emailAddress})"),
+            Checkbox(value: selected, onChanged: (value) {
+              model.studentSelections.add(Tuple2<String, bool>(student.id!, value ?? false));
+            }),
+          ]));
+        },
+      ),
+      Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
+        onPressed: () => showDialog(context: context, builder: (context) => const AddStudentDialog()),
+        child: const Text("Add a Student"),
+      )),
+    ]);
   }
 
   Widget _buildAssignments(BuildContext context, _ViewState state) {
@@ -232,7 +270,7 @@ class EducationProgramCrudScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer2<EducationProgramService, UserService>(builder: (context, educationService, userService, _) {
-      return ChangeNotifierProvider(create: (_) => _ViewModel(educationService, programId), child: _EducationProgramCrudContent());
+      return ChangeNotifierProvider(create: (_) => _ViewModel(userService, educationService, programId), child: _EducationProgramCrudContent());
     });
   }
 }

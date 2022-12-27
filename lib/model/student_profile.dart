@@ -19,6 +19,10 @@ class StudentProfile extends Indexable<StudentProfile> {
   factory StudentProfile.fromJson(Map<String, dynamic> json) => _$StudentProfileFromJson(json);
   Map<String, dynamic> toJson() => _$StudentProfileToJson(this);
 
+  String fullName() {
+    return "$firstName $lastName";
+  }
+
   @override
   String? getId() {
     return id;
