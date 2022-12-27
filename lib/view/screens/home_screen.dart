@@ -3,11 +3,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/api/user_service.dart';
+import 'package:fmfu/model/user_profile.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:loggy/loggy.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends ScreenWidget {
+class HomeScreen extends ScreenWidget with UiLoggy {
   static const String routeName = "home";
 
   HomeScreen({Key? key}) : super(key: key);
@@ -39,9 +43,7 @@ class HomeScreen extends ScreenWidget {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    logScreenView("HomeScreen");
+  Widget content(BuildContext context, UserProfile? userProfile) {
     final router = AutoRouter.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -105,13 +107,13 @@ class HomeScreen extends ScreenWidget {
             },
           ),
           _tile(
-            color: Colors.lightBlue,
-            icon: Icons.edit,
-            title: "Exercise Builder",
-            text: "Create an exercise.",
-            onClick: () async {
-              ChartEditorPage.route(context).then((route) => router.push(route));
-            }
+              color: Colors.lightBlue,
+              icon: Icons.edit,
+              title: "Exercise Builder",
+              text: "Create an exercise.",
+              onClick: () async {
+                ChartEditorPage.route(context).then((route) => router.push(route));
+              }
           ),
           _tile(
             color: Colors.lightBlue,
@@ -120,7 +122,7 @@ class HomeScreen extends ScreenWidget {
             text: "Complete your pre-client assignments",
             onClick: () => router.push(const AssignmentListScreenRoute()),
           ),
-          _tile(
+          if (userProfile?.isAnEducator() ?? false) _tile(
             color: Colors.grey[300]!,
             icon: Icons.engineering,
             //icon: Icons.edit_calendar,
@@ -138,5 +140,15 @@ class HomeScreen extends ScreenWidget {
         ],
       ))),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    logScreenView("HomeScreen");
+    return Consumer<UserService>(builder: (context, userService, _) => FutureProvider<UserProfile?>(
+      create: (_) => userService.getOrCreateProfile(),
+      initialData: null,
+      child: Consumer<UserProfile?>(builder: (context, userProfile, _) => content(context, userProfile)),
+    ));
   }
 }
