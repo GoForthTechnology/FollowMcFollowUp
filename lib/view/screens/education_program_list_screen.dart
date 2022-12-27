@@ -1,8 +1,10 @@
 
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/model/education_program.dart';
+import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/stream_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -56,48 +58,8 @@ class _EducationProgramListContent extends StreamWidget<_ViewModel, _ViewState> 
       floatingActionButton: FloatingActionButton(
         child: const Text("+"),
         onPressed: () {
-          var formKey = GlobalKey<FormState>();
-          saveForm() {
-            if (formKey.currentState!.validate()) {
-              formKey.currentState!.save();
-            }
-          }
-          showDialog(context: context, builder: (context) => AlertDialog(
-            title: const Text("New Group Exercise"),
-            content: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Exercise Name',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Value required";
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (value) => saveForm(),
-                    onSaved: (value) {
-                      if (value == null) {
-                        throw Exception("Title required to create a program");
-                      }
-                      Navigator.pop(context, 'OK');
-                    },
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => saveForm(),
-                child: const Text("Submit"),
-              ),
-            ],
-          ));
-        },
+          AutoRouter.of(context).push(EducationProgramCrudScreenRoute());
+        }
       ),
     );
   }
@@ -114,10 +76,14 @@ class _EducationProgramListContent extends StreamWidget<_ViewModel, _ViewState> 
           var program = state.programs[index];
           return Row(children: [
             const Spacer(),
-            ElevatedButton(onPressed: () {}, child: Padding(padding: const EdgeInsets.all(10), child: Text(
-              "Program: ${program.name}",
-              style: const TextStyle(fontSize: 18),
-            ))),
+            ElevatedButton(
+              onPressed: () {
+                AutoRouter.of(context).push(EducationProgramCrudScreenRoute(programId: program.id));
+              },
+              child: Padding(padding: const EdgeInsets.all(10), child: Text(
+                "Program: ${program.name}",
+                style: const TextStyle(fontSize: 18),
+              ))),
             const Spacer(),
           ]);
         },

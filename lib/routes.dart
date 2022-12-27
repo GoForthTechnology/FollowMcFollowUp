@@ -4,6 +4,7 @@ import 'package:fmfu/view/screens/assignment_detail_screen.dart';
 import 'package:fmfu/view/screens/assignment_list_screen.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/view/screens/education_program_crud_screen.dart';
 import 'package:fmfu/view/screens/education_program_list_screen.dart';
 import 'package:fmfu/view/screens/email_verify_screen.dart';
 import 'package:fmfu/view/screens/exercise_list_screen.dart';
@@ -94,6 +95,11 @@ import 'package:fmfu/view/screens/login_screen.dart';
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
+    ),
+
+    AutoRoute(
+      path: '/program/:programId',
+      page: EducationProgramCrudScreen,
     ),
 
     AutoRoute(

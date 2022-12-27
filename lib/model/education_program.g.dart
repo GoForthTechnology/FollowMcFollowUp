@@ -12,9 +12,10 @@ EducationProgram _$EducationProgramFromJson(Map<String, dynamic> json) =>
       json['id'] as String?,
       const LocalDateJsonConverter().fromJson(json['ep1Date'] as int),
       const LocalDateJsonConverter().fromJson(json['ep2Date'] as int),
-      (json['enrolledStudentIds'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      enrolledStudentIds: (json['enrolledStudentIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$EducationProgramToJson(EducationProgram instance) =>

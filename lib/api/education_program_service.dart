@@ -13,6 +13,18 @@ class EducationProgramService extends ChangeNotifier {
     return _persistence.getAll();
   }
 
+  Stream<EducationProgram?> stream(String id) {
+    return _persistence.get(id);
+  }
+
+  Future<String> addProgram(EducationProgram program) {
+    return _persistence.insert(program);
+  }
+
+  Future<void> updateProgram(EducationProgram program) {
+    return _persistence.update(program);
+  }
+
   static EducationProgramService createWithFirebase() {
     return EducationProgramService(StreamingFirebaseCrud<EducationProgram>(
       directory: "programs",

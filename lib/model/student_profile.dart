@@ -8,12 +8,13 @@ part 'student_profile.g.dart';
 @JsonSerializable(explicitToJson: true)
 class StudentProfile extends Indexable<StudentProfile> {
 
-  final String id;
+  final String? id;
   final String firstName;
   final String lastName;
+  final int studentNumber;
   final String emailAddress;
 
-  StudentProfile({required this.id, required this.firstName, required this.lastName, required this.emailAddress});
+  StudentProfile({required this.id, required this.firstName, required this.lastName, required this.studentNumber, required this.emailAddress});
 
   factory StudentProfile.fromJson(Map<String, dynamic> json) => _$StudentProfileFromJson(json);
   Map<String, dynamic> toJson() => _$StudentProfileToJson(this);
@@ -25,8 +26,6 @@ class StudentProfile extends Indexable<StudentProfile> {
 
   @override
   StudentProfile setId(String id) {
-    // This is a hack and an abuse of the Indexable interface.
-    // Doing this to enable the use of the StreamingCrud interface...
-    return this;
+    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber);
   }
 }

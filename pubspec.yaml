@@ -58,6 +58,7 @@ dependencies:
   g_recaptcha_v3: ^0.0.5
   http: ^0.13.5
   firebase_app_check: ^0.1.1+5
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:

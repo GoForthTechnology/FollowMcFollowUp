@@ -18,7 +18,7 @@ class EducationProgram extends Indexable<EducationProgram> {
   @LocalDateJsonConverter()
   final LocalDate ep2Date;
 
-  EducationProgram(this.name, this.id, this.ep1Date, this.ep2Date, this.enrolledStudentIds);
+  EducationProgram(this.name, this.id, this.ep1Date, this.ep2Date, {this.enrolledStudentIds = const []});
 
   factory EducationProgram.fromJson(Map<String, dynamic> json) => _$EducationProgramFromJson(json);
   Map<String, dynamic> toJson() => _$EducationProgramToJson(this);
@@ -30,6 +30,6 @@ class EducationProgram extends Indexable<EducationProgram> {
 
   @override
   EducationProgram setId(String id) {
-    return EducationProgram(name, id, ep1Date, ep2Date, enrolledStudentIds);
+    return EducationProgram(name, id, ep1Date, ep2Date, enrolledStudentIds: enrolledStudentIds);
   }
 }

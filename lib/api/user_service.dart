@@ -33,6 +33,10 @@ class UserService extends ChangeNotifier {
     return _studentPersistence.getAll();
   }
 
+  Future<void> createStudent(StudentProfile studentProfile) {
+    return _studentPersistence.insert(studentProfile);
+  }
+
   Future<EducatorProfile> getOrCreateEducatorProfile() async {
     var currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
