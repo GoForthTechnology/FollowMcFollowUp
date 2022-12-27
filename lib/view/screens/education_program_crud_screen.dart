@@ -138,7 +138,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
       ));
     }
     return Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
-      onPressed: () => showDialog(context: context, builder: (context) => AddStudentDialog()),
+      onPressed: () => showDialog(context: context, builder: (context) => const AddStudentDialog()),
       child: const Text("Add a Student"),
     ));
   }

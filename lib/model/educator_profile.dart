@@ -20,10 +20,6 @@ class EducatorProfile extends Indexable<EducatorProfile> {
   factory EducatorProfile.fromJson(Map<String, dynamic> json) => _$EducatorProfileFromJson(json);
   Map<String, dynamic> toJson() => _$EducatorProfileToJson(this);
 
-  bool isAnEducator() {
-    return educationProgramName != null;
-  }
-
   @override
   String? getId() {
     return id;

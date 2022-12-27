@@ -36,7 +36,6 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
   @override
   Stream<T?> get(String id) async* {
     var ref = await _ref(id: id);
-    print(ref);
     yield* db.ref(ref).onValue
         .map((e) {
           if (e.snapshot.value == null) {
