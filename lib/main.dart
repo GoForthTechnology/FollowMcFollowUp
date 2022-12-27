@@ -5,7 +5,6 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/auth.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
-import 'package:fmfu/view_model/chart_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
@@ -52,7 +51,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: ChartCorrectionViewModel()),
-        ChangeNotifierProvider.value(value: ChartListViewModel()),
         ChangeNotifierProvider.value(value: FollowUpFormViewModel()),
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),

@@ -51,14 +51,14 @@ class RecipeControlViewModel extends ChangeNotifier {
     }
   }
 
-  void applyTemplate(CycleRecipe recipe) {
+  void applyTemplate(CycleRecipe recipe, {bool notify = true}) {
     _preempt = true;
     for (var model in _models) {
       model.applyTemplate(recipe);
     }
     preMenstrualSpottingLength.set(recipe.postPeakRecipe.preMenstrualSpottingLengthDist.mean);
     _preempt = false;
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   double unusualBleedingProbability() {
