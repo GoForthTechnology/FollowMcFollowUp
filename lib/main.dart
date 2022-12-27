@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/auth.dart';
 import 'package:fmfu/model/user_profile.dart';
@@ -12,7 +13,6 @@ import 'package:fmfu/view_model/exercise_list_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/fup_form_view_model.dart';
 import 'package:fmfu/view_model/fup_simulator_view_model.dart';
-import 'package:fmfu/view_model/group_exercise_list_view_model.dart';
 import 'package:fmfu/view_model/recipe_control_view_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loggy/loggy.dart';
@@ -58,8 +58,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: FollowUpSimulatorViewModel()),
         ChangeNotifierProvider.value(value: ExerciseViewModel()),
         ChangeNotifierProvider.value(value: ExerciseListViewModel(FirebaseAuth.instance)),
-        ChangeNotifierProvider.value(value: GroupExerciseListViewModel()),
         ChangeNotifierProvider.value(value: RecipeControlViewModel()),
+        ChangeNotifierProvider.value(value: EducationProgramService.createWithFirebase()),
         ChangeNotifierProvider.value(value: UserService(
           StreamingFirebaseCrud<UserProfile>(
             directory: "users",

@@ -36,13 +36,6 @@ class HomeScreen extends ScreenWidget with UiLoggy {
     ));
   }
 
-  void _comingSoonSnackBar(BuildContext context) {
-    const snackBar = SnackBar(
-      content: Text("Coming Soon!"),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
   Widget content(BuildContext context, UserProfile? userProfile) {
     final router = AutoRouter.of(context);
     return Scaffold(
@@ -70,43 +63,6 @@ class HomeScreen extends ScreenWidget with UiLoggy {
             onClick: () => router.push(const ExerciseScreenRoute()),
           ),
           _tile(
-            color: Colors.lightBlue,
-            icon: Icons.group,
-            title: "Group Exercise",
-            text: "Join a group exercise.",
-            onClick: () {
-              showDialog(context: context, builder: (context)  {
-                var formKey = GlobalKey<FormState>();
-                saveForm() {
-                  if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
-                  }
-                }
-                return AlertDialog(
-                  title: const Text("Enter Exercise ID"),
-                  content: Form(
-                    key: formKey,
-                    child: TextFormField(
-                      validator: (value) {
-                        return "Exercise not found";
-                      },
-                      onFieldSubmitted: (value) => saveForm(),
-                      onSaved: (value) {
-                        _comingSoonSnackBar(context);
-                      },
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => saveForm(),
-                      child: const Text("Submit"),
-                    ),
-                  ],
-                );
-              });
-            },
-          ),
-          _tile(
               color: Colors.lightBlue,
               icon: Icons.edit,
               title: "Exercise Builder",
@@ -122,20 +78,26 @@ class HomeScreen extends ScreenWidget with UiLoggy {
             text: "Complete your pre-client assignments",
             onClick: () => router.push(const AssignmentListScreenRoute()),
           ),
-          if (userProfile?.isAnEducator() ?? false) _tile(
-            color: Colors.grey[300]!,
-            icon: Icons.engineering,
-            //icon: Icons.edit_calendar,
-            title: "Manage Program",
-            text: "Under construction.",
-            onClick: () => _comingSoonSnackBar(context),
-          ),
           _tile(
             color: Colors.grey[300]!,
             icon: Icons.engineering,
             title: "Follow Up Form",
             text: "Under construction.",
             onClick: () => router.push(FupFormScreenRoute()),
+          ),
+          if (userProfile?.isAnEducator() ?? false) _tile(
+            color: Colors.pinkAccent,
+            icon: Icons.edit_calendar,
+            title: "Manage Program",
+            text: "Create and configure education programs.",
+            onClick: () => router.push(const EducationProgramListScreenRoute()),
+          ),
+          _tile(
+            color: Colors.pinkAccent,
+            icon: Icons.group,
+            title: "Manage Students",
+            text: "Create and configure students.",
+            onClick: () {},
           ),
         ],
       ))),

@@ -4,13 +4,13 @@ import 'package:fmfu/view/screens/assignment_detail_screen.dart';
 import 'package:fmfu/view/screens/assignment_list_screen.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/view/screens/education_program_list_screen.dart';
 import 'package:fmfu/view/screens/email_verify_screen.dart';
 import 'package:fmfu/view/screens/exercise_list_screen.dart';
 import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view/screens/landing_screen.dart';
-import 'package:fmfu/view/screens/group_exercise_list_screen.dart';
 import 'package:fmfu/view/screens/login_screen.dart';
 
 @AdaptiveAutoRouter(
@@ -81,16 +81,16 @@ import 'package:fmfu/view/screens/login_screen.dart';
     ),
 
     AutoRoute(
-      path: '/exercises/group',
-      page: GroupExerciseListScreen,
+      path: '/exercises/individual',
+      page: ExerciseScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
     ),
 
     AutoRoute(
-      path: '/exercises/individual',
-      page: ExerciseScreen,
+      path: '/programs',
+      page: EducationProgramListScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],

@@ -22,11 +22,11 @@ import 'package:fmfu/view/screens/assignment_detail_screen.dart' as _i4;
 import 'package:fmfu/view/screens/assignment_list_screen.dart' as _i3;
 import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i8;
 import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i7;
+import 'package:fmfu/view/screens/education_program_list_screen.dart' as _i10;
 import 'package:fmfu/view/screens/email_verify_screen.dart' as _i12;
-import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i10;
+import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i9;
 import 'package:fmfu/view/screens/fup_simulator_screen.dart' as _i6;
 import 'package:fmfu/view/screens/fupf_screen.dart' as _i5;
-import 'package:fmfu/view/screens/group_exercise_list_screen.dart' as _i9;
 import 'package:fmfu/view/screens/home_screen.dart' as _i2;
 import 'package:fmfu/view/screens/landing_screen.dart' as _i1;
 import 'package:fmfu/view/screens/login_screen.dart' as _i11;
@@ -113,18 +113,16 @@ class AppRouter extends _i13.RootStackRouter {
         ),
       );
     },
-    GroupExerciseListScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<GroupExerciseListScreenRouteArgs>(
-          orElse: () => const GroupExerciseListScreenRouteArgs());
-      return _i13.AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: _i9.GroupExerciseListScreen(key: args.key),
-      );
-    },
     ExerciseScreenRoute.name: (routeData) {
       return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i10.ExerciseScreen(),
+        child: const _i9.ExerciseScreen(),
+      );
+    },
+    EducationProgramListScreenRoute.name: (routeData) {
+      return _i13.AdaptivePage<dynamic>(
+        routeData: routeData,
+        child: const _i10.EducationProgramListScreen(),
       );
     },
     LoginScreenRoute.name: (routeData) {
@@ -251,19 +249,6 @@ class AppRouter extends _i13.RootStackRouter {
           ],
         ),
         _i13.RouteConfig(
-          GroupExerciseListScreenRoute.name,
-          path: '/exercises/group',
-          children: [
-            _i13.RouteConfig(
-              '*#redirect',
-              path: '*',
-              parent: GroupExerciseListScreenRoute.name,
-              redirectTo: '',
-              fullMatch: true,
-            )
-          ],
-        ),
-        _i13.RouteConfig(
           ExerciseScreenRoute.name,
           path: '/exercises/individual',
           children: [
@@ -271,6 +256,19 @@ class AppRouter extends _i13.RootStackRouter {
               '*#redirect',
               path: '*',
               parent: ExerciseScreenRoute.name,
+              redirectTo: '',
+              fullMatch: true,
+            )
+          ],
+        ),
+        _i13.RouteConfig(
+          EducationProgramListScreenRoute.name,
+          path: '/programs',
+          children: [
+            _i13.RouteConfig(
+              '*#redirect',
+              path: '*',
+              parent: EducationProgramListScreenRoute.name,
               redirectTo: '',
               fullMatch: true,
             )
@@ -556,35 +554,7 @@ class ChartCorrectingScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i9.GroupExerciseListScreen]
-class GroupExerciseListScreenRoute
-    extends _i13.PageRouteInfo<GroupExerciseListScreenRouteArgs> {
-  GroupExerciseListScreenRoute({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
-          GroupExerciseListScreenRoute.name,
-          path: '/exercises/group',
-          args: GroupExerciseListScreenRouteArgs(key: key),
-          initialChildren: children,
-        );
-
-  static const String name = 'GroupExerciseListScreenRoute';
-}
-
-class GroupExerciseListScreenRouteArgs {
-  const GroupExerciseListScreenRouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'GroupExerciseListScreenRouteArgs{key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i10.ExerciseScreen]
+/// [_i9.ExerciseScreen]
 class ExerciseScreenRoute extends _i13.PageRouteInfo<void> {
   const ExerciseScreenRoute({List<_i13.PageRouteInfo>? children})
       : super(
@@ -594,6 +564,19 @@ class ExerciseScreenRoute extends _i13.PageRouteInfo<void> {
         );
 
   static const String name = 'ExerciseScreenRoute';
+}
+
+/// generated route for
+/// [_i10.EducationProgramListScreen]
+class EducationProgramListScreenRoute extends _i13.PageRouteInfo<void> {
+  const EducationProgramListScreenRoute({List<_i13.PageRouteInfo>? children})
+      : super(
+          EducationProgramListScreenRoute.name,
+          path: '/programs',
+          initialChildren: children,
+        );
+
+  static const String name = 'EducationProgramListScreenRoute';
 }
 
 /// generated route for
