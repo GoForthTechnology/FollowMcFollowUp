@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fmfu/api/education_program_service.dart';
@@ -46,7 +47,7 @@ class _ViewState {
 class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
 
   final String? _initialId;
-  final EducationProgramService _service;
+  final EducationProgramService _programService;
 
   final formKey = GlobalKey<FormState>();
   final nameTextController = TextEditingController();
@@ -55,13 +56,18 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
   final ep2DateController = StreamController<LocalDate?>();
   final idController = StreamController<String?>();
 
-  _ViewModel(this._service, this._initialId) {
+  _ViewState createState(LocalDate? ep1Date, LocalDate? ep2Date, String? name, String? id) {
+    return _ViewState(_title(id), id, name, ep1Date, ep2Date);
+
+  }
+
+  _ViewModel(this._programService, this._initialId) {
     Rx.combineLatest4(
         ep1DateController.stream,
         ep2DateController.stream,
         nameStreamController.stream,
         idController.stream,
-            (LocalDate? ep1Date, LocalDate? ep2Date, String? name, String? id) => _ViewState(_title(id), id, name, ep1Date, ep2Date))
+        createState)
     .listen(updateState);
 
     nameTextController.addListener(() => nameStreamController.add(nameTextController.text));
@@ -71,7 +77,7 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
       ep1DateController.add(null);
       ep2DateController.add(null);
     } else {
-      _service.stream(_initialId!).listen((program) {
+      _programService.stream(_initialId!).listen((program) {
         if (program == null) {
           loggy.warning("Could not find program for ID: $_initialId");
         } else {
@@ -98,14 +104,13 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
   Future<void> save(_ViewState state) async {
     if (formKey.currentState!.validate()) {
       if (!state.hasBeenSaved()) {
-        idController.add(await _service.addProgram(state.program()));
+        idController.add(await _programService.addProgram(state.program()));
       } else {
-        _service.updateProgram(state.program());
+        _programService.updateProgram(state.program());
       }
     }
   }
 }
-
 
 class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> with UiLoggy {
   @override
@@ -240,16 +245,16 @@ class AddStudentDialog extends StatefulWidget {
   State<StatefulWidget> createState() => AddStudentDialogState();
 }
 
-class AddStudentDialogState extends State<AddStudentDialog> {
+class AddStudentDialogState extends State<AddStudentDialog> with GlobalLoggy {
   final formKey = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final studentNumberController = TextEditingController();
   final emailController = TextEditingController();
 
-  StudentProfile studentProfile() {
+  StudentProfile studentProfile(String id) {
     return StudentProfile(
-      id: null,
+      id: id,
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       emailAddress: emailController.text,
@@ -258,10 +263,34 @@ class AddStudentDialogState extends State<AddStudentDialog> {
   }
 
   void save() async {
+    var scaffoldMessenger = ScaffoldMessenger.of(context);
+    var router = AutoRouter.of(context);
     if (formKey.currentState!.validate()) {
-      // TODO: create FirebaseUser and use that ID
-      var service = Provider.of<UserService>(context, listen: false);
-      service.createStudent(studentProfile()).then((_) => close());
+      var userService = Provider.of<UserService>(context, listen: false);
+      var educatorProfile = await userService.currentEducator().first;
+
+      var email = emailController.text;
+      var password = "${educatorProfile.firstName.toLowerCase()}${educatorProfile.lastName.toLowerCase()}";
+
+      loggy.debug("Creating user for educator: $educatorProfile, student: $email");
+
+      var auth = FirebaseAuth.instance;
+      try {
+        var creds = await auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        var newUser = creds.user;
+        if (newUser == null) {
+          throw Exception();
+        }
+        await auth.sendPasswordResetEmail(email: email);
+        await userService.createStudent(studentProfile(newUser.uid));
+        close();
+      } on FirebaseAuthException catch (e) {
+        router.pop();
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 

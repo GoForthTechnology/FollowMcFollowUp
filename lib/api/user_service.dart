@@ -29,12 +29,25 @@ class UserService extends ChangeNotifier {
     return UserService(educatorPersistence, studentPersistence);
   }
 
+  Stream<EducatorProfile> currentEducator() async* {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("Not logged in!");
+    }
+    yield* _educatorPersistence.get(user.uid).map((educator) {
+      if (educator == null) {
+        throw Exception("No educator found for id ${user.uid}");
+      }
+      return educator;
+    });
+  }
+
   Stream<List<StudentProfile>> getAllStudents() {
     return _studentPersistence.getAll();
   }
 
   Future<void> createStudent(StudentProfile studentProfile) {
-    return _studentPersistence.insert(studentProfile);
+    return _studentPersistence.update(studentProfile);
   }
 
   Future<EducatorProfile> getOrCreateEducatorProfile() async {

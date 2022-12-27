@@ -21,6 +21,11 @@ class EducatorProfile extends Indexable<EducatorProfile> {
   Map<String, dynamic> toJson() => _$EducatorProfileToJson(this);
 
   @override
+  String toString() {
+    return "Educator (email: $emailAddress, firstName: $firstName, lastName: $lastName)";
+  }
+
+  @override
   String? getId() {
     return id;
   }
