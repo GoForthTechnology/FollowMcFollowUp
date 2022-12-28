@@ -1,257 +1,104 @@
+
+import 'package:fmfu/model/exercise.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'assignment.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Assignment {
+  final AssignmentIdentifier identifier;
+  final PreClientAssignment? preClientAssignment;
+
+  Assignment({required this.identifier, this.preClientAssignment});
+
+  factory Assignment.fromJson(Map<String, dynamic> json) => _$AssignmentFromJson(json);
+  Map<String, dynamic> toJson() => _$AssignmentToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class AssignmentIdentifier {
+  final AssignmentType type;
+  final String? id;
+
+  AssignmentIdentifier(this.type, this.id);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AssignmentIdentifier &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          id == other.id;
+
+  @override
+  int get hashCode => type.hashCode ^ id.hashCode;
+
+  factory AssignmentIdentifier.fromJson(Map<String, dynamic> json) => _$AssignmentIdentifierFromJson(json);
+  Map<String, dynamic> toJson() => _$AssignmentIdentifierToJson(this);
+}
+
+enum AssignmentType {
+  preClient,
+  identifyingChartingPatterns,
+  caseManagementSimulation,
+  ;
+
+  String get description {
+    switch (this) {
+      case AssignmentType.preClient:
+        return "Pre-Client";
+      case AssignmentType.identifyingChartingPatterns:
+        return "Identifying Charting Patterns (Section 10)";
+      case AssignmentType.caseManagementSimulation:
+        return "Case Management Simulation (Section 10)";
+    }
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CaseManagementSimulation {
+  final String description;
+  final ExerciseState chartState;
+
+  CaseManagementSimulation(this.description, this.chartState);
+
+  factory CaseManagementSimulation.fromJson(Map<String, dynamic> json) => _$CaseManagementSimulationFromJson(json);
+  Map<String, dynamic> toJson() => _$CaseManagementSimulationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class PreClientAssignment {
   final int num;
   final String instructions;
   final List<Question> questions;
 
-  const Assignment(this.num, this.instructions, this.questions);
+  const PreClientAssignment(this.num, this.instructions, this.questions);
 
   bool get enabled => questions.isNotEmpty;
+
+  factory PreClientAssignment.fromJson(Map<String, dynamic> json) => _$PreClientAssignmentFromJson(json);
+  Map<String, dynamic> toJson() => _$PreClientAssignmentToJson(this);
 }
 
-const assignments = [
-  Assignment(
-    1, "Read each question carefully and mark the one most correct answer on answer sheet.",
-    [
-      MultipleChoiceQuestion(
-        number: 1,
-        question: "In clarifying the observation 8C/K with a client, which of the following is correct?",
-        options: {
-          "A": "The C/K designation means the mucus is “foggy” in color like wax paper.",
-          "B": "The teacher must double check the observation to make sure that the K represents crystal clear.",
-          "C": "There is no need for clarification.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 2,
-        question: "In clarifying the observation 4Kx4 with a client, which of the following is correct?",
-        options: {
-          "A": "You would wish to question the recording of K.",
-          "B": "It is true that people record, incorrectly, the K in this observation because there is no color associated with the shiny that is observed in this observation.",
-          "C": "The “x4” should read “AD” and the client and the chart should be so corrected.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 3,
-        question: "In clarifying the observation 10G with a client, which of the following is correct?",
-        options: {
-          "A": "The client obviously has a cervical inflammation.",
-          "B": "This description lacks a color, therefore it is incomplete.",
-          "C": "The “10” does not need to be clarified because it means stretchy.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 4,
-        question: "In clarifying the observation 8-10Cx2 with a client, which of the following is correct?",
-        options: {
-          "A": "The mucus is obviously stretching somewhere between 3⁄4 and 1 inch.",
-          "B": "In this description, the client is hesitating in making a definitive decision on the observation.",
-          "C": "If lubrication is absent, the client should record it as “NL” – not lubricative.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 5,
-        question: "In the Vaginal Discharge Recording System, the description of “sticky, cloudy, seen once” would be recorded as:",
-        options: {
-          "A": "6CLx1",
-          "B": "8Cx1",
-          "C": "6PCx1",
-          "D": "6Cx1",
-          "E": "4CAD",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 6,
-        question: "Which of the following are considered Peak-type mucus?",
-        options: {
-          "A": "8C",
-          "B": "6PC",
-          "C": "10DL",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 7,
-        question: "Which of the following are considered non-Peak type mucus?",
-        options: {
-          "A": "10SL",
-          "B": "2",
-          "C": "6PC",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 8,
-        question: "An important general principle or principles which apply to chart correcting a “6C” observation is (are):",
-        options: {
-          "A": "Assess whether or not the client is really stretching the mucus ½-¾ inch or not (as her “6C” description indicates).",
-          "B": "Compare her observation with the “PC” observation in the Picture Dictionary in order to distinguish whether the observation is a “sticky, cloudy” cervical mucus discharge or a “sticky, pasty, cloudy” vaginal discharge. ",
-          "C": "Assume that the client is correct in her observation of cloudiness.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 9,
-        question: "The use of a plain, green stamp during the post-Peak phase of the cycle (after the third day) is legitimate in which of the following situations?",
-        options: {
-          "A": "A “6Cx1” observation in the second cycle of charting",
-          "B": "A ”VL-6PCx2” observation in the third cycle of charting",
-          "C": "A “6PCAD” observation in the fifth cycle of charting",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 10,
-        question: "An important principle or principles in reading a CREIGHTON MODEL FertilityCare™ System chart include:",
-        options: {
-          "A": "Read each description, day by day.",
-          "B": "Read the proper placement of stamps, day by day.",
-          "C": "Develop a consistent pattern, which is concise but complete.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 11,
-        question: "A plain, yellow stamp post-Peak (after the third day) can be legitimately used in which of the following situations?",
-        options: {
-          "A": "A “6PCx2” observation in second cycle of charting with confident identification of the Peak day",
-          "B": "A “VL-8Cx1” observation where the “VL” is premenstrual spotting and this is the fifth such cycle and there is confident identification of the Peak day",
-          "C": "An “8Cx2” observation in the ninth cycle of such charting with confident identification of the Peak day",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 12,
-        question: "In chart reading, which of the following questions are important to be answered routinely?",
-        options: {
-          "A": "Have all of the stamps been correctly charted?",
-          "B": "Has the recording system been charted correctly?",
-          "C": "Is the most fertile sign of the day being charted?",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 13,
-        question: "In chart correcting, which of the following are true?",
-        options: {
-          "A": "Always use a blue pen or pencil.",
-          "B": "If stamps require changing, place corrections at an angle.",
-          "C": "Always make corrections independent of the client.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 14,
-        question: "Which of the following “Basic Principles” are correct?",
-        options: {
-          "A": "The system instructions include regarding observations and charting as well as the application of the instructions related to genital contact.",
-          "B": "The instructions related to genital contact evolve from one follow-up to the next",
-          "C": "Users of the CREIGHTON MODEL FertilityCareTM System are free to use the method to either achieve or avoid a pregnancy as they so choose.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 15,
-        question: "Confident identification of the Peak day can be said to exist when:",
-        options: {
-          "A": "The woman has identified the dramatic change in the mucus pattern after the Peak.",
-          "B": "The abrupt and dramatic change in the mucus pattern after the Peak is observed and confirmed by the occurrence of menstruation following at the appropriate time.",
-          "C": "The client tells the teacher that she is confident.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 16,
-        question: "A “normal cycle” can be defined as:",
-        options: {
-          "A": "A regular 28 day cycle",
-          "B": "A cycle in which the post-Peak phase is 13 days long",
-          "C": "One in which the woman has confidently identified the Peak day and a usual menstrual flow has occurred 8 to 16 days later",
-          "D": "A cycle in which the mucus cycle lasts 6 days",
-          "E": "A cycle in which the pre-Peak phase is no longer than 14 days",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 17,
-        question: "Which of the following mucus patterns can be seen in a couple with an infertility problem?",
-        options: {
-          "A": "Very long cycles with the appearance of the mucus delayed",
-          "B": "Three to five days of Peak-type mucus, which is normal in amount, followed by a period 15 days after the Peak",
-          "C": "Regular menstrual cycles with a totally dry cycle pattern",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 18,
-        question: "Which of the following is considered criterion for cervical inflammation?",
-        options: {
-          "A": "Post-Peak tacky, cloudy (after count of 3)",
-          "B": "Post-Peak sticky, yellow, gummy (during count of 3)",
-          "C": "Mucus build-up of 5-7 days",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 19,
-        question: "In couples using post-Peak yellow stamps for non-Peak type mucus, which of the following are true? ",
-        options: {
-          "A": "The usual beginning instruction for genital intercourse during this time is: end of day, alternate days.",
-          "B": "The basic instructions for genital intercourse can be advanced to post-Peak, anytime of the day, in the fourth cycle.",
-          "C": "The basic instructions for the third cycle would be for end of the day every day.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-      MultipleChoiceQuestion(
-        number: 20,
-        question: "In the management of a client whom you suspect is overreading lubrication, which of the following would be correct?",
-        options: {
-          "A": "Advise the use of the second wipe test immediately.",
-          "B": "Instruct the client that the sensation of lubrication is observed as the tissue passes over the perineal body.",
-          "C": "Instruct the client to always observe the sensation with the tissue after looking at it.",
-          "D": "All of the above",
-          "E": "None of the above",
-        },
-      ),
-    ],
-  ),
-  Assignment(2, "TODO", []),
-  Assignment(3, "TODO", []),
-];
-
-abstract class Question {
-  int get number;
-  String get question;
-
-  const Question();
-}
-
-class MultipleChoiceQuestion extends Question {
-  @override
+@JsonSerializable(explicitToJson: true)
+class Question {
   final int number;
-  @override
   final String question;
+  final MultipleChoice? multipleChoice;
+
+  const Question({required this.number, required this.question, this.multipleChoice});
+
+  factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
+  Map<String, dynamic> toJson() => _$QuestionToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class MultipleChoice {
 
   final Map<String, String> options;
 
-  const MultipleChoiceQuestion({required this.number, required this.question, required this.options});
+  const MultipleChoice(this.options);
+
+  factory MultipleChoice.fromJson(Map<String, dynamic> json) => _$MultipleChoiceFromJson(json);
+  Map<String, dynamic> toJson() => _$MultipleChoiceToJson(this);
 }

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:fmfu/model/assignment.dart';
+import 'package:fmfu/model/assignments.dart';
 import 'package:fmfu/routes.gr.dart';
 
 class AssignmentListScreen extends StatelessWidget {

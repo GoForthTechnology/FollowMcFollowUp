@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/user_service.dart';
+import 'package:fmfu/model/assignment.dart';
 import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/model/student_profile.dart';
 import 'package:fmfu/utils/stream_widget.dart';
@@ -209,7 +210,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
       ));
     }
     return Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
-      onPressed: () {},
+      onPressed: () => showDialog(context: context, builder: (context) => const AssignmentDialog()),
       child: const Text("Add an Assignment"),
     ));
   }
@@ -273,6 +274,31 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
           child: display,
         ),
       ),
+    );
+  }
+}
+
+class AssignmentDialog extends StatelessWidget {
+  const AssignmentDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var router = AutoRouter.of(context);
+    var buttons = AssignmentType.values
+        .map((type) => Padding(
+          padding: const EdgeInsets.all(10),
+          child: ElevatedButton(
+            onPressed: () => router.pop(),
+            child: Text(type.description),
+          ),
+        ))
+        .toList();
+    return AlertDialog(
+      title: const Text("Add Assignment"),
+      content: Column(mainAxisSize: MainAxisSize.min, children: buttons),
+      actions: [
+        TextButton(onPressed: () => router.pop(), child: const Text("Close"))
+      ],
     );
   }
 }

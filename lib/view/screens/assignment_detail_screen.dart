@@ -8,7 +8,7 @@ class AssignmentDetailScreen extends StatelessWidget {
   const AssignmentDetailScreen({super.key, @pathParam required this.id, required this.assignment});
 
   final int id;
-  final Assignment assignment;
+  final PreClientAssignment assignment;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,11 @@ class AssignmentDetailScreen extends StatelessWidget {
   }
 
   Widget _questionWidget(Question question) {
-    if (question is MultipleChoiceQuestion) {
-      return MultipleChoiceWidget(question: question);
+    if (question.multipleChoice != null) {
+      return MultipleChoiceWidget(
+        question: question,
+        multipleChoice: question.multipleChoice!,
+      );
     }
     throw Exception();
   }
@@ -41,9 +44,10 @@ class AssignmentDetailScreen extends StatelessWidget {
 }
 
 class MultipleChoiceWidget extends StatefulWidget {
-  final MultipleChoiceQuestion question;
+  final Question question;
+  final MultipleChoice multipleChoice;
 
-  const MultipleChoiceWidget({super.key, required this.question});
+  const MultipleChoiceWidget({super.key, required this.question, required this.multipleChoice});
 
   @override
   State<StatefulWidget> createState() => MultipleChoiceState();
@@ -55,7 +59,7 @@ class MultipleChoiceState extends State<MultipleChoiceWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> options = [];
-    options.addAll(widget.question.options
+    options.addAll(widget.multipleChoice.options
         .map((key, value) => MapEntry(key, RadioListTile<String>(
           onChanged: (v) => setState(() => answer = v),
           value: key,

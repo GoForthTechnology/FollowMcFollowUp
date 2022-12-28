@@ -16,6 +16,10 @@ EducationProgram _$EducationProgramFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      assignments: (json['assignments'] as List<dynamic>?)
+              ?.map((e) => Assignment.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$EducationProgramToJson(EducationProgram instance) =>
@@ -23,6 +27,7 @@ Map<String, dynamic> _$EducationProgramToJson(EducationProgram instance) =>
       'id': instance.id,
       'name': instance.name,
       'enrolledStudentIds': instance.enrolledStudentIds,
+      'assignments': instance.assignments.map((e) => e.toJson()).toList(),
       'ep1Date': const LocalDateJsonConverter().toJson(instance.ep1Date),
       'ep2Date': const LocalDateJsonConverter().toJson(instance.ep2Date),
     };

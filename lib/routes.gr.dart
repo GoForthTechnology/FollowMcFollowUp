@@ -392,7 +392,7 @@ class AssignmentDetailScreenRoute
   AssignmentDetailScreenRoute({
     _i15.Key? key,
     required int id,
-    required _i17.Assignment assignment,
+    required _i17.PreClientAssignment assignment,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           AssignmentDetailScreenRoute.name,
@@ -420,7 +420,7 @@ class AssignmentDetailScreenRouteArgs {
 
   final int id;
 
-  final _i17.Assignment assignment;
+  final _i17.PreClientAssignment assignment;
 
   @override
   String toString() {
