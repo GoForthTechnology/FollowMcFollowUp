@@ -9,12 +9,20 @@ part 'student_profile.g.dart';
 class StudentProfile extends Indexable<StudentProfile> {
 
   final String? id;
+  final String? programId;
   final String firstName;
   final String lastName;
   final int studentNumber;
   final String emailAddress;
 
-  StudentProfile({required this.id, required this.firstName, required this.lastName, required this.studentNumber, required this.emailAddress});
+  StudentProfile({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.studentNumber,
+    required this.emailAddress,
+    this.programId,
+  });
 
   factory StudentProfile.fromJson(Map<String, dynamic> json) => _$StudentProfileFromJson(json);
   Map<String, dynamic> toJson() => _$StudentProfileToJson(this);
@@ -30,6 +38,10 @@ class StudentProfile extends Indexable<StudentProfile> {
 
   @override
   StudentProfile setId(String id) {
-    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber);
+    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber, programId: programId);
+  }
+
+  StudentProfile enrollStudent(String? programId) {
+    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber, programId: programId);
   }
 }

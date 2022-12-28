@@ -71,6 +71,7 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
 
   final String? _initialId;
   final EducationProgramService _programService;
+  final UserService _userService;
 
   final formKey = GlobalKey<FormState>();
   final nameTextController = TextEditingController();
@@ -90,13 +91,13 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
     return _ViewState(_title(id), id, name, ep1Date, ep2Date, students, selectedStudents ?? {});
   }
 
-  _ViewModel(UserService userService, this._programService, this._initialId) {
+  _ViewModel(this._userService, this._programService, this._initialId) {
     Rx.combineLatest6(
         ep1DateController.stream,
         ep2DateController.stream,
         nameStreamController.stream,
         idController.stream,
-        userService.getAllStudents(),
+        _userService.getAllStudents(programId: _initialId, includeUnEnrolled: true),
         studentSelections.stream.scan<Map<String, bool>>((accumulated, value, index) {
           accumulated[value.item1] = value.item2;
           return accumulated;
@@ -144,7 +145,16 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
       if (!state.hasBeenSaved()) {
         idController.add(await _programService.addProgram(state.program()));
       } else {
-        _programService.updateProgram(state.program());
+        List<Future<void>> studentOps = [];
+        for (var student in state.students) {
+          if (state.selectedStudents.containsKey(student.id) && state.selectedStudents[student.id] == true) {
+            studentOps.add(_userService.updateStudent(student.enrollStudent(state._id)));
+          } else {
+            studentOps.add(_userService.updateStudent(student.enrollStudent(null)));
+          }
+        }
+        Future.wait(studentOps)
+            .then((_) => _programService.updateProgram(state.program()));
       }
     }
   }

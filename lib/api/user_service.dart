@@ -42,8 +42,20 @@ class UserService extends ChangeNotifier {
     });
   }
 
-  Stream<List<StudentProfile>> getAllStudents() {
-    return _studentPersistence.getAll();
+  Stream<List<StudentProfile>> getAllStudents({String? programId, bool includeUnEnrolled = false}) {
+    return _studentPersistence.getAll().map((students) => students.where((s) {
+      if (s.programId == null && includeUnEnrolled) {
+        return true;
+      }
+      if (programId != null && s.programId != programId) {
+        return false;
+      }
+      return true;
+    }).toList());
+  }
+
+  Future<void> updateStudent(StudentProfile studentProfile) {
+    return _studentPersistence.update(studentProfile);
   }
 
   Future<void> createStudent(StudentProfile studentProfile) {

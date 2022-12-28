@@ -13,11 +13,13 @@ StudentProfile _$StudentProfileFromJson(Map<String, dynamic> json) =>
       lastName: json['lastName'] as String,
       studentNumber: json['studentNumber'] as int,
       emailAddress: json['emailAddress'] as String,
+      programId: json['programId'] as String?,
     );
 
 Map<String, dynamic> _$StudentProfileToJson(StudentProfile instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'programId': instance.programId,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'studentNumber': instance.studentNumber,
