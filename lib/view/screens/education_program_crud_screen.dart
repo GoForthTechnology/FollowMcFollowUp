@@ -81,6 +81,8 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
   final idController = StreamController<String?>();
   final studentSelections = StreamController<Tuple2<String, bool>>();
 
+  final enrolledStudents = <String>{};
+
   _ViewState createState(
       LocalDate? ep1Date,
       LocalDate? ep2Date,
@@ -120,6 +122,8 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
           ep1DateController.add(program.ep1Date);
           ep2DateController.add(program.ep2Date);
           nameTextController.text = program.name;
+          enrolledStudents.clear();
+          enrolledStudents.addAll(program.enrolledStudentIds);
           for (var id in program.enrolledStudentIds) {
             studentSelections.add(Tuple2(id, true));
           }
@@ -147,7 +151,12 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
       } else {
         List<Future<void>> studentOps = [];
         for (var student in state.students) {
-          if (state.selectedStudents.containsKey(student.id) && state.selectedStudents[student.id] == true) {
+          var previouslyEnrolled = enrolledStudents.contains(student.id);
+          var enrolled = state.selectedStudents.containsKey(student.id) && state.selectedStudents[student.id] == true;
+          if (enrolled == previouslyEnrolled) {
+            continue; // nothing to do here
+          }
+          if (enrolled) {
             studentOps.add(_userService.updateStudent(student.enrollStudent(state._id)));
           } else {
             studentOps.add(_userService.updateStudent(student.enrollStudent(null)));
