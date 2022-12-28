@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/model/assignment.dart';
+import 'package:fmfu/model/assignments.dart';
 import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/model/student_profile.dart';
 import 'package:fmfu/utils/stream_widget.dart';
@@ -43,8 +44,9 @@ class _ViewState {
   final LocalDate? ep2Date;
   final List<StudentProfile> students;
   final Map<String, bool> selectedStudents;
+  final List<Assignment> assignments;
 
-  _ViewState(this.pageTitle, this._id, this.name, this.ep1Date, this.ep2Date, this.students, this.selectedStudents);
+  _ViewState(this.pageTitle, this._id, this.name, this.ep1Date, this.ep2Date, this.students, this.selectedStudents, this.assignments);
 
   bool hasBeenSaved() {
     return _id != null;
@@ -67,6 +69,9 @@ class _ViewState {
   }
 }
 
+typedef StudentSelectionUpdate = Tuple2<String, bool>;
+typedef AssignmentSelectionUpdate = Tuple2<AssignmentIdentifier?, Assignment?>;
+
 class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
 
   final String? _initialId;
@@ -79,7 +84,8 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
   final ep1DateController = StreamController<LocalDate?>();
   final ep2DateController = StreamController<LocalDate?>();
   final idController = StreamController<String?>();
-  final studentSelections = StreamController<Tuple2<String, bool>>();
+  final studentSelections = StreamController<StudentSelectionUpdate>();
+  final assignmentSelections = StreamController<AssignmentSelectionUpdate>();
 
   final enrolledStudents = <String>{};
 
@@ -89,17 +95,33 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
       String? name,
       String? id,
       List<StudentProfile> students,
+      Map<AssignmentIdentifier, Assignment>? selectedAssignments,
       Map<String, bool>? selectedStudents) {
-    return _ViewState(_title(id), id, name, ep1Date, ep2Date, students, selectedStudents ?? {});
+    List<Assignment> assignments = [];
+    if (selectedAssignments != null) {
+      assignments.addAll(selectedAssignments.values);
+    }
+    return _ViewState(_title(id), id, name, ep1Date, ep2Date, students, selectedStudents ?? {}, assignments);
   }
 
   _ViewModel(this._userService, this._programService, this._initialId) {
-    Rx.combineLatest6(
+    Rx.combineLatest7(
         ep1DateController.stream,
         ep2DateController.stream,
         nameStreamController.stream,
         idController.stream,
         _userService.getAllStudents(programId: _initialId, includeUnEnrolled: true),
+        assignmentSelections.stream.scan<Map<AssignmentIdentifier, Assignment>>((accumulated, value, index) {
+          if (value.item1 == null) {
+            return accumulated;
+          }
+          if (value.item2 == null) {
+            accumulated.remove(value.item1);
+          } else {
+            accumulated[value.item1!] = value.item2!;
+          }
+          return accumulated;
+        }, {}),
         studentSelections.stream.scan<Map<String, bool>>((accumulated, value, index) {
           accumulated[value.item1] = value.item2;
           return accumulated;
@@ -110,7 +132,8 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
     nameTextController.addListener(() => nameStreamController.add(nameTextController.text));
 
     idController.add(_initialId);
-    studentSelections.add(const Tuple2<String, bool>("", false));
+    studentSelections.add(const StudentSelectionUpdate("", false));
+    assignmentSelections.add(const AssignmentSelectionUpdate(null, null));
     if (_initialId == null) {
       ep1DateController.add(null);
       ep2DateController.add(null);
@@ -134,7 +157,7 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
 
   @override
   _ViewState initialState() {
-    return _ViewState(_title(_initialId), _initialId, null, null, null, [], {});
+    return _ViewState(_title(_initialId), _initialId, null, null, null, [], {}, []);
   }
 
   String _title(String? programId) {
@@ -167,6 +190,16 @@ class _ViewModel extends WidgetModel<_ViewState> with GlobalLoggy {
       }
     }
   }
+
+  void addAssignment(Assignment assignment) {
+    assignmentSelections.add(
+        AssignmentSelectionUpdate(assignment.identifier, assignment));
+  }
+
+  void removeAssignment(AssignmentIdentifier identifier) {
+    assignmentSelections.add(
+        AssignmentSelectionUpdate(identifier, null));
+  }
 }
 
 class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> with UiLoggy {
@@ -187,7 +220,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
         _sectionHeading(context, "Student Roster"),
         _buildStudentRoster(context, state, model),
         _sectionHeading(context, "Assignment Information"),
-        _buildAssignments(context, state),
+        _buildAssignments(context, state, model),
       ])),
     ));
   }
@@ -221,17 +254,37 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
     ]);
   }
 
-  Widget _buildAssignments(BuildContext context, _ViewState state) {
+  Widget _buildAssignments(BuildContext context, _ViewState state, _ViewModel model) {
     if (!state.canSelectAssignments()) {
       return Padding(padding: const EdgeInsets.only(bottom: 20), child: Text(
         "Please save the program to begin selecting assignments",
         style: Theme.of(context).textTheme.bodyText2,
       ));
     }
-    return Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
-      onPressed: () => showDialog(context: context, builder: (context) => const AssignmentDialog()),
-      child: const Text("Add an Assignment"),
-    ));
+    return Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, children: [
+      ListView.builder(
+        shrinkWrap: true,
+        itemCount: state.assignments.length,
+        itemBuilder: (context, index) {
+          var assignment = state.assignments[index];
+          return Row(children: [
+            const Spacer(),
+            Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pinkAccent,
+              ),
+              child: Text(assignment.identifier.type.description),
+            )),
+            const Spacer(),
+          ]);
+        },
+      ),
+      Padding(padding: const EdgeInsets.all(20), child: ElevatedButton(
+        onPressed: () => showDialog(context: context, builder: (context) => _AssignmentDialog(model: model)),
+        child: const Text("Add an Assignment"),
+      )),
+    ]);
   }
 
   Widget _sectionHeading(BuildContext context, String title) {
@@ -255,11 +308,11 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
   }
 
   Widget _buildEp1DateWidget(BuildContext context, _ViewState state, _ViewModel model) {
-    return _buildEpDateWidget(context, "EP I Date", state.ep1Date, model.ep1DateController);
+    return _buildEpDateWidget(context, "EP I Date:", state.ep1Date, model.ep1DateController);
   }
 
   Widget _buildEp2DateWidget(BuildContext context, _ViewState state, _ViewModel model) {
-    return _buildEpDateWidget(context, "EP II Date", state.ep2Date, model.ep2DateController);
+    return _buildEpDateWidget(context, "EP II Date:", state.ep2Date, model.ep2DateController);
   }
 
   Widget _buildEpDateWidget(BuildContext context, String title, LocalDate? currentDate, StreamController<LocalDate?> controller) {
@@ -297,8 +350,10 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
   }
 }
 
-class AssignmentDialog extends StatelessWidget {
-  const AssignmentDialog({super.key});
+class _AssignmentDialog extends StatelessWidget {
+  final _ViewModel model;
+
+  const _AssignmentDialog({required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +362,7 @@ class AssignmentDialog extends StatelessWidget {
         .map((type) => Padding(
           padding: const EdgeInsets.all(10),
           child: ElevatedButton(
-            onPressed: () => router.pop(),
+            onPressed: () => addAssignment(type).then((_) => router.pop()),
             child: Text(type.description),
           ),
         ))
@@ -319,5 +374,13 @@ class AssignmentDialog extends StatelessWidget {
         TextButton(onPressed: () => router.pop(), child: const Text("Close"))
       ],
     );
+  }
+
+  Future<void> addAssignment(AssignmentType type) async {
+    var assignment = Assignment(
+      identifier: AssignmentIdentifier(type: type),
+      preClientAssignment: assignments.first,
+    );
+    model.addAssignment(assignment);
   }
 }

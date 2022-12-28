@@ -24,8 +24,8 @@ Map<String, dynamic> _$AssignmentToJson(Assignment instance) =>
 AssignmentIdentifier _$AssignmentIdentifierFromJson(
         Map<String, dynamic> json) =>
     AssignmentIdentifier(
-      $enumDecode(_$AssignmentTypeEnumMap, json['type']),
-      json['id'] as String?,
+      type: $enumDecode(_$AssignmentTypeEnumMap, json['type']),
+      id: json['id'] as String?,
     );
 
 Map<String, dynamic> _$AssignmentIdentifierToJson(

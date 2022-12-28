@@ -20,7 +20,7 @@ class AssignmentIdentifier {
   final AssignmentType type;
   final String? id;
 
-  AssignmentIdentifier(this.type, this.id);
+  AssignmentIdentifier({required this.type, this.id});
 
   @override
   bool operator ==(Object other) =>
