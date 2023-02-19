@@ -76,7 +76,7 @@ class _EducationProgramListContent extends StreamWidget<_ViewModel, _ViewState> 
           var program = state.programs[index];
           return Row(children: [
             const Spacer(),
-            Padding(padding: EdgeInsets.all(10), child: ElevatedButton(
+            Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(
               onPressed: () {
                 AutoRouter.of(context).push(EducationProgramCrudScreenRoute(programId: program.id));
               },

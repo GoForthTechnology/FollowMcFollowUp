@@ -229,7 +229,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
     if (!state.canSelectStudents()) {
       return Padding(padding: const EdgeInsets.only(bottom: 20), child: Text(
         "Please save the program to begin selecting students",
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
       ));
     }
     return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -258,7 +258,7 @@ class _EducationProgramCrudContent extends StreamWidget<_ViewModel, _ViewState> 
     if (!state.canSelectAssignments()) {
       return Padding(padding: const EdgeInsets.only(bottom: 20), child: Text(
         "Please save the program to begin selecting assignments",
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
       ));
     }
     return Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, children: [
