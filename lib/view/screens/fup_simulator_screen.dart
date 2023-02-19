@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/model/stickers.dart';
 
 class FollowUpSimulatorPage extends StatefulWidget {
-  static const String routeName = "follow_up_simulator";
-
   final ExerciseState exerciseState;
 
   const FollowUpSimulatorPage({Key? key, required this.exerciseState}) : super(key: key);
@@ -69,17 +67,15 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black),
           ),
-          child: Column(
-            children: [
-              Expanded(child: Center(child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(children: [
-                    Padding(padding: const EdgeInsets.all(20), child: _chartWidget(model)),
-                    if (model.showFollowUpForm) const SingleChildScrollView(scrollDirection: Axis.horizontal, child: FollowUpFormWidget()),
-                  ]))
-              )),
-            ],
-          ),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(child: Center(child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(children: [
+                Padding(padding: const EdgeInsets.all(20), child: _chartWidget(model)),
+                SingleChildScrollView(scrollDirection: Axis.horizontal, child: Page10()),
+              ])),
+            )),
+          ]),
         ),
       );
     });
