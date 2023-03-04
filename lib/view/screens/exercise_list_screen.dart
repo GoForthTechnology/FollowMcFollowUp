@@ -75,7 +75,7 @@ class ExerciseScreen extends StatelessWidget {
             var scenarios = dynamicExerciseList.map((e) => tile(e, false)).toList();
             var exercises = staticExerciseList.map((e) => tile(e, false)).toList();
             if (snapshot.hasData) {
-              List<List<Exercise>> customExercises = snapshot.data! as List<List<Exercise>>;
+              List<List<Exercise>> customExercises = snapshot.data!;
               scenarios.addAll(customExercises[0].map((e) => tile(e, true)).toList());
               exercises.addAll(customExercises[1].map((e) => tile(e, true)).toList());
             }
