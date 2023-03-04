@@ -11,7 +11,8 @@ class Observation {
   String toString() {
     List<String> parts = [];
     if (flow != null) {
-      parts.add(flow!.code);
+      // New line is for the "new guidance" from the institute (c.a. 2019)
+      parts.add("${flow!.code}\n");
     }
     if (dischargeSummary != null) {
       parts.add(dischargeSummary.toString());

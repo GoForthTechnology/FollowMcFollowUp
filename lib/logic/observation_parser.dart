@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 
 
 Observation parseObservation(String input) {
+  input = input.replaceAll("\n", "");
   input = input.replaceAll(" ", "");
   input = input.toUpperCase();
 
