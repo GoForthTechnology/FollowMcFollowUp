@@ -56,6 +56,7 @@ class RecipeControlViewModel extends ChangeNotifier {
     for (var model in _models) {
       model.applyTemplate(recipe);
     }
+    _unusualBleedingProbability = recipe.preBuildUpRecipe.abnormalBleedingGenerator.probability;
     preMenstrualSpottingLength.set(recipe.postPeakRecipe.preMenstrualSpottingLengthDist.mean);
     _preempt = false;
     if (notify) notifyListeners();
