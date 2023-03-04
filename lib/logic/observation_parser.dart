@@ -34,20 +34,25 @@ Observation parseObservation(String input) {
 
 DischargeSummary _getDischargeSummary(String input) {
   var dischargeType = _getDischargeType(input);
-  input = consumePrefix(dischargeType.code, input);
+  if (dischargeType != null) {
+    input = consumePrefix(dischargeType.code, input);
+  }
 
   var dischargeDescriptors = _getDischargeDescriptors(input);
   for (var descriptor in dischargeDescriptors) {
     input = consumePrefix(descriptor.code, input);
   }
 
-  if (dischargeType.requiresDescriptors && !dischargeDescriptors.isNotEmpty) {
-    throw Exception("$dischargeType should not have descriptors");
+  if (dischargeType != null) {
+    if (dischargeType.requiresDescriptors && !dischargeDescriptors.isNotEmpty) {
+      throw Exception("$dischargeType should not have descriptors");
+    }
+
+    if (!dischargeType.requiresDescriptors && dischargeDescriptors.isNotEmpty) {
+      throw Exception("$dischargeType requires descriptors");
+    }
   }
 
-  if (!dischargeType.requiresDescriptors && dischargeDescriptors.isNotEmpty) {
-    throw Exception("$dischargeType requires descriptors");
-  }
 
   DischargeDescriptor? descriptorRequiringColor = dischargeDescriptors.where((d) => d.requiresColor).firstOrNull;
   bool hasColor = dischargeDescriptors.where((d) => d.isColor).isNotEmpty;
@@ -101,13 +106,13 @@ String _consumeDescriptor(String input, List<DischargeDescriptor> descriptors) {
   return input;
 }
 
-DischargeType _getDischargeType(String input) {
+DischargeType? _getDischargeType(String input) {
   for (var dischargeType in DischargeType.values) {
     if (input.startsWith(dischargeType.code)) {
       return dischargeType;
     }
   }
-  throw Exception("$input does not have a discharge type");
+  return null;
 }
 
 Flow? _getFlow(String input) {

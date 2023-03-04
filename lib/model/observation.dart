@@ -100,7 +100,7 @@ enum Flow {
 }
 
 class DischargeSummary {
-  final DischargeType dischargeType;
+  final DischargeType? dischargeType;
   final DischargeFrequency dischargeFrequency;
   final List<DischargeDescriptor> dischargeDescriptors;
 
@@ -108,7 +108,7 @@ class DischargeSummary {
 
   @override
   String toString() {
-    return "${dischargeType.code}${dischargeDescriptors.join("")} ${dischargeFrequency.code}";
+    return "${dischargeType?.code ?? ""}${dischargeDescriptors.join("")} ${dischargeFrequency.code}";
   }
 
   @override
@@ -135,7 +135,10 @@ class DischargeSummary {
   }
 
   bool get hasPeakTypeMucus {
-    if (dischargeType.isPeakType) {
+    if (dischargeType == null) {
+      return false;
+    }
+    if (dischargeType!.isPeakType) {
       return true;
     }
     for (var descriptor in dischargeDescriptors) {
@@ -151,7 +154,7 @@ class DischargeSummary {
   }
 
   bool get hasMucus {
-    return dischargeType.hasMucus;
+    return dischargeType?.hasMucus ?? false;
   }
 
 }
