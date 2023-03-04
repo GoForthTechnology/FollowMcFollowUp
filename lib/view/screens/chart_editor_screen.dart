@@ -49,7 +49,7 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
         create: (_) {
           var model = ChartListViewModel();
           model.recipeControlViewModel.updateTemplateIndex(templateIndex);
-          model.recipeControlViewModel.applyTemplate(template, notify: false);
+          model.recipeControlViewModel.applyTemplate(template, notify: true);
           return model;
         },
         child: Consumer<ChartListViewModel>(builder: (context, model, child) {
