@@ -363,6 +363,9 @@ class _RecipeControlWidgetState extends State<RecipeControlWidget> {
       return FutureBuilder<List<Exercise>>(
         future: exerciseModel.getCustomExercises(ExerciseType.dynamic),
         builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return Container();
+          }
           List<DynamicExercise> customExercises = snapshot.data?.cast() ?? [];
           List<DynamicExercise> exercises = [];
           exercises.addAll(exerciseModel
@@ -370,6 +373,9 @@ class _RecipeControlWidgetState extends State<RecipeControlWidget> {
               .cast<DynamicExercise>()
               .where((e) => e.recipe != null));
           exercises.addAll(customExercises);
+          if (model.templateIndex() >= exercises.length) {
+            throw Exception("Template index: ${model.templateIndex()} is out of bounds ${exercises.length}");
+          }
           return Row(children: [
             const Tooltip(message: "Select a standard scenario to preset the controls below", child: Text("Template")),
             Padding(padding: const EdgeInsets.all(10), child: DropdownButton<int>(
