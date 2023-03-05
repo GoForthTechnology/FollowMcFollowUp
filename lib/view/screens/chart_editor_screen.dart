@@ -26,25 +26,21 @@ import 'package:fmfu/view_model/chart_list_view_model.dart';
 typedef Corrections = Map<int, Map<int, StickerWithText>>;
 
 class ChartEditorPage extends StatelessWidget with UiLoggy {
-  static const String routeName = "charts";
-
   final int templateIndex;
-  final CycleRecipe template;
 
-  const ChartEditorPage({Key? key, required this.templateIndex, required this.template}) : super(key: key);
+  const ChartEditorPage({Key? key, @pathParam required this.templateIndex}) : super(key: key);
 
   static Future<ChartEditorPageRoute> route(BuildContext context) async {
     final completer = Completer<ChartEditorPageRoute>();
     showDialog(context: context, builder: (context) => TemplateSelectorWidget(
       fn: (index, recipe) {
-        completer.complete(ChartEditorPageRoute(templateIndex: index!, template: recipe!));
+        completer.complete(ChartEditorPageRoute(templateIndex: index!));
       }
     ));
     return completer.future;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget content(CycleRecipe template) {
     return ChangeNotifierProvider(
         create: (_) {
           var model = ChartListViewModel();
@@ -84,6 +80,22 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
               )
           );
         }));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ExerciseListViewModel>(
+      builder: (context, value, child) => FutureBuilder(
+        future: value.getTemplates(),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return Container();
+          }
+          var template = snapshot.data![templateIndex].recipe;
+          return content(template!);
+        },
+      ),
+    );
   }
 
   List<Widget> _actions(BuildContext context, ChartListViewModel model) {

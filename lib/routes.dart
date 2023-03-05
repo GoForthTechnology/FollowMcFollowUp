@@ -66,7 +66,7 @@ import 'package:fmfu/view/screens/login_screen.dart';
     ),
 
     AutoRoute(
-      path: '/editor',
+      path: '/editor/:templateIndex',
       page: ChartEditorPage,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
