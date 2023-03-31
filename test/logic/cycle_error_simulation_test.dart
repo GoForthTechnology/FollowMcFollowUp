@@ -39,7 +39,7 @@ void main() {
       expect(correctedEntries[3].observationText, "L");
 
       correctedEntries = introduceErrors(entries, {});
-      expect(correctedEntries[3].observationText, "L 6C X1");
+      expect(correctedEntries[3].observationText, "L\n 6C X1");
     });
   });
 
