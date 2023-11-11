@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/user_service.dart';
@@ -36,6 +37,8 @@ Future<void> main() async {
 
 final _appRouter = AppRouter(authGuard: AuthGuard());
 
+const googleClientId = "138632488368-14e2p7mc34v7ousp8nmfl36jbbiq9q2h.apps.googleusercontent.com";
+
 class MyApp extends StatelessWidget {
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
@@ -45,6 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseUIAuth.configureProviders([
+      GoogleProvider(clientId: googleClientId),
       EmailAuthProvider(),
     ]);
 

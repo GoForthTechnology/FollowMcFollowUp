@@ -53,13 +53,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBrSyPYzVBi81-uxaXBSUrsHNKkiMhFBKQ',
-    appId: '1:103213342463:web:3df7f49912ca42135a76ca',
-    messagingSenderId: '103213342463',
-    projectId: 'follow-mcfollowup',
-    authDomain: 'follow-mcfollowup.firebaseapp.com',
-    databaseURL: 'https://follow-mcfollowup-default-rtdb.firebaseio.com',
-    storageBucket: 'follow-mcfollowup.appspot.com',
-    measurementId: 'G-T8RG45D7EM',
+    apiKey: 'AIzaSyCS1jgQlDf0Exxvy5SdMG5GWXjUzJytDMI',
+    appId: '1:138632488368:web:5610c55cdcd325b9826275',
+    messagingSenderId: '138632488368',
+    projectId: 'fc-classroom',
+    authDomain: 'fc-classroom.firebaseapp.com',
+    databaseURL: 'https://fc-classroom-default-rtdb.firebaseio.com',
+    storageBucket: 'fc-classroom.appspot.com',
   );
 }

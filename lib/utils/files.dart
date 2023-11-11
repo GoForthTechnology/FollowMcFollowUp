@@ -22,7 +22,8 @@ void downloadJson(String content, String fileName) async {
 }
 
 void downloadFile({required String content, required String mimeType, required fileName}) async {
-  final String? path = await getSavePath(suggestedName: fileName);
+  // TODO fix this;
+  const String? path = null; //await getSavePath(suggestedName: fileName);
   if (path == null) {
     // Operation was canceled by the user.
     return;
