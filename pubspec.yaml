@@ -41,23 +41,23 @@ dependencies:
       ref: b819be5c908f76f350772b510aec76c1705397e6
   collection: ^1.16.0
   loggy: ^2.0.1+1
-  intl: ^0.17.0
-  google_fonts: ^4.0.3
+  intl: ^0.18.1
+  google_fonts: ^6.1.0
   time_machine: ^0.9.17
-  file_selector: ^0.9.2+1
+  file_selector: ^1.0.1
   file_selector_web: ^0.9.0+2
   json_serializable: ^6.5.1
   json_annotation: ^4.7.0
   url_launcher: ^6.1.6
   firebase_core: ^2.1.1
   firebase_analytics: ^10.0.3
-  auto_route: ^5.0.2
+  auto_route: ^5.0.4
   firebase_ui_auth: ^1.1.13
   firebase_auth: ^4.1.2
   firebase_database: ^10.0.5
   g_recaptcha_v3: ^0.0.5
-  http: ^0.13.5
-  firebase_app_check: ^0.1.1+5
+  http: ^1.1.0
+  firebase_app_check: ^0.2.1+4
   rxdart: ^0.27.7
   tuple: ^2.0.1
 
@@ -70,7 +70,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
   test: ^1.0.0
   build_runner: ^2.3.0
