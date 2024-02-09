@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fmfu/api/exercise_service.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
@@ -23,7 +24,15 @@ class ExerciseListViewModel extends ChangeNotifier with GlobalLoggy {
 
   Future<List<DynamicExercise>> getTemplates() async {
     var exercises = getExercises(ExerciseType.dynamic).where((e) => e.enabled).toList();
-    exercises.addAll(await getCustomExercises(ExerciseType.dynamic));
+    exercises.addAll(await getCustomExercises(ExerciseType.dynamic)
+        .timeout(const Duration(seconds: 30))
+        .onError((error, stackTrace) {
+          if (kDebugMode) {
+            print(error);
+          }
+          return [];
+        })
+    );
     return exercises as List<DynamicExercise>;
   }
 
