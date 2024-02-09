@@ -5,6 +5,8 @@ steps:
     args: [ 'push', 'gcr.io/follow-mcfollowup/github:$COMMIT_SHA' ]
   - name: 'gcr.io/cloud-builders/gcloud'
     args: [ 'beta', 'run', 'deploy', 'fmfu-image', '--image=gcr.io/follow-mcfollowup/github:$COMMIT_SHA', '--region=us-central1' ]
+options:
+  machineType: 'E2_HIGHCPU_8'
 #availableSecrets:
 #  secretManager:
 #  - versionName: projects/follow-mcfollowup/secrets/recaptcha_secret_key/versions/1
