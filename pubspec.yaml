@@ -30,37 +30,37 @@ dependencies:
   flutter:
     sdk: flutter
 
-  provider: ^6.0.0
+  provider: ^6.1.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.6
   dart_numerics:
     git:
       url: https://github.com/zlumyo/dart_numerics
       ref: b819be5c908f76f350772b510aec76c1705397e6
-  collection: ^1.16.0
-  loggy: ^2.0.1+1
+  collection: ^1.18.0
+  loggy: ^2.0.3
   intl: ^0.18.1
   google_fonts: ^6.1.0
   time_machine: ^0.9.17
-  file_selector: ^1.0.1
-  file_selector_web: ^0.9.0+2
-  json_serializable: ^6.5.1
-  json_annotation: ^4.7.0
-  url_launcher: ^6.1.6
-  firebase_core: ^2.1.1
-  firebase_analytics: ^10.0.3
+  file_selector: ^1.0.3
+  file_selector_web: ^0.9.3
+  json_serializable: ^6.7.1
+  json_annotation: ^4.8.1
+  url_launcher: ^6.2.4
+  firebase_core: ^2.25.4
+  firebase_analytics: ^10.8.5
   auto_route: ^5.0.4
-  firebase_ui_auth: ^1.1.13
-  firebase_auth: ^4.1.2
-  firebase_ui_oauth_google: ^1.0.8
-  firebase_database: ^10.0.5
+  firebase_ui_auth: ^1.13.0
+  firebase_auth: ^4.17.4
+  firebase_ui_oauth_google: 1.2.17
+  firebase_database: ^10.4.5
   g_recaptcha_v3: ^0.0.5
-  http: ^1.1.0
-  firebase_app_check: ^0.2.1+4
+  http: ^1.2.0
+  firebase_app_check: ^0.2.1+13
   rxdart: ^0.27.7
-  tuple: ^2.0.1
+  tuple: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -73,9 +73,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
 
-  test: ^1.0.0
-  build_runner: ^2.3.0
-  auto_route_generator: ^5.0.2
+  test: ^1.24.9
+  build_runner: ^2.4.8
+  auto_route_generator: ^5.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
