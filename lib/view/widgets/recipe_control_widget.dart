@@ -74,7 +74,7 @@ class _RecipeControlWidgetState extends State<RecipeControlWidget> {
           _templateSelector(model.recipeControlViewModel),
           ExpansionPanelList(
             expansionCallback: (index, isExpanded) => setState(() {
-              _items[index].isExpanded = !isExpanded;
+              _items[index].isExpanded = isExpanded;
               for (int i=0; i<_items.length; i++) {
                 if (i == index) {
                   continue;
