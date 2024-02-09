@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
         primarySwatch: Colors.blue,
+        useMaterial3: false,
       ),
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
