@@ -34,8 +34,8 @@ class CycleWidget extends StatefulWidget {
     this.showErrors = false,
     this.dayOffset = 0,
     this.soloCell,
-    Key? key, required this.rightWidgetFn,
-  }) : super(key: key);
+    super.key, required this.rightWidgetFn,
+  });
 
   @override
   State<StatefulWidget> createState() => CycleWidgetState();
@@ -267,13 +267,13 @@ class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
   final ChartViewModel model;
 
   const StickerCorrectionDialog({
-    Key? key,
+    super.key,
     required this.entryIndex,
     this.existingCorrection,
     required this.cycle,
     required this.editingEnabled,
     required this.model,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

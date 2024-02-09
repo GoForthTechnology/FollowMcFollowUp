@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class CycleStatsWidget extends StatefulWidget {
   final Cycle cycle;
 
-  const CycleStatsWidget({Key? key, required this.cycle}) : super(key: key);
+  const CycleStatsWidget({super.key, required this.cycle});
 
   @override
   State<StatefulWidget> createState() => CycleStatsState();

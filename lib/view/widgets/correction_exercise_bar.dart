@@ -8,7 +8,7 @@ import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:provider/provider.dart';
 
 class CorrectionExerciseBar extends StatelessWidget {
-  const CorrectionExerciseBar({Key? key}) : super(key: key);
+  const CorrectionExerciseBar({super.key});
 
   Row _stickerSelectionRow(ChartCorrectionViewModel model, ExerciseViewModel exerciseModel) {
     return Row(children: [
@@ -108,7 +108,7 @@ class CorrectionExerciseBar extends StatelessWidget {
       ...exerciseModel.currentDischargeDescriptors.map((descriptor) => Chip(
         label: Text(descriptor.name),
         onDeleted: () => exerciseModel.removeDischargeDescriptor(descriptor),
-      )).toList(),
+      )),
       Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: GestureDetector(
         onTap: () => showDialog(
           context: context,

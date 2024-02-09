@@ -6,7 +6,7 @@ class StickerWidget extends StatelessWidget {
   final StickerWithText? stickerWithText;
   final void Function() onTap;
 
-  const StickerWidget({Key? key, required this.stickerWithText, required this.onTap}) : super(key: key);
+  const StickerWidget({super.key, required this.stickerWithText, required this.onTap});
 
   static const Icon emptyIcon = Icon(null);
   static const Text emptyText = Text("");

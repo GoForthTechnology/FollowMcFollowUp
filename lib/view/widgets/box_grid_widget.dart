@@ -21,16 +21,16 @@ class BoxGridWidget extends StatelessWidget {
   }
 
   static Row? explanationHeaderRow() {
-    return Row(children: const [LegendCell(text: "", width: 30)]);
+    return const Row(children: [LegendCell(text: "", width: 30)]);
   }
 
   const BoxGridWidget({
-    Key? key,
+    super.key,
     required this.headerRow,
     required this.rows,
     this.nColumns = 8,
     this.includeRowLabels = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class BoxWidget extends StatelessWidget {
   final int followUpIndex;
   final bool disabled;
 
-  const BoxWidget(this.showDialogFn, this.item, this.itemIndex, this.followUpIndex, {Key? key, this.disabled = false}) : super(key: key);
+  const BoxWidget(this.showDialogFn, this.item, this.itemIndex, this.followUpIndex, {super.key, this.disabled = false});
 
   @override
   Widget build(BuildContext context) {

@@ -19,13 +19,13 @@ class FollowUpFormSectionWidget extends StatelessWidget with UiLoggy {
   final String? explanationSectionTitle;
 
   const FollowUpFormSectionWidget({
-    Key? key,
+    super.key,
     required this.items,
     required this.indexOffset,
     required this.nItems,
     this.boxSection = false,
     this.explanationSectionTitle,
-  }) : super(key: key);
+  });
 
    static FollowUpFormSectionWidget createSingle(
        List<List<FollowUpFormItem>> itemGroups, {

@@ -1,6 +1,5 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fmfu/api/exercise_service.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';

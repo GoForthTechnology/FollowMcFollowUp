@@ -24,8 +24,8 @@ class ChartWidget extends StatelessWidget with UiLoggy {
     this.includeFooter = true,
     this.titleWidget,
     this.soloCell,
-    Key? key, required this.rightWidgetFn,
-  }) : super(key: key);
+    super.key, required this.rightWidgetFn,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -82,7 +82,7 @@ class MultipleChoiceState extends State<MultipleChoiceWidget> {
             Flexible(child: Text(widget.question.question, style: style,)),
           ],
         ),
-        ...options.map((widget) => Padding(padding: const EdgeInsets.only(left: 20), child: widget)).toList(),
+        ...options.map((widget) => Padding(padding: const EdgeInsets.only(left: 20), child: widget)),
       ],
     ));
   }

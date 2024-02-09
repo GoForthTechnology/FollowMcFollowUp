@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 class HomeScreen extends ScreenWidget with UiLoggy {
   static const String routeName = "home";
 
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({super.key});
 
   Widget _tile({
     required Color color,

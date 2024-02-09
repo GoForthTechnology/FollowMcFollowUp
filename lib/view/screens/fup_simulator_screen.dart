@@ -15,7 +15,7 @@ import 'package:fmfu/model/stickers.dart';
 class FollowUpSimulatorPage extends StatefulWidget {
   final ExerciseState exerciseState;
 
-  const FollowUpSimulatorPage({Key? key, required this.exerciseState}) : super(key: key);
+  const FollowUpSimulatorPage({super.key, required this.exerciseState});
 
   @override
   State<StatefulWidget> createState() => _FollowUpSimulatorPageState();

@@ -9,7 +9,7 @@ class ChartRowWidget extends StatelessWidget {
   final Widget Function(int) bottomCellCreator;
   final Widget? rightWidget;
 
-  const ChartRowWidget({Key? key, required this.dayOffset, required this.topCellCreator, required this.bottomCellCreator, this.rightWidget}) : super(key: key);
+  const ChartRowWidget({super.key, required this.dayOffset, required this.topCellCreator, required this.bottomCellCreator, this.rightWidget});
 
   @override
   Widget build(BuildContext context) {

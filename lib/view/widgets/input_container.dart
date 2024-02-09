@@ -4,7 +4,7 @@ class InputContainer extends StatelessWidget {
   final String? title;
   final Widget content;
 
-  const InputContainer({Key? key, required this.title, required this.content}) : super(key: key);
+  const InputContainer({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {

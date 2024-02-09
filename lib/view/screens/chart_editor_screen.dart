@@ -28,7 +28,7 @@ typedef Corrections = Map<int, Map<int, StickerWithText>>;
 class ChartEditorPage extends StatelessWidget with UiLoggy {
   final int templateIndex;
 
-  const ChartEditorPage({Key? key, @pathParam required this.templateIndex}) : super(key: key);
+  const ChartEditorPage({super.key, @pathParam required this.templateIndex});
 
   static Future<ChartEditorPageRoute> route(BuildContext context) async {
     final completer = Completer<ChartEditorPageRoute>();
@@ -282,10 +282,10 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
   }
 
   Widget _chartTitleWidget(ChartListViewModel model) {
-    return Padding(padding: const EdgeInsets.only(bottom: 10), child: Column(
+    return const Padding(padding: EdgeInsets.only(bottom: 10), child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text("Select a stamp or observation to make an edit or open the settings panel to: alter the cycle recipe, add follow ups, change instructions, etc.", style: TextStyle(fontStyle: FontStyle.italic)),
         SizedBox(height: 10),
         Text("When you're done editing, click the play button to run a follow up simulation or select \"Run Correcting Exercise\" to practice chart corrections.", style: TextStyle(fontStyle: FontStyle.italic)),

@@ -8,7 +8,7 @@ import 'fup_form_section_widget.dart';
 class FollowUpFormWidget extends StatefulWidget {
   static const String routeName = "fupf";
 
-  const FollowUpFormWidget({Key? key}) : super(key: key);
+  const FollowUpFormWidget({super.key});
 
   @override
   State<StatefulWidget> createState() => _FollowUpFormWidgetState();
@@ -59,19 +59,19 @@ final List<PagePair> pagePairs = [
   PagePair(Page22(), Page23()),
 ];
 
-final Widget comingSoon = Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: const [
+const Widget comingSoon = Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
   Center(child: Text("Coming Soon!")),
 ],));
 
 class Page2 extends AbstractPage {
-  Page2({Key? key}) : super(key: key, pageNum: 2, content: [
+  Page2({super.key}) : super(pageNum: 2, content: [
     const Text("COMPLETION OF FORMS", style: sectionHeadingStyle),
     comingSoon, // TODO: finish
   ]);
 }
 
 class Page3 extends AbstractPage {
-  Page3({Key? key}) : super(key: key, pageNum: 3, content: [
+  Page3({super.key}) : super(pageNum: 3, content: [
     const Text("4) OBSERVATIONS", style: sectionHeadingStyle),
     const Padding(
       padding: EdgeInsets.only(left: 20),
@@ -89,7 +89,7 @@ class Page3 extends AbstractPage {
 }
 
 class Page4 extends AbstractPage {
-  Page4({Key? key}) : super(key: key, pageNum: 4, content: [
+  Page4({super.key}) : super(pageNum: 4, content: [
     const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
     const Padding(
       padding: EdgeInsets.only(left: 20),
@@ -106,7 +106,7 @@ class Page4 extends AbstractPage {
 }
 
 class Page5 extends AbstractPage {
-  Page5({Key? key}) : super(key: key, pageNum: 5, content: [
+  Page5({super.key}) : super(pageNum: 5, content: [
     const Text("4) OBSERVATIONS -- Cont'd", style: sectionHeadingStyle),
     Expanded(child: Row(children: [
       const RotatedBox(
@@ -144,7 +144,7 @@ class Page5 extends AbstractPage {
 }
 
 class Page6 extends AbstractPage {
-  Page6({Key? key}) : super(key: key, pageNum: 6, content: [
+  Page6({super.key}) : super(pageNum: 6, content: [
     const Text("5) HEALTH AND HYGIENE REVIEW (\u2714)", style: sectionHeadingStyle),
     // TODO: add principles explained column
     Padding(
@@ -170,7 +170,7 @@ class Page6 extends AbstractPage {
 }
 
 class Page7 extends AbstractPage {
-  Page7({Key? key}) : super(key: key, pageNum: 7, content: [
+  Page7({super.key}) : super(pageNum: 7, content: [
     const Text("8) CHARTING (NaProTRACKING) -- Review & Assessment", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
@@ -180,13 +180,13 @@ class Page7 extends AbstractPage {
 }
 
 class Page8 extends AbstractPage {
-  Page8({Key? key}) : super(key: key, pageNum: 8, content: [
+  Page8({super.key}) : super(pageNum: 8, content: [
     AbstractPage.getCommentSection(8),
   ]);
 }
 
 class Page9 extends AbstractPage {
-  Page9({Key? key}) : super(key: key, pageNum: 9, content: [
+  Page9({super.key}) : super(pageNum: 9, content: [
     const Text("9) SPECIAL DISCHARGES -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
@@ -244,7 +244,7 @@ class Page9 extends AbstractPage {
 }
 
 class Page10 extends AbstractPage {
-  Page10({Key? key}) : super(key: key, pageNum: 10, content: [
+  Page10({super.key}) : super(pageNum: 10, content: [
     const Text("10) Charting (NaProTRACKING) PATTERNS IDENTIFIED (\u2714 OR -)", style: sectionHeadingStyle),
     const Text("(All \u2714 require comments)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
@@ -258,7 +258,7 @@ class Page10 extends AbstractPage {
 }
 
 class Page11 extends AbstractPage {
-  Page11({Key? key}) : super(key: key, pageNum: 11, content: [
+  Page11({super.key}) : super(pageNum: 11, content: [
     const Text("11) SPECIAL CIRCUMSTANCES -- REVIEW & ASSESSMENT", style: sectionHeadingStyle),
     const Text("(Code for this section: 1=Unsatisfactory Application  2=Satisfactory Application  \u2714=Reviewed - assessment not indicated  -- = Not Applicable)"),
     Padding(padding: const EdgeInsets.all(10), child: Column(
@@ -331,14 +331,14 @@ class Page11 extends AbstractPage {
 }
 
 class Page12 extends AbstractPage {
-  Page12({Key? key}) : super(key: key, pageNum: 12, content: [
+  Page12({super.key}) : super(pageNum: 12, content: [
     AbstractPage.getCommentSection(12),
     comingSoon, // TODO: finish
   ]);
 }
 
 class Page22 extends AbstractPage {
-  Page22({Key? key}) : super(key: key, pageNum: 22, content: [
+  Page22({super.key}) : super(pageNum: 22, content: [
     const Text("14) INSTRUCTIONS -- LIST AND INTEGRATION (\u2714 OR --)", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +397,7 @@ class Page22 extends AbstractPage {
 }
 
 class Page23 extends AbstractPage {
-  Page23({Key? key}) : super(key: key, pageNum: 23, content: [
+  Page23({super.key}) : super(pageNum: 23, content: [
     const Text("14) INSTRUCTIONS -- Cont'd", style: sectionHeadingStyle),
     Padding(padding: const EdgeInsets.all(10), child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +456,7 @@ abstract class AbstractPage extends StatelessWidget {
   final int pageNum;
   final List<Widget> content;
 
-  const AbstractPage({Key? key, required this.content, required this.pageNum}) : super(key: key);
+  const AbstractPage({super.key, required this.content, required this.pageNum});
 
   static CommentSectionWidget getCommentSection(int pageNum) {
     return CommentSectionWidget(pageNum: pageNum);

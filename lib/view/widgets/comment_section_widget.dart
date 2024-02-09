@@ -13,10 +13,9 @@ class CommentSectionWidget extends StatelessWidget with UiLoggy {
   final CommentSectionConfig commentConfig;
 
   CommentSectionWidget({
-    Key? key,
+    super.key,
     required this.pageNum,
-  }) :  commentConfig = FollowUpFormLayout.commentConfigForPage(pageNum)!,
-        super(key: key);
+  }) :  commentConfig = FollowUpFormLayout.commentConfigForPage(pageNum)!;
 
   static const headingStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18);
   static const dateStyle = TextStyle(fontSize: 18);

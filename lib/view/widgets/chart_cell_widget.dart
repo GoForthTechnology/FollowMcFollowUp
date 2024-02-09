@@ -7,12 +7,12 @@ class ChartCellWidget extends StatelessWidget {
   final Alignment alignment;
 
   const ChartCellWidget({
-    Key? key,
+    super.key,
     this.alignment = Alignment.center,
     required this.content,
     required this.backgroundColor,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

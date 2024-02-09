@@ -9,7 +9,7 @@ class CommentWidget extends StatelessWidget with SaveItem {
   final formKey = GlobalKey<FormState>();
 
   CommentWidget({
-    Key? key,
+    super.key,
     required item,
     required followUpIndex,
     required commentIndex,
@@ -19,7 +19,7 @@ class CommentWidget extends StatelessWidget with SaveItem {
         followUp: followUpIndex,
         itemId: item.id(),
       ),
-    ), super(key: key);
+    );
 
   @override
   Widget build(BuildContext context) {

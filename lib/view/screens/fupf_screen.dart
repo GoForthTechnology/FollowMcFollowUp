@@ -5,7 +5,7 @@ import 'package:fmfu/view/widgets/fup_form_widget.dart';
 class FupFormScreen extends ScreenWidget {
   static const String routeName = "fupf";
 
-  FupFormScreen({Key? key}) : super(key: key);
+  FupFormScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -42,7 +42,7 @@ const googleClientId = "138632488368-14e2p7mc34v7ousp8nmfl36jbbiq9q2h.apps.googl
 class MyApp extends StatelessWidget {
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
