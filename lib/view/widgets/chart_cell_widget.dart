@@ -4,11 +4,13 @@ class ChartCellWidget extends StatelessWidget {
   final Widget content;
   final Color backgroundColor;
   final void Function() onTap;
+  final void Function()? onLongPress;
   final Alignment alignment;
 
   const ChartCellWidget({
     super.key,
     this.alignment = Alignment.center,
+    this.onLongPress,
     required this.content,
     required this.backgroundColor,
     required this.onTap,
@@ -18,6 +20,7 @@ class ChartCellWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Container(
         width: 40,
         height: 60,

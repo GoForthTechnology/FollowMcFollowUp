@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/rendered_observation.dart';
@@ -99,6 +100,11 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       content: content,
       backgroundColor: textBackgroundColor,
       onTap: (!canShowDialog || entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
+      onLongPress: () {
+        if (kDebugMode) {
+          print(entry?.toJson());
+        }
+      },
     );
   }
 

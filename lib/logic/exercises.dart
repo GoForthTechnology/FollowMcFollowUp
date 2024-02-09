@@ -19,7 +19,7 @@ abstract class Exercise {
   const Exercise(this.name);
 
   bool get enabled;
-  ExerciseState getState();
+  ExerciseState getState({required bool includeErrorScenarios});
 }
 
 enum ExerciseType {
@@ -87,7 +87,7 @@ class StaticExercise extends Exercise {
   bool get enabled => cycles.isNotEmpty;
 
   @override
-  ExerciseState getState() {
+  ExerciseState getState({required bool includeErrorScenarios}) {
     List<Cycle> cycles = [];
     for (var observations in this.cycles) {
       final entries = observations.map((o) =>
@@ -198,7 +198,7 @@ class DynamicExercise extends Exercise {
   bool get enabled => recipe != null;
 
   @override
-  ExerciseState getState() {
+  ExerciseState getState({required bool includeErrorScenarios}) {
     if (recipe == null) {
       throw StateError("Should not try and get state with a null recipe!");
     }
@@ -239,7 +239,9 @@ class DynamicExercise extends Exercise {
       currentDate = currentDate.addDays(observations.length);
 
       var entries = List.of(observations.map(ChartEntry.fromRenderedObservation));
-      entries = introduceErrors(entries, activeScenarios);
+      if (includeErrorScenarios) {
+        entries = introduceErrors(entries, activeScenarios);
+      }
       return Cycle(
         index: index,
         entries: entries,

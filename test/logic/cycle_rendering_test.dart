@@ -38,7 +38,13 @@ void main() {
     // TODO: re-enable
     advancedCycles.forEach((key, cycle) => test(key, () => testTrainingCycle(cycle)));
   });
+  group("Custom Cycles", () {
+    customCycles.forEach((key, cycle) => test(key, () => testTrainingCycle(cycle)));
+  });
 }
+
+final customCycles = {
+};
 
 final trainingCycles = {
   "B1A": basicB1A,

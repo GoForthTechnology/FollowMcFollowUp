@@ -44,7 +44,7 @@ class ExerciseScreen extends StatelessWidget {
                     const Text("Practice using the VRDS and correcting a single cycle."),
                     ElevatedButton(
                       onPressed: () {
-                        AutoRouter.of(context).push(ChartCorrectingScreenRoute(cycle: e.getState().cycles.last));
+                        AutoRouter.of(context).push(ChartCorrectingScreenRoute(cycle: e.getState(includeErrorScenarios: false).cycles.last));
                         Navigator.of(context).pop();
                       },
                       child: const Text("Correcting Drill"),
@@ -55,7 +55,7 @@ class ExerciseScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: e.getState()));
+                        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(exerciseState: e.getState(includeErrorScenarios: true)));
                         Navigator.of(context).pop();
                       },
                       child: const Text("Follow Up Simulator"),
