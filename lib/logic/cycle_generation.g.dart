@@ -50,7 +50,7 @@ PreBuildUpRecipe _$PreBuildUpRecipeFromJson(Map<String, dynamic> json) =>
       NormalDistribution.fromJson(json['length'] as Map<String, dynamic>),
       DischargeSummaryGenerator.fromJson(
           json['nonMucusDischargeGenerator'] as Map<String, dynamic>),
-      NormalAnomalyGenerator.fromJson(
+      RandomAnomalyGenerator.fromJson(
           json['abnormalBleedingGenerator'] as Map<String, dynamic>),
     );
 
@@ -93,7 +93,7 @@ PostPeakRecipe _$PostPeakRecipeFromJson(Map<String, dynamic> json) =>
           json['mucusDischargeGenerator'] as Map<String, dynamic>),
       nonMucusDischargeGenerator: DischargeSummaryGenerator.fromJson(
           json['nonMucusDischargeGenerator'] as Map<String, dynamic>),
-      abnormalBleedingGenerator: NormalAnomalyGenerator.fromJson(
+      abnormalBleedingGenerator: RandomAnomalyGenerator.fromJson(
           json['abnormalBleedingGenerator'] as Map<String, dynamic>),
       preMenstrualSpottingLengthDist: NormalDistribution.fromJson(
           json['preMenstrualSpottingLengthDist'] as Map<String, dynamic>),
@@ -109,6 +109,18 @@ Map<String, dynamic> _$PostPeakRecipeToJson(PostPeakRecipe instance) =>
       'abnormalBleedingGenerator': instance.abnormalBleedingGenerator.toJson(),
       'preMenstrualSpottingLengthDist':
           instance.preMenstrualSpottingLengthDist.toJson(),
+    };
+
+RandomAnomalyGenerator _$RandomAnomalyGeneratorFromJson(
+        Map<String, dynamic> json) =>
+    RandomAnomalyGenerator(
+      (json['probability'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$RandomAnomalyGeneratorToJson(
+        RandomAnomalyGenerator instance) =>
+    <String, dynamic>{
+      'probability': instance.probability,
     };
 
 NormalAnomalyGenerator _$NormalAnomalyGeneratorFromJson(

@@ -72,10 +72,7 @@ class RecipeControlViewModel extends ChangeNotifier {
   }
 
   CycleRecipe getRecipe() {
-    final unusualBleedingGenerator = NormalAnomalyGenerator(
-      lengthDist: NormalDistribution(1, 1),
-      probability: _unusualBleedingProbability,
-    );
+    final unusualBleedingGenerator = RandomAnomalyGenerator(_unusualBleedingProbability);
 
     var flowRecipe = FlowRecipe(
       NormalDistribution(flowModel.length.get(), 1),

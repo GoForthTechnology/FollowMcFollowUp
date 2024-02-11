@@ -118,10 +118,7 @@ class CycleRecipe extends Recipe {
         ),
       ],
     );
-    final unusualBleedingGenerator = NormalAnomalyGenerator(
-      lengthDist: NormalDistribution(1, stdDev),
-      probability: unusualBleedingProbability,
-    );
+    final unusualBleedingGenerator = RandomAnomalyGenerator(unusualBleedingProbability);
 
     final flowRecipe = FlowRecipe(
       NormalDistribution(flowLength, stdDev),
@@ -315,7 +312,7 @@ class FlowRecipe extends Recipe {
 class PreBuildUpRecipe extends Recipe {
   final NormalDistribution length;
   final DischargeSummaryGenerator nonMucusDischargeGenerator;
-  final NormalAnomalyGenerator abnormalBleedingGenerator;
+  final RandomAnomalyGenerator abnormalBleedingGenerator;
 
   PreBuildUpRecipe(this.length, this.nonMucusDischargeGenerator, this.abnormalBleedingGenerator);
 
@@ -380,7 +377,7 @@ class PostPeakRecipe extends Recipe {
   final NormalDistribution mucusLengthDist;
   final DischargeSummaryGenerator mucusDischargeGenerator;
   final DischargeSummaryGenerator nonMucusDischargeGenerator;
-  final NormalAnomalyGenerator abnormalBleedingGenerator;
+  final RandomAnomalyGenerator abnormalBleedingGenerator;
   final NormalDistribution preMenstrualSpottingLengthDist;
 
   PostPeakRecipe({
@@ -457,6 +454,29 @@ abstract class AnomalyGenerator {
   List<bool> generate(int periodLength);
 }
 
+@JsonSerializable(explicitToJson: true)
+class RandomAnomalyGenerator extends AnomalyGenerator {
+  final Random _r = Random();
+  final double probability;
+
+  RandomAnomalyGenerator(this.probability);
+
+  @override
+  List<bool> generate(int periodLength) {
+    int nActive = NormalDistribution((periodLength * probability).floor(), 1).get();
+    List<int> indexes = List.generate(periodLength, (index) => index);
+    List<bool> anomalyField = List.filled(periodLength, false);
+    for (int i=0; i<nActive; i++) {
+      var index = indexes.removeAt(_r.nextInt(indexes.length));
+      anomalyField[index] = true;
+    }
+    return anomalyField;
+  }
+
+  factory RandomAnomalyGenerator.fromJson(Map<String, dynamic> json) => _$RandomAnomalyGeneratorFromJson(json);
+  Map<String, dynamic> toJson() => _$RandomAnomalyGeneratorToJson(this);
+}
+
 class UniformAnomalyGenerator extends AnomalyGenerator {
   final Random _r = Random();
   final double _probability;
@@ -472,7 +492,9 @@ class UniformAnomalyGenerator extends AnomalyGenerator {
       }
     }
     return anomalyField;
-  }}
+  }
+}
+
 
 @JsonSerializable(explicitToJson: true)
 class NormalAnomalyGenerator extends AnomalyGenerator {
