@@ -1,20 +1,16 @@
 
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
-import 'package:fmfu/utils/screen_widget.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends ScreenWidget with UiLoggy {
-  static const String routeName = "home";
-
-  HomeScreen({super.key});
+class HomeScreen extends StatelessWidget with UiLoggy {
+  const HomeScreen({super.key});
 
   Widget _tile({
     required Color color,
@@ -45,13 +41,6 @@ class HomeScreen extends ScreenWidget with UiLoggy {
         mainAxisSpacing: 10,
         maxCrossAxisExtent: 300.0,
         children: <Widget>[
-          _tile(
-            color: Colors.lightBlue,
-            icon: Icons.person,
-            title: "Exercises",
-            text: "Get some extra practice.",
-            onClick: () => router.push(const ExerciseScreenRoute()),
-          ),
           _tile(
               color: Colors.lightBlue,
               icon: Icons.edit,
@@ -88,7 +77,6 @@ class HomeScreen extends ScreenWidget with UiLoggy {
 
   @override
   Widget build(BuildContext context) {
-    logScreenView("HomeScreen");
     return NavigationRailScreen(
         title: const Text("Your Overview"),
         item: NavigationItem.home,

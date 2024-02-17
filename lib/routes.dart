@@ -4,6 +4,7 @@ import 'package:fmfu/view/screens/assignment_detail_screen.dart';
 import 'package:fmfu/view/screens/assignment_list_screen.dart';
 import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/view/screens/drills_screen.dart';
 import 'package:fmfu/view/screens/education_program_crud_screen.dart';
 import 'package:fmfu/view/screens/education_program_list_screen.dart';
 import 'package:fmfu/view/screens/email_verify_screen.dart';
@@ -28,6 +29,14 @@ import 'package:fmfu/view/screens/login_screen.dart';
     AutoRoute(
       path: '/assignments',
       page: AssignmentListScreen,
+      guards: [AuthGuard],
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+    AutoRoute(
+      path: '/drills',
+      page: DrillsScreen,
       guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),

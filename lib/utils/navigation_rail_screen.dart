@@ -5,7 +5,7 @@ import 'package:fmfu/routes.gr.dart';
 
 enum NavigationItem {
   home(label: "Home", icon: Icons.home, route: HomeScreenRoute()),
-  drills(label: "Drills", icon: Icons.timer),
+  drills(label: "Drills", icon: Icons.timer, route: DrillsScreenRoute()),
   assignments(label: "Assignments", icon: Icons.assignment),
   programs(label: "My Programs", icon: Icons.school),
   ;
