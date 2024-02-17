@@ -13,6 +13,7 @@ class LoginScreen extends StatelessWidget {
         title: const Text("Login"),
       ),
       body: SignInScreen(
+        showAuthActionSwitch: false,
         actions: [
           ForgotPasswordAction((context, email) {
             Navigator.pushNamed(

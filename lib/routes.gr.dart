@@ -11,63 +11,54 @@
 // ignore_for_file: type=lint
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i14;
-import 'package:flutter/material.dart' as _i15;
-import 'package:fmfu/auth.dart' as _i16;
-import 'package:fmfu/model/assignment.dart' as _i17;
-import 'package:fmfu/model/chart.dart' as _i19;
-import 'package:fmfu/model/exercise.dart' as _i18;
-import 'package:fmfu/view/screens/assignment_detail_screen.dart' as _i4;
-import 'package:fmfu/view/screens/assignment_list_screen.dart' as _i3;
-import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i8;
-import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i7;
-import 'package:fmfu/view/screens/education_program_crud_screen.dart' as _i11;
-import 'package:fmfu/view/screens/education_program_list_screen.dart' as _i10;
-import 'package:fmfu/view/screens/email_verify_screen.dart' as _i13;
-import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i9;
-import 'package:fmfu/view/screens/fup_simulator_screen.dart' as _i6;
-import 'package:fmfu/view/screens/fupf_screen.dart' as _i5;
-import 'package:fmfu/view/screens/home_screen.dart' as _i2;
-import 'package:fmfu/view/screens/landing_screen.dart' as _i1;
-import 'package:fmfu/view/screens/login_screen.dart' as _i12;
+import 'package:auto_route/auto_route.dart' as _i13;
+import 'package:flutter/material.dart' as _i14;
+import 'package:fmfu/auth.dart' as _i15;
+import 'package:fmfu/model/assignment.dart' as _i16;
+import 'package:fmfu/model/chart.dart' as _i18;
+import 'package:fmfu/model/exercise.dart' as _i17;
+import 'package:fmfu/view/screens/assignment_detail_screen.dart' as _i3;
+import 'package:fmfu/view/screens/assignment_list_screen.dart' as _i2;
+import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i7;
+import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i6;
+import 'package:fmfu/view/screens/education_program_crud_screen.dart' as _i10;
+import 'package:fmfu/view/screens/education_program_list_screen.dart' as _i9;
+import 'package:fmfu/view/screens/email_verify_screen.dart' as _i12;
+import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i8;
+import 'package:fmfu/view/screens/fup_simulator_screen.dart' as _i5;
+import 'package:fmfu/view/screens/fupf_screen.dart' as _i4;
+import 'package:fmfu/view/screens/home_screen.dart' as _i1;
+import 'package:fmfu/view/screens/login_screen.dart' as _i11;
 
-class AppRouter extends _i14.RootStackRouter {
+class AppRouter extends _i13.RootStackRouter {
   AppRouter({
-    _i15.GlobalKey<_i15.NavigatorState>? navigatorKey,
+    _i14.GlobalKey<_i14.NavigatorState>? navigatorKey,
     required this.authGuard,
   }) : super(navigatorKey);
 
-  final _i16.AuthGuard authGuard;
+  final _i15.AuthGuard authGuard;
 
   @override
-  final Map<String, _i14.PageFactory> pagesMap = {
-    LandingScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<LandingScreenRouteArgs>(
-          orElse: () => const LandingScreenRouteArgs());
-      return _i14.AdaptivePage<dynamic>(
-        routeData: routeData,
-        child: _i1.LandingScreen(key: args.key),
-      );
-    },
+  final Map<String, _i13.PageFactory> pagesMap = {
     HomeScreenRoute.name: (routeData) {
       final args = routeData.argsAs<HomeScreenRouteArgs>(
           orElse: () => const HomeScreenRouteArgs());
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i2.HomeScreen(key: args.key),
+        child: _i1.HomeScreen(key: args.key),
       );
     },
     AssignmentListScreenRoute.name: (routeData) {
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i3.AssignmentListScreen(),
+        child: const _i2.AssignmentListScreen(),
       );
     },
     AssignmentDetailScreenRoute.name: (routeData) {
       final args = routeData.argsAs<AssignmentDetailScreenRouteArgs>();
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i4.AssignmentDetailScreen(
+        child: _i3.AssignmentDetailScreen(
           key: args.key,
           id: args.id,
           assignment: args.assignment,
@@ -77,16 +68,16 @@ class AppRouter extends _i14.RootStackRouter {
     FupFormScreenRoute.name: (routeData) {
       final args = routeData.argsAs<FupFormScreenRouteArgs>(
           orElse: () => const FupFormScreenRouteArgs());
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i5.FupFormScreen(key: args.key),
+        child: _i4.FupFormScreen(key: args.key),
       );
     },
     FollowUpSimulatorPageRoute.name: (routeData) {
       final args = routeData.argsAs<FollowUpSimulatorPageRouteArgs>();
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i6.FollowUpSimulatorPage(
+        child: _i5.FollowUpSimulatorPage(
           key: args.key,
           exerciseState: args.exerciseState,
         ),
@@ -97,9 +88,9 @@ class AppRouter extends _i14.RootStackRouter {
       final args = routeData.argsAs<ChartEditorPageRouteArgs>(
           orElse: () => ChartEditorPageRouteArgs(
               templateIndex: pathParams.getInt('templateIndex')));
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i7.ChartEditorPage(
+        child: _i6.ChartEditorPage(
           key: args.key,
           templateIndex: args.templateIndex,
         ),
@@ -107,24 +98,24 @@ class AppRouter extends _i14.RootStackRouter {
     },
     ChartCorrectingScreenRoute.name: (routeData) {
       final args = routeData.argsAs<ChartCorrectingScreenRouteArgs>();
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i8.ChartCorrectingScreen(
+        child: _i7.ChartCorrectingScreen(
           key: args.key,
           cycle: args.cycle,
         ),
       );
     },
     ExerciseScreenRoute.name: (routeData) {
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i9.ExerciseScreen(),
+        child: const _i8.ExerciseScreen(),
       );
     },
     EducationProgramListScreenRoute.name: (routeData) {
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i10.EducationProgramListScreen(),
+        child: const _i9.EducationProgramListScreen(),
       );
     },
     EducationProgramCrudScreenRoute.name: (routeData) {
@@ -132,49 +123,42 @@ class AppRouter extends _i14.RootStackRouter {
       final args = routeData.argsAs<EducationProgramCrudScreenRouteArgs>(
           orElse: () => EducationProgramCrudScreenRouteArgs(
               programId: pathParams.optString('programId')));
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i11.EducationProgramCrudScreen(
+        child: _i10.EducationProgramCrudScreen(
           key: args.key,
           programId: args.programId,
         ),
       );
     },
     LoginScreenRoute.name: (routeData) {
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i12.LoginScreen(),
+        child: const _i11.LoginScreen(),
       );
     },
     EmailVerifyScreenRoute.name: (routeData) {
-      return _i14.AdaptivePage<dynamic>(
+      return _i13.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: const _i13.EmailVerifyScreen(),
+        child: const _i12.EmailVerifyScreen(),
       );
     },
   };
 
   @override
-  List<_i14.RouteConfig> get routes => [
-        _i14.RouteConfig(
-          LandingScreenRoute.name,
+  List<_i13.RouteConfig> get routes => [
+        _i13.RouteConfig(
+          '/#redirect',
           path: '/',
-          children: [
-            _i14.RouteConfig(
-              '*#redirect',
-              path: '*',
-              parent: LandingScreenRoute.name,
-              redirectTo: '',
-              fullMatch: true,
-            )
-          ],
+          redirectTo: '/home',
+          fullMatch: true,
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           HomeScreenRoute.name,
           path: '/home',
           guards: [authGuard],
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: HomeScreenRoute.name,
@@ -183,12 +167,12 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           AssignmentListScreenRoute.name,
           path: '/assignments',
           guards: [authGuard],
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: AssignmentListScreenRoute.name,
@@ -197,12 +181,12 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           AssignmentDetailScreenRoute.name,
           path: '/assignments/:id',
           guards: [authGuard],
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: AssignmentDetailScreenRoute.name,
@@ -211,11 +195,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           FupFormScreenRoute.name,
           path: '/followup_form',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: FupFormScreenRoute.name,
@@ -224,11 +208,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           FollowUpSimulatorPageRoute.name,
           path: '/simulator',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: FollowUpSimulatorPageRoute.name,
@@ -237,11 +221,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           ChartEditorPageRoute.name,
           path: '/editor/:templateIndex',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: ChartEditorPageRoute.name,
@@ -250,11 +234,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           ChartCorrectingScreenRoute.name,
           path: '/correction',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: ChartCorrectingScreenRoute.name,
@@ -263,11 +247,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           ExerciseScreenRoute.name,
           path: '/exercises/individual',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: ExerciseScreenRoute.name,
@@ -276,11 +260,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           EducationProgramListScreenRoute.name,
           path: '/programs',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: EducationProgramListScreenRoute.name,
@@ -289,15 +273,15 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           EducationProgramCrudScreenRoute.name,
           path: '/program/:programId',
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           LoginScreenRoute.name,
           path: '/login',
           children: [
-            _i14.RouteConfig(
+            _i13.RouteConfig(
               '*#redirect',
               path: '*',
               parent: LoginScreenRoute.name,
@@ -306,11 +290,11 @@ class AppRouter extends _i14.RootStackRouter {
             )
           ],
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           EmailVerifyScreenRoute.name,
           path: '/verify-email',
         ),
-        _i14.RouteConfig(
+        _i13.RouteConfig(
           '*#redirect',
           path: '*',
           redirectTo: '/',
@@ -320,38 +304,11 @@ class AppRouter extends _i14.RootStackRouter {
 }
 
 /// generated route for
-/// [_i1.LandingScreen]
-class LandingScreenRoute extends _i14.PageRouteInfo<LandingScreenRouteArgs> {
-  LandingScreenRoute({
-    _i15.Key? key,
-    List<_i14.PageRouteInfo>? children,
-  }) : super(
-          LandingScreenRoute.name,
-          path: '/',
-          args: LandingScreenRouteArgs(key: key),
-          initialChildren: children,
-        );
-
-  static const String name = 'LandingScreenRoute';
-}
-
-class LandingScreenRouteArgs {
-  const LandingScreenRouteArgs({this.key});
-
-  final _i15.Key? key;
-
-  @override
-  String toString() {
-    return 'LandingScreenRouteArgs{key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i2.HomeScreen]
-class HomeScreenRoute extends _i14.PageRouteInfo<void> {
+/// [_i1.HomeScreen]
+class HomeScreenRoute extends _i13.PageRouteInfo<void> {
   const HomeScreenRoute({
-    _i15.Key? key,
-    List<_i14.PageRouteInfo>? children,
+    _i14.Key? key,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           HomeScreenRoute.name,
           path: '/home',
@@ -364,7 +321,7 @@ class HomeScreenRoute extends _i14.PageRouteInfo<void> {
 class HomeScreenRouteArgs {
   const HomeScreenRouteArgs({this.key});
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -373,9 +330,9 @@ class HomeScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i3.AssignmentListScreen]
-class AssignmentListScreenRoute extends _i14.PageRouteInfo<void> {
-  const AssignmentListScreenRoute({List<_i14.PageRouteInfo>? children})
+/// [_i2.AssignmentListScreen]
+class AssignmentListScreenRoute extends _i13.PageRouteInfo<void> {
+  const AssignmentListScreenRoute({List<_i13.PageRouteInfo>? children})
       : super(
           AssignmentListScreenRoute.name,
           path: '/assignments',
@@ -386,14 +343,14 @@ class AssignmentListScreenRoute extends _i14.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i4.AssignmentDetailScreen]
+/// [_i3.AssignmentDetailScreen]
 class AssignmentDetailScreenRoute
-    extends _i14.PageRouteInfo<AssignmentDetailScreenRouteArgs> {
+    extends _i13.PageRouteInfo<AssignmentDetailScreenRouteArgs> {
   AssignmentDetailScreenRoute({
-    _i15.Key? key,
+    _i14.Key? key,
     required int id,
-    required _i17.PreClientAssignment assignment,
-    List<_i14.PageRouteInfo>? children,
+    required _i16.PreClientAssignment assignment,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           AssignmentDetailScreenRoute.name,
           path: '/assignments/:id',
@@ -416,11 +373,11 @@ class AssignmentDetailScreenRouteArgs {
     required this.assignment,
   });
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
   final int id;
 
-  final _i17.PreClientAssignment assignment;
+  final _i16.PreClientAssignment assignment;
 
   @override
   String toString() {
@@ -429,11 +386,11 @@ class AssignmentDetailScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i5.FupFormScreen]
-class FupFormScreenRoute extends _i14.PageRouteInfo<FupFormScreenRouteArgs> {
+/// [_i4.FupFormScreen]
+class FupFormScreenRoute extends _i13.PageRouteInfo<FupFormScreenRouteArgs> {
   FupFormScreenRoute({
-    _i15.Key? key,
-    List<_i14.PageRouteInfo>? children,
+    _i14.Key? key,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           FupFormScreenRoute.name,
           path: '/followup_form',
@@ -447,7 +404,7 @@ class FupFormScreenRoute extends _i14.PageRouteInfo<FupFormScreenRouteArgs> {
 class FupFormScreenRouteArgs {
   const FupFormScreenRouteArgs({this.key});
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -456,13 +413,13 @@ class FupFormScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i6.FollowUpSimulatorPage]
+/// [_i5.FollowUpSimulatorPage]
 class FollowUpSimulatorPageRoute
-    extends _i14.PageRouteInfo<FollowUpSimulatorPageRouteArgs> {
+    extends _i13.PageRouteInfo<FollowUpSimulatorPageRouteArgs> {
   FollowUpSimulatorPageRoute({
-    _i15.Key? key,
-    required _i18.ExerciseState exerciseState,
-    List<_i14.PageRouteInfo>? children,
+    _i14.Key? key,
+    required _i17.ExerciseState exerciseState,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           FollowUpSimulatorPageRoute.name,
           path: '/simulator',
@@ -482,9 +439,9 @@ class FollowUpSimulatorPageRouteArgs {
     required this.exerciseState,
   });
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
-  final _i18.ExerciseState exerciseState;
+  final _i17.ExerciseState exerciseState;
 
   @override
   String toString() {
@@ -493,13 +450,13 @@ class FollowUpSimulatorPageRouteArgs {
 }
 
 /// generated route for
-/// [_i7.ChartEditorPage]
+/// [_i6.ChartEditorPage]
 class ChartEditorPageRoute
-    extends _i14.PageRouteInfo<ChartEditorPageRouteArgs> {
+    extends _i13.PageRouteInfo<ChartEditorPageRouteArgs> {
   ChartEditorPageRoute({
-    _i15.Key? key,
+    _i14.Key? key,
     required int templateIndex,
-    List<_i14.PageRouteInfo>? children,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           ChartEditorPageRoute.name,
           path: '/editor/:templateIndex',
@@ -520,7 +477,7 @@ class ChartEditorPageRouteArgs {
     required this.templateIndex,
   });
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
   final int templateIndex;
 
@@ -531,13 +488,13 @@ class ChartEditorPageRouteArgs {
 }
 
 /// generated route for
-/// [_i8.ChartCorrectingScreen]
+/// [_i7.ChartCorrectingScreen]
 class ChartCorrectingScreenRoute
-    extends _i14.PageRouteInfo<ChartCorrectingScreenRouteArgs> {
+    extends _i13.PageRouteInfo<ChartCorrectingScreenRouteArgs> {
   ChartCorrectingScreenRoute({
-    _i15.Key? key,
-    required _i19.Cycle? cycle,
-    List<_i14.PageRouteInfo>? children,
+    _i14.Key? key,
+    required _i18.Cycle? cycle,
+    List<_i13.PageRouteInfo>? children,
   }) : super(
           ChartCorrectingScreenRoute.name,
           path: '/correction',
@@ -557,9 +514,9 @@ class ChartCorrectingScreenRouteArgs {
     required this.cycle,
   });
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
-  final _i19.Cycle? cycle;
+  final _i18.Cycle? cycle;
 
   @override
   String toString() {
@@ -568,9 +525,9 @@ class ChartCorrectingScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i9.ExerciseScreen]
-class ExerciseScreenRoute extends _i14.PageRouteInfo<void> {
-  const ExerciseScreenRoute({List<_i14.PageRouteInfo>? children})
+/// [_i8.ExerciseScreen]
+class ExerciseScreenRoute extends _i13.PageRouteInfo<void> {
+  const ExerciseScreenRoute({List<_i13.PageRouteInfo>? children})
       : super(
           ExerciseScreenRoute.name,
           path: '/exercises/individual',
@@ -581,9 +538,9 @@ class ExerciseScreenRoute extends _i14.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.EducationProgramListScreen]
-class EducationProgramListScreenRoute extends _i14.PageRouteInfo<void> {
-  const EducationProgramListScreenRoute({List<_i14.PageRouteInfo>? children})
+/// [_i9.EducationProgramListScreen]
+class EducationProgramListScreenRoute extends _i13.PageRouteInfo<void> {
+  const EducationProgramListScreenRoute({List<_i13.PageRouteInfo>? children})
       : super(
           EducationProgramListScreenRoute.name,
           path: '/programs',
@@ -594,11 +551,11 @@ class EducationProgramListScreenRoute extends _i14.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i11.EducationProgramCrudScreen]
+/// [_i10.EducationProgramCrudScreen]
 class EducationProgramCrudScreenRoute
-    extends _i14.PageRouteInfo<EducationProgramCrudScreenRouteArgs> {
+    extends _i13.PageRouteInfo<EducationProgramCrudScreenRouteArgs> {
   EducationProgramCrudScreenRoute({
-    _i15.Key? key,
+    _i14.Key? key,
     String? programId,
   }) : super(
           EducationProgramCrudScreenRoute.name,
@@ -619,7 +576,7 @@ class EducationProgramCrudScreenRouteArgs {
     this.programId,
   });
 
-  final _i15.Key? key;
+  final _i14.Key? key;
 
   final String? programId;
 
@@ -630,9 +587,9 @@ class EducationProgramCrudScreenRouteArgs {
 }
 
 /// generated route for
-/// [_i12.LoginScreen]
-class LoginScreenRoute extends _i14.PageRouteInfo<void> {
-  const LoginScreenRoute({List<_i14.PageRouteInfo>? children})
+/// [_i11.LoginScreen]
+class LoginScreenRoute extends _i13.PageRouteInfo<void> {
+  const LoginScreenRoute({List<_i13.PageRouteInfo>? children})
       : super(
           LoginScreenRoute.name,
           path: '/login',
@@ -643,8 +600,8 @@ class LoginScreenRoute extends _i14.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i13.EmailVerifyScreen]
-class EmailVerifyScreenRoute extends _i14.PageRouteInfo<void> {
+/// [_i12.EmailVerifyScreen]
+class EmailVerifyScreenRoute extends _i13.PageRouteInfo<void> {
   const EmailVerifyScreenRoute()
       : super(
           EmailVerifyScreenRoute.name,

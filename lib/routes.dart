@@ -11,7 +11,6 @@ import 'package:fmfu/view/screens/exercise_list_screen.dart';
 import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
-import 'package:fmfu/view/screens/landing_screen.dart';
 import 'package:fmfu/view/screens/login_screen.dart';
 
 @AdaptiveAutoRouter(
@@ -19,13 +18,6 @@ import 'package:fmfu/view/screens/login_screen.dart';
   routes: <AutoRoute>[
     AutoRoute(
       initial: true,
-      path: '/',
-      page: LandingScreen,
-      children: [
-        RedirectRoute(path: '*', redirectTo: ''),
-      ],
-    ),
-    AutoRoute(
       path: '/home',
       page: HomeScreen,
       guards: [AuthGuard],
