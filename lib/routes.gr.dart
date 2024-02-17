@@ -348,14 +348,13 @@ class LandingScreenRouteArgs {
 
 /// generated route for
 /// [_i2.HomeScreen]
-class HomeScreenRoute extends _i14.PageRouteInfo<HomeScreenRouteArgs> {
-  HomeScreenRoute({
+class HomeScreenRoute extends _i14.PageRouteInfo<void> {
+  const HomeScreenRoute({
     _i15.Key? key,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           HomeScreenRoute.name,
           path: '/home',
-          args: HomeScreenRouteArgs(key: key),
           initialChildren: children,
         );
 
