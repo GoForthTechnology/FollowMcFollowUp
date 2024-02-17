@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/routes.gr.dart';
 
@@ -29,6 +30,13 @@ class NavigationRailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: title,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => FirebaseAuth.instance.signOut()
+              .then((x) => AutoRouter.of(context).pushAndPopUntil(const LoginScreenRoute(), predicate: (r) => false)),
+          ),
+        ],
       ),
       body: _showRail(context) ? _railLayout(context) : content,
       floatingActionButton: fab,
