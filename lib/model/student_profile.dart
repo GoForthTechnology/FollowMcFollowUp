@@ -12,14 +12,12 @@ class StudentProfile extends Indexable<StudentProfile> {
   final String? programId;
   final String firstName;
   final String lastName;
-  final int studentNumber;
   final String emailAddress;
 
   StudentProfile({
     required this.id,
     required this.firstName,
     required this.lastName,
-    required this.studentNumber,
     required this.emailAddress,
     this.programId,
   });
@@ -38,10 +36,10 @@ class StudentProfile extends Indexable<StudentProfile> {
 
   @override
   StudentProfile setId(String id) {
-    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber, programId: programId);
+    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, programId: programId);
   }
 
   StudentProfile enrollStudent(String? programId) {
-    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, studentNumber: studentNumber, programId: programId);
+    return StudentProfile(id: id, firstName: firstName, lastName: lastName, emailAddress: emailAddress, programId: programId);
   }
 }

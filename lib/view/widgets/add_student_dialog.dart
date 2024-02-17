@@ -1,10 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/model/student_profile.dart';
-import 'package:fmfu/view/widgets/input_container.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +27,6 @@ class AddStudentDialogState extends State<AddStudentDialog> with GlobalLoggy {
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       emailAddress: emailController.text,
-      studentNumber: int.parse(studentNumberController.text),
     );
   }
 
@@ -78,55 +75,36 @@ class AddStudentDialogState extends State<AddStudentDialog> with GlobalLoggy {
           TextButton(onPressed: save, child: const Text("Submit")),
         ],
         content: Form(key: formKey, child: Column(mainAxisSize: MainAxisSize.min, children: [
-          InputContainer(title: "First Name:", content: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(width: 300),
-            child: TextFormField(
-              controller: firstNameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Value required";
-                }
-                return null;
-              },
-            ),
-          )),
-          InputContainer(title: "Last Name:", content: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(width: 300),
-            child: TextFormField(
-              controller: lastNameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Value required";
-                }
-                return null;
-              },
-            ),
-          )),
-          InputContainer(title: "Student Number:", content: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(width: 300),
-            child: TextFormField(
-              controller: studentNumberController,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Value required";
-                }
-                return null;
-              },
-            ),
-          )),
-          InputContainer(title: "Email:", content: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(width: 300),
-            child: TextFormField(
-              controller: emailController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Value required";
-                }
-                return null;
-              },
-            ),
-          )),
+          TextFormField(
+            controller: firstNameController,
+            decoration: const InputDecoration(labelText: "First Name"),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Value required";
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: lastNameController,
+            decoration: const InputDecoration(labelText: "Last Name"),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Value required";
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: emailController,
+            decoration: const InputDecoration(labelText: "Email Address"),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Value required";
+              }
+              return null;
+            },
+          ),
         ]))),
     );
   }
