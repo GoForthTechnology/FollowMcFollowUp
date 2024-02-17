@@ -92,7 +92,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
               ),
               ChartRowWidget(
                 dayOffset: 0,
-                topCellCreator: (entryIndex) => exerciseModel.hasAnswer(entryIndex) && (model.showFullCycle || entryIndex == model.entryIndex)
+                topCellCreator: (entryIndex) => exerciseModel.hasAnswer(entryIndex) && (model.showFullCycle || entryIndex <= model.entryIndex)
                     ? StickerWidget(stickerWithText: exerciseModel.stampAnswerSubmissions[entryIndex], onTap: () {})
                     : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
                 bottomCellCreator: (entryIndex) => ChartCellWidget(

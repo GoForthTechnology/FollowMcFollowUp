@@ -122,9 +122,7 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
 
   bool canSaveAnswer() {
     bool hasStamp = currentStickerSelection != null;
-    bool hasVDRS = currentFlow != null || (
-        currentDischargeType != null && currentDischargeFrequency != null);
-    return hasStamp && hasVDRS;
+    return hasStamp;
   }
 
   void submitAnswer(int entryIndex) {

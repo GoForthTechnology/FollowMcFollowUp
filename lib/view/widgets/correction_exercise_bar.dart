@@ -15,8 +15,8 @@ class CorrectionExerciseBar extends StatelessWidget {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) => Column(children: [
       const Text("Use the controls below to select the correct stamp for the current day"),
       const StampSelectionWidget(),
-      const Padding(padding: EdgeInsets.only(top: 10), child: Text("Use the controls below to select the correct flow and observation description")),
-      const VdrsSelectionWidget(),
+      //const Padding(padding: EdgeInsets.only(top: 10), child: Text("Use the controls below to select the correct flow and observation description")),
+      //const VdrsSelectionWidget(),
       _submitRow(model, exerciseModel),
     ]));
   }
