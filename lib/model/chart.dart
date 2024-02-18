@@ -90,6 +90,10 @@ class ChartEntry {
     );
   }
 
+  ChartEntry withManualSticker(StickerWithText stickerWithText) {
+    return ChartEntry(observationText: observationText, additionalText: additionalText, renderedObservation: renderedObservation, manualSticker: stickerWithText);
+  }
+
   bool isValidObservation() {
     try {
       parseObservation(observationText);
@@ -103,8 +107,10 @@ class ChartEntry {
     if (manualSticker == null || renderedObservation == null) {
       return true;
     }
-    var correctSticker = StickerWithText(renderedObservation!.getSticker(), renderedObservation!.getStickerText());
-    return manualSticker == correctSticker;
+    if (manualSticker!.sticker != renderedObservation!.getSticker()){
+      return false;
+    }
+    return (manualSticker!.text ?? "") == renderedObservation!.getStickerText();
   }
 
   bool hasErrors() {

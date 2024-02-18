@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' hide Flow;
+import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 
 class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
-  final List<Student> _students = [];
   final Map<int, StickerWithText> stampAnswerSubmissions = {};
   final Map<int, Observation> vdrsAnswerSubmissions = {};
   Sticker? currentStickerSelection;
@@ -38,10 +38,6 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   void updateCurrentDischargeFrequency(DischargeFrequency? dischargeFrequency) {
     currentDischargeFrequency = dischargeFrequency;
     notifyListeners();
-  }
-
-  List<Student> students() {
-    return _students;
   }
 
   void updateStickerSelection(Sticker? sticker) {
@@ -111,13 +107,14 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
     notifyListeners();
   }
 
-  void addStudent(Student student) {
-    _students.add(student);
-    notifyListeners();
-  }
-
   bool hasAnswer(int entryIndex) {
     return stampAnswerSubmissions.containsKey(entryIndex);
+  }
+
+  bool hasCorrectStamp(int entryIndex, ChartEntry entry) {
+    var stickerWithText = stampAnswerSubmissions[entryIndex]!;
+    print("Checking entry with ${entry.renderedObservation?.getSticker()} and ${entry.renderedObservation?.getStickerText()} against $stickerWithText");
+    return entry.withManualSticker(stickerWithText).isCorrectSticker();
   }
 
   bool canSaveAnswer() {

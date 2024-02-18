@@ -13,6 +13,11 @@ class StickerWithText {
 
   StickerWithText(this.sticker, this.text);
 
+  @override
+  String toString() {
+    return "{sticker: $sticker, text: $text}";
+  }
+
   factory StickerWithText.fromJson(Map<String, dynamic> json) => _$StickerWithTextFromJson(json);
   Map<String, dynamic> toJson() => _$StickerWithTextToJson(this);
 }

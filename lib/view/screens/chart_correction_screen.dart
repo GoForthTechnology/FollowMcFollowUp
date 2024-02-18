@@ -30,6 +30,10 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
     super.initState();
   }
 
+  bool hasCorrectAnswer() {
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
@@ -42,7 +46,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
             },),
           ],
         ),
-        body: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(
+        body: Center(child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -60,13 +64,13 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                 rightWidgetFn: (cycle) => null,
                 titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(children: [
                   Text(
-                    "Correcting Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",
+                    "Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
-                  Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
+                  /*Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
                     onPressed: model.showPreviousButton() ? () {
                       exerciseModel.loadPreviousSelection(model.entryIndex);
                       model.previousEntry();
@@ -87,7 +91,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                   Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
                     onPressed: model.showFullCycle ? null : () => model.toggleShowSticker(),
                     child: Text(model.showSticker ? "Hide Answer" : "Show Answer"),
-                  )),
+                  )),*/
                 ])),
               ),
               ChartRowWidget(
@@ -97,9 +101,9 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                     : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
                 bottomCellCreator: (entryIndex) => ChartCellWidget(
                   content: Text(
-                    exerciseModel.hasAnswer(entryIndex) ? "Answer\nSubmitted" : "",
+                    !exerciseModel.hasAnswer(entryIndex) ? "" : exerciseModel.hasCorrectStamp(entryIndex, widget.cycle!.entries[entryIndex]) ? checkMark : crossMark,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 8),
+                    style: const TextStyle(fontSize: 24),
                   ),
                   backgroundColor: Colors.white,
                   onTap: () {},
@@ -108,7 +112,10 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
               const Padding(padding: EdgeInsets.only(top: 10), child: CorrectionExerciseBar()),
           ]),
         )),
-      );
+        ));
     });
   }
+
+  static const String checkMark = "\u2714";
+  static const String crossMark = "\u2717";
 }
