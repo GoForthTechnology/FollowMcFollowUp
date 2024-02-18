@@ -13,6 +13,14 @@ class StickerWithText {
 
   StickerWithText(this.sticker, this.text);
 
+  StickerWithText withText(String? text) {
+    return StickerWithText(sticker, text);
+  }
+
+  StickerWithText withSticker(Sticker sticker) {
+    return StickerWithText(sticker, text);
+  }
+
   @override
   String toString() {
     return "{sticker: $sticker, text: $text}";
