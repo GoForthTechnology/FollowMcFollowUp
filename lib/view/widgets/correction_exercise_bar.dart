@@ -11,19 +11,15 @@ class StampSelectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(
-      builder: (context, correctionModel, exerciseModel, child) => Row(children: [
-        const Text("Select a Stamp for TODAY: "),
-        StickerSelectionRow(
-          includeYellow: true,
-          selectedSticker: exerciseModel.currentStickerSelection,
-          onSelect: exerciseModel.updateStickerSelection,
-        ),
-        Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(
-          onPressed: !exerciseModel.canSubmit() ? null : exerciseModel.submit,
-          child: const Text("Submit Answer"),
-        )),
-      ]));
+    return Consumer<ExerciseViewModel>(builder: (context, model, child) => _SelectionWidget(
+      title: "Select a Stamp for TODAY:",
+      content: StickerSelectionRow(
+        includeYellow: true,
+        selectedSticker: model.currentStickerSelection,
+        onSelect: model.updateStickerSelection,
+      ),
+      advanceOnSubmit: false,
+    ));
   }
 }
 
@@ -32,17 +28,34 @@ class TextSelectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<ExerciseViewModel>(builder: (context, model, child) => _SelectionWidget(
+      title: "Select Text option for YESTERDAY:",
+      content: StickerTextSelectionRow(
+        selectedText: model.currentStickerTextSelection,
+        onSelect: model.updateStickerTextSelection,
+      ),
+      advanceOnSubmit: true,
+    ));
+  }
+}
+
+class _SelectionWidget extends StatelessWidget {
+  final String title;
+  final Widget content;
+  final bool advanceOnSubmit;
+
+  const _SelectionWidget({required this.title, required this.content, required this.advanceOnSubmit});
+
+  @override
+  Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(
-      builder: (context, correctionModel, exerciseModel, child) => Row(children: [
-        const Padding(padding: EdgeInsets.only(left: 10), child: Text("Select Text Option for YESTERDAY: ")),
-        StickerTextSelectionRow(
-          selectedText: exerciseModel.currentStickerTextSelection,
-          onSelect: exerciseModel.updateStickerTextSelection,
-        ),
+      builder: (context, correctionModel, exerciseModel, child) => Column(children: [
+        Padding(padding: const EdgeInsets.only(left: 10), child: Text(title)),
+        content,
         Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(
           onPressed: !exerciseModel.canSubmit() ? null : () {
             exerciseModel.submit();
-            if (correctionModel.showNextButton()) {
+            if (advanceOnSubmit && correctionModel.showNextButton()) {
               correctionModel.nextEntry();
             }
           },
