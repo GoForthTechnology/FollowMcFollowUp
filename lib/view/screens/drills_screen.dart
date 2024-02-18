@@ -19,26 +19,30 @@ class DrillsScreen extends StatelessWidget {
   }
   
   Widget _content(BuildContext context) {
-    return const Column(children: [
-      StampSelectionPanel(),
-      ChartCorrectingPanel(),
+    List<Exercise> exercises = List.from(dynamicExerciseList)
+      ..addAll(staticExerciseList);
+    return Column(children: [
+      StampSelectionPanel(exercises: exercises,),
+      ChartCorrectingPanel(exercises: exercises,),
     ],);
   }
 }
 
 class StampSelectionPanel extends StatelessWidget {
-  const StampSelectionPanel({super.key});
+  final List<Exercise> exercises;
+
+  const StampSelectionPanel({super.key, required this.exercises});
 
   @override
   Widget build(BuildContext context) {
     return ExpandableInfoPanel(
       title: "Stamp Selection",
       subtitle: "Select the correct stamp for each day in the cycle",
-      contents: dynamicExerciseList.map((exercise) => TextButton(
-        onPressed: exercise.recipe == null ? null : () {
+      contents: exercises.map((exercise) => TextButton(
+        onPressed: exercise.enabled ? () {
           AutoRouter.of(context).push(ChartCorrectingScreenRoute(
               cycle: exercise.getState(includeErrorScenarios: false).cycles.last));
-        },
+        } : null,
         child: Text(exercise.name),
       )).toList(),
     );
@@ -46,15 +50,17 @@ class StampSelectionPanel extends StatelessWidget {
 }
 
 class ChartCorrectingPanel extends StatelessWidget {
-  const ChartCorrectingPanel({super.key});
+  final List<Exercise> exercises;
+
+  const ChartCorrectingPanel({super.key, required this.exercises});
 
   @override
   Widget build(BuildContext context) {
     return ExpandableInfoPanel(
       title: "Chart Correcting",
       subtitle: "Find and correct all the errors in the provided chart",
-      contents: dynamicExerciseList.map((exercise) => TextButton(
-        onPressed: exercise.recipe == null ? null : () {
+      contents: exercises.map((exercise) => TextButton(
+        onPressed: exercise.enabled ? null : () {
           AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
               exerciseState: exercise.getState(includeErrorScenarios: true)));
         },
