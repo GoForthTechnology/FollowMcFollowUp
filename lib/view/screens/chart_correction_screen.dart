@@ -109,11 +109,21 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                   onTap: () {},
                 ),
               ),
-              const Padding(padding: EdgeInsets.only(top: 10), child: CorrectionExerciseBar()),
+              Padding(padding: const EdgeInsets.only(top: 10), child: _getQuestionWidget(exerciseModel.getQuestion())),
           ]),
         )),
         ));
     });
+
+  }
+
+  Widget _getQuestionWidget(Question question) {
+    switch (question) {
+      case Question.sticker:
+        return const StampSelectionWidget();
+      case Question.text:
+        return const TextSelectionWidget();
+    }
   }
 
   static const String checkMark = "\u2714";

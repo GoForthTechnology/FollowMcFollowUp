@@ -1,42 +1,59 @@
 import 'package:flutter/material.dart' hide Flow;
 import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
 import 'package:loggy/loggy.dart';
 
+enum Question {
+  sticker,
+  text
+}
+
 class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   final Map<int, StickerWithText> stampAnswerSubmissions = {};
-  final Map<int, Observation> vdrsAnswerSubmissions = {};
   Sticker? currentStickerSelection;
   String? currentStickerTextSelection;
 
-  Flow? currentFlow;
-  DischargeType? currentDischargeType;
-  DischargeFrequency? currentDischargeFrequency;
-  Set<DischargeDescriptor> currentDischargeDescriptors = {};
+  int questionIndex = -1;
 
-  void addDischargeDescriptor(DischargeDescriptor descriptor) {
-    currentDischargeDescriptors.add(descriptor);
-    notifyListeners();
+  Question getQuestion() {
+    return questionIndex % 2 == 0 ? Question.text : Question.sticker;
   }
 
-  void removeDischargeDescriptor(DischargeDescriptor descriptor) {
-    currentDischargeDescriptors.remove(descriptor);
-    notifyListeners();
+  int _entryIndex() {
+    if (questionIndex < 0) {
+      return 0;
+    }
+    return questionIndex ~/ 2 + questionIndex % 2;
   }
 
-  void updateCurrentFlow(Flow? flow) {
-    currentFlow = flow;
-    notifyListeners();
+  bool canSubmit() {
+    switch (getQuestion()) {
+      case Question.sticker:
+        return currentStickerSelection != null;
+      case Question.text:
+        return currentStickerTextSelection != null;
+    }
   }
 
-  void updateCurrentDischargeType(DischargeType? dischargeType) {
-    currentDischargeType = dischargeType;
-    notifyListeners();
-  }
-
-  void updateCurrentDischargeFrequency(DischargeFrequency? dischargeFrequency) {
-    currentDischargeFrequency = dischargeFrequency;
+  void submit() {
+    print("Submitting questionIndex $questionIndex");
+    if (!canSubmit()) {
+      throw StateError("!canSubmit()");
+    }
+    int index = _entryIndex();
+    print("${getQuestion()} $index");
+    switch (getQuestion()) {
+      case Question.sticker:
+        stampAnswerSubmissions[index] = StickerWithText(currentStickerSelection!, "");
+        currentStickerSelection = null;
+        break;
+      case Question.text:
+        var existing = stampAnswerSubmissions[index]!;
+        stampAnswerSubmissions[index] = existing.withText(currentStickerTextSelection);
+        currentStickerTextSelection = null;
+        break;
+    }
+    questionIndex++;
     notifyListeners();
   }
 
@@ -60,53 +77,6 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
     notifyListeners();
   }
 
-  StickerWithText? getCurrentStickerWithText() {
-    if (currentStickerSelection == null) {
-      return null;
-    }
-    return StickerWithText(currentStickerSelection!, currentStickerTextSelection);
-  }
-
-  void loadPreviousSelection(int entryIndex) {
-    final previousIndex = entryIndex - 1;
-    if (!hasAnswer(previousIndex)) {
-      return;
-    }
-    _updateState(previousIndex);
-  }
-
-  void loadNextSelection(int entryIndex) {
-    final nextIndex = entryIndex + 1;
-    if (!hasAnswer(nextIndex)) {
-      clearSelection();
-      return;
-    }
-    _updateState(nextIndex);
-  }
-
-  void _updateState(int index) {
-    var previousAnswer = stampAnswerSubmissions[index];
-    currentStickerTextSelection = previousAnswer?.text;
-    currentStickerSelection = previousAnswer?.sticker;
-    var previousVDRS = vdrsAnswerSubmissions[index];
-    currentFlow = previousVDRS?.flow;
-    currentDischargeType = previousVDRS?.dischargeSummary?.dischargeType;
-    currentDischargeFrequency = previousVDRS?.dischargeSummary?.dischargeFrequency;
-    currentDischargeDescriptors = previousVDRS?.dischargeSummary?.dischargeDescriptors.toSet() ?? {};
-    notifyListeners();
-  }
-
-  void clearSelection() {
-    currentStickerSelection = null;
-    currentStickerTextSelection = null;
-    currentDischargeDescriptors.clear();
-    currentDischargeType = null;
-    currentDischargeFrequency = null;
-    currentFlow = null;
-
-    notifyListeners();
-  }
-
   bool hasAnswer(int entryIndex) {
     return stampAnswerSubmissions.containsKey(entryIndex);
   }
@@ -115,39 +85,6 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
     var stickerWithText = stampAnswerSubmissions[entryIndex]!;
     print("Checking entry with ${entry.renderedObservation?.getSticker()} and ${entry.renderedObservation?.getStickerText()} against $stickerWithText");
     return entry.withManualSticker(stickerWithText).isCorrectSticker();
-  }
-
-  bool canSaveAnswer() {
-    bool hasStamp = currentStickerSelection != null;
-    return hasStamp;
-  }
-
-  void submitAnswer(int entryIndex) {
-    if (!canSaveAnswer()) {
-      return;
-    }
-    stampAnswerSubmissions[entryIndex] = StickerWithText(currentStickerSelection!, currentStickerTextSelection);
-    DischargeSummary? dischargeSummary;
-    if (currentDischargeType != null) {
-      dischargeSummary = DischargeSummary(
-        dischargeType: currentDischargeType!,
-        dischargeDescriptors: currentDischargeDescriptors.toList(),
-        dischargeFrequency: currentDischargeFrequency!,
-      );
-    }
-    vdrsAnswerSubmissions[entryIndex] = Observation(
-      flow: currentFlow,
-      dischargeSummary: dischargeSummary,
-    );
-    notifyListeners();
-  }
-
-  void clearAnswer(int entryIndex) {
-    stampAnswerSubmissions.remove(entryIndex);
-    vdrsAnswerSubmissions.remove(entryIndex);
-    currentStickerSelection = null;
-    currentStickerTextSelection = null;
-    notifyListeners();
   }
 }
 
