@@ -36,12 +36,10 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
   }
 
   void submit() {
-    print("Submitting questionIndex $questionIndex");
     if (!canSubmit()) {
       throw StateError("!canSubmit()");
     }
     int index = _entryIndex();
-    print("${getQuestion()} $index");
     switch (getQuestion()) {
       case Question.sticker:
         stampAnswerSubmissions[index] = StickerWithText(currentStickerSelection!, "");
@@ -83,7 +81,6 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
 
   bool hasCorrectStamp(int entryIndex, ChartEntry entry) {
     var stickerWithText = stampAnswerSubmissions[entryIndex]!;
-    print("Checking entry with ${entry.renderedObservation?.getSticker()} and ${entry.renderedObservation?.getStickerText()} against $stickerWithText");
     return entry.withManualSticker(stickerWithText).isCorrectSticker();
   }
 }
