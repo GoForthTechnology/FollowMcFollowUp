@@ -29,32 +29,13 @@ class ChartCorrectionViewModel extends ChartViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleShowFullCycle() {
-    showFullCycle = !showFullCycle;
-    notifyListeners();
-  }
-
-  void toggleShowSticker() {
-    showSticker = !showSticker;
-    notifyListeners();
-  }
-
   void nextEntry() {
     _entryIndex.add(entryIndex++);
-    notifyListeners();
-  }
-
-  void previousEntry() {
-    _entryIndex.add(entryIndex--);
     notifyListeners();
   }
 
   bool showNextButton() {
     var cycle = charts[0].cycles[0].cycle;
     return cycle != null && entryIndex < cycle.entries.length - 1;
-  }
-
-  bool showPreviousButton() {
-    return entryIndex > 0;
   }
 }

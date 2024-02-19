@@ -47,69 +47,47 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
             },),
           ],
         ),
-        body: Center(child: Padding(padding: const EdgeInsets.all(10), child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ChartWidget(
-                chart: model.charts[0],
-                model: model,
-                includeFooter: false,
-                soloCell: model.showFullCycle ? null : SoloCell(
-                  cycleIndex: 0,
-                  entryIndex: model.entryIndex,
-                  showSticker: model.showSticker,
-                ),
-                rightWidgetFn: (cycle) => null,
-                titleWidget: Padding(padding: const EdgeInsets.only(bottom: 10), child: Row(children: [
-                  Text(
-                    "Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+        body: Center(child: Padding(padding: const EdgeInsets.all(10), child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Column(children: [
+                ChartWidget(
+                  chart: model.charts[0],
+                  model: model,
+                  includeFooter: false,
+                  soloCell: model.showFullCycle ? null : SoloCell(
+                    cycleIndex: 0,
+                    entryIndex: model.entryIndex,
+                    showSticker: model.showSticker,
                   ),
-                  /*Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                    onPressed: model.showPreviousButton() ? () {
-                      exerciseModel.loadPreviousSelection(model.entryIndex);
-                      model.previousEntry();
-                    }: null,
-                    child: const Text("Previous"),
-                  )),
-                  Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                    onPressed: model.showNextButton() ? () {
-                      exerciseModel.loadNextSelection(model.entryIndex);
-                      model.nextEntry();
-                    } : null,
-                    child: const Text("Next"),
-                  )),
-                  Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                    onPressed: () => model.toggleShowFullCycle(),
-                    child: Text(model.showFullCycle ? "Hide Full Cycle" : "Show Full Cycle"),
-                  )),
-                  Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
-                    onPressed: model.showFullCycle ? null : () => model.toggleShowSticker(),
-                    child: Text(model.showSticker ? "Hide Answer" : "Show Answer"),
-                  )),*/
-                ])),
-              ),
-              ChartRowWidget(
-                dayOffset: 0,
-                topCellCreator: (entryIndex) => exerciseModel.hasAnswer(entryIndex) && (model.showFullCycle || entryIndex <= model.entryIndex)
-                    ? StickerWidget(stickerWithText: exerciseModel.stampAnswerSubmissions[entryIndex], onTap: () {})
-                    : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
-                bottomCellCreator: (entryIndex) => ChartCellWidget(
-                  content: Text(_getText(exerciseModel, entryIndex), textAlign: TextAlign.center, style: const TextStyle(fontSize: 24)),
-                  backgroundColor: Colors.white,
-                  onTap: () {},
+                  rightWidgetFn: (cycle) => null,
                 ),
-              ),
-              Padding(padding: const EdgeInsets.only(top: 10), child: _getQuestionWidget(exerciseModel)),
-          ]),
-        )),
-        ));
+                ChartRowWidget(
+                  dayOffset: 0,
+                  topCellCreator: (entryIndex) => exerciseModel.hasAnswer(entryIndex) && (model.showFullCycle || entryIndex <= model.entryIndex)
+                      ? StickerWidget(stickerWithText: exerciseModel.stampAnswerSubmissions[entryIndex], onTap: () {})
+                      : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
+                  bottomCellCreator: (entryIndex) => ChartCellWidget(
+                    content: Text(_getText(exerciseModel, entryIndex), textAlign: TextAlign.center, style: const TextStyle(fontSize: 24)),
+                    backgroundColor: Colors.white,
+                    onTap: () {},
+                  ),
+                ),
+              ],),
+            ),
+            Padding(padding: const EdgeInsets.only(top: 10), child: _getQuestionWidget(exerciseModel)),
+        ]))),
+      );
     });
   }
 
