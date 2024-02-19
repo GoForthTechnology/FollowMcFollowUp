@@ -50,7 +50,7 @@ dependencies:
   json_annotation: ^4.8.1
   url_launcher: ^6.2.4
   firebase_core: ^2.25.4
-  firebase_analytics: ^10.8.5
+  firebase_analytics: ^10.8.6
   auto_route: ^5.0.4
   firebase_ui_auth: ^1.13.0
   firebase_auth: ^4.17.4
