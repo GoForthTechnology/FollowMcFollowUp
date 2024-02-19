@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Flow;
 import 'package:fmfu/model/observation.dart';
+import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/cycle_widget.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
@@ -18,13 +19,15 @@ class StampSelectionWidget extends StatelessWidget {
         selectedSticker: model.currentStickerSelection,
         onSelect: model.updateStickerSelection,
       ),
-      advanceOnSubmit: false,
+      advanceOnSubmit: true,
     ));
   }
 }
 
 class TextSelectionWidget extends StatelessWidget {
-  const TextSelectionWidget({super.key});
+  final Sticker sticker;
+
+  const TextSelectionWidget({super.key, required this.sticker});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +36,9 @@ class TextSelectionWidget extends StatelessWidget {
       content: StickerTextSelectionRow(
         selectedText: model.currentStickerTextSelection,
         onSelect: model.updateStickerTextSelection,
+        sticker: sticker,
       ),
-      advanceOnSubmit: true,
+      advanceOnSubmit: false,
     ));
   }
 }

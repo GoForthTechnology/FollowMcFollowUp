@@ -337,7 +337,7 @@ class StickerCorrectionDialog extends StatelessWidget with UiLoggy {
         const Padding(padding: EdgeInsets.all(10), child: Text("Select the correct sticker")),
         StickerSelectionRow(selectedSticker: selectedSticker, onSelect: onSelectSticker),
         const Padding(padding: EdgeInsets.all(10), child: Text("Select the correct text")),
-        StickerTextSelectionRow(selectedText: selectedStickerText, onSelect: onSelectText),
+        StickerTextSelectionRow(selectedText: selectedStickerText, onSelect: onSelectText, sticker: Sticker.white,),
       ],
     );
   }
@@ -383,40 +383,40 @@ Widget _createDialogSticker(Sticker sticker, Sticker? selectedSticker, void Func
 
 class StickerTextSelectionRow extends StatelessWidget {
   final String? selectedText;
+  final Sticker sticker;
   final void Function(String?) onSelect;
 
-  const StickerTextSelectionRow({super.key, this.selectedText, required this.onSelect});
+  const StickerTextSelectionRow({super.key, this.selectedText, required this.onSelect, required this.sticker});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _createDialogTextSticker("", selectedText, onSelect),
-        _createDialogTextSticker("P", selectedText, onSelect),
-        _createDialogTextSticker("1", selectedText, onSelect),
-        _createDialogTextSticker("2", selectedText, onSelect),
-        _createDialogTextSticker("3", selectedText, onSelect),
+        _dialogTextSticker(""),
+        _dialogTextSticker("P"),
+        _dialogTextSticker("1"),
+        _dialogTextSticker("2"),
+        _dialogTextSticker("3"),
       ],
     );
   }
-}
 
-Widget _createDialogTextSticker(String text, String? selectedText, void Function(String?) onSelect) {
-  Widget sticker = StickerWidget(stickerWithText: StickerWithText(Sticker.white, text), onTap: () => onSelect(text));
-  var message = text == "" ? "No Text" : text;
-  sticker = Tooltip(message: message, child: sticker);
-  if (selectedText == text) {
-    sticker = Container(
-      decoration: BoxDecoration(
-        border: Border.all(color:Colors.black),
-      ),
-      child: sticker,
-    );
+  Widget _dialogTextSticker(String text) {
+    Widget sticker = StickerWidget(stickerWithText: StickerWithText(this.sticker, text), onTap: () => onSelect(text));
+    var message = text == "" ? "No Text" : text;
+    sticker = Tooltip(message: message, child: sticker);
+    if (selectedText == text) {
+      sticker = Container(
+        decoration: BoxDecoration(
+          border: Border.all(color:Colors.black),
+        ),
+        child: sticker,
+      );
+    }
+    return Padding(padding: const EdgeInsets.all(2), child: sticker);
   }
-  return Padding(padding: const EdgeInsets.all(2), child: sticker);
 }
-
 
 class ObservationDialog extends StatelessWidget with UiLoggy {
   final Cycle cycle;

@@ -19,7 +19,7 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
     return questionIndex % 2 == 0 ? Question.text : Question.sticker;
   }
 
-  int _entryIndex() {
+  int entryIndex() {
     if (questionIndex < 0) {
       return 0;
     }
@@ -39,7 +39,7 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
     if (!canSubmit()) {
       throw StateError("!canSubmit()");
     }
-    int index = _entryIndex();
+    int index = entryIndex();
     switch (getQuestion()) {
       case Question.sticker:
         stampAnswerSubmissions[index] = StickerWithText(currentStickerSelection!, "");

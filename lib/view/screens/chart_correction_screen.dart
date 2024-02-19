@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
+import 'package:fmfu/model/stickers.dart';
 import 'package:fmfu/view/widgets/chart_cell_widget.dart';
 import 'package:fmfu/view/widgets/chart_row_widget.dart';
 import 'package:fmfu/view/widgets/chart_widget.dart';
@@ -100,32 +101,42 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                     ? StickerWidget(stickerWithText: exerciseModel.stampAnswerSubmissions[entryIndex], onTap: () {})
                     : ChartCellWidget(content: Container(), backgroundColor: Colors.white, onTap: () {}),
                 bottomCellCreator: (entryIndex) => ChartCellWidget(
-                  content: Text(
-                    !exerciseModel.hasAnswer(entryIndex) ? "" : exerciseModel.hasCorrectStamp(entryIndex, widget.cycle!.entries[entryIndex]) ? checkMark : crossMark,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 24),
-                  ),
+                  content: Text(_getText(exerciseModel, entryIndex), textAlign: TextAlign.center, style: const TextStyle(fontSize: 24)),
                   backgroundColor: Colors.white,
                   onTap: () {},
                 ),
               ),
-              Padding(padding: const EdgeInsets.only(top: 10), child: _getQuestionWidget(exerciseModel.getQuestion())),
+              Padding(padding: const EdgeInsets.only(top: 10), child: _getQuestionWidget(exerciseModel)),
           ]),
         )),
         ));
     });
-
   }
 
-  Widget _getQuestionWidget(Question question) {
-    switch (question) {
+  String _getText(ExerciseViewModel model, int entryIndex) {
+    if (model.entryIndex() == entryIndex) {
+      return questionMark;
+    }
+    if (!model.hasAnswer(entryIndex)) {
+      return "";
+    }
+    if (model.hasCorrectStamp(entryIndex, widget.cycle!.entries[entryIndex])) {
+      return checkMark;
+    }
+    return crossMark;
+  }
+
+  Widget _getQuestionWidget(ExerciseViewModel model) {
+    switch (model.getQuestion()) {
       case Question.sticker:
         return const StampSelectionWidget();
       case Question.text:
-        return const TextSelectionWidget();
+        var sticker = model.stampAnswerSubmissions[model.entryIndex()]?.sticker ?? Sticker.white;
+        return TextSelectionWidget(sticker: sticker,);
     }
   }
 
   static const String checkMark = "\u2714";
   static const String crossMark = "\u2717";
+  static const String questionMark = "\u003F";
 }
