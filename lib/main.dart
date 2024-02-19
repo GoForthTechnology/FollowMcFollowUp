@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
       GoogleProvider(clientId: googleClientId),
       EmailAuthProvider(),
     ]);
+    FirebaseAnalytics.instance.logAppOpen();
 
     analytics.logAppOpen();
     return MultiProvider(

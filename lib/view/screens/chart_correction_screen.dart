@@ -1,4 +1,5 @@
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
 import 'package:fmfu/model/stickers.dart';
@@ -24,6 +25,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
 
   @override
   void initState() {
+    FirebaseAnalytics.instance.logEvent(name: "Stamp Selection Exercise - Start");
     final model = Provider.of<ChartCorrectionViewModel>(context, listen: false);
     if (widget.cycle != null) {
       model.setCycle(widget.cycle!, notify: false);
