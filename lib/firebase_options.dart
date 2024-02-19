@@ -60,6 +60,6 @@ class DefaultFirebaseOptions {
     authDomain: 'fc-classroom.firebaseapp.com',
     databaseURL: 'https://fc-classroom-default-rtdb.firebaseio.com',
     storageBucket: 'fc-classroom.appspot.com',
-    measurementId: "G-ZPHLKMP2DF",
+    measurementId: 'G-ZPHLKMP2DF',
   );
 }
