@@ -26,6 +26,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+
   // TODO: re-enable ReCAPTCH
   /*await RecaptchaService.initiate();
   await FirebaseAppCheck.instance.activate(
@@ -51,7 +54,6 @@ class MyApp extends StatelessWidget {
       GoogleProvider(clientId: googleClientId),
       EmailAuthProvider(),
     ]);
-    FirebaseAnalytics.instance.logAppOpen();
 
     analytics.logAppOpen();
     return MultiProvider(
