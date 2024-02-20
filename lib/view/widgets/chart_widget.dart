@@ -11,6 +11,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
   final bool editingEnabled;
   final bool correctingEnabled;
   final bool showErrors;
+  final bool autoStamp;
   final SoloCell? soloCell;
   final bool includeFooter;
   final Widget? Function(Cycle?) rightWidgetFn;
@@ -22,6 +23,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
     this.correctingEnabled = false,
     this.showErrors = false,
     this.includeFooter = true,
+    this.autoStamp = true,
     this.titleWidget,
     this.soloCell,
     super.key, required this.rightWidgetFn,
@@ -81,6 +83,7 @@ class ChartWidget extends StatelessWidget with UiLoggy {
         showErrors: showErrors,
         dayOffset: slice.offset,
         soloCell: soloCell,
+        autoStamp: autoStamp,
         rightWidgetFn: rightWidgetFn,
       ));
     }

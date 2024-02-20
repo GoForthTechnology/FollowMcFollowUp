@@ -20,6 +20,7 @@ class CycleWidget extends StatefulWidget {
   final bool correctingEnabled;
   final bool editingEnabled;
   final bool showErrors;
+  final bool autoStamp;
   final SoloCell? soloCell;
   final ChartViewModel model;
   final Widget? Function(Cycle?) rightWidgetFn;
@@ -33,6 +34,7 @@ class CycleWidget extends StatefulWidget {
     this.editingEnabled = false,
     this.correctingEnabled = false,
     this.showErrors = false,
+    this.autoStamp = true,
     this.dayOffset = 0,
     this.soloCell,
     super.key, required this.rightWidgetFn,
@@ -110,24 +112,25 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
 
   Widget _createStickerCell(int entryIndex) {
     var soloingCell = widget.soloCell != null && widget.soloCell!.entryIndex == entryIndex;
+    var alreadySoloed = widget.soloCell != null && widget.soloCell!.entryIndex > entryIndex;
     var entry = _getChartEntry(entryIndex);
     RenderedObservation? observation = entry?.renderedObservation;
 
     StickerWithText? sticker = entry?.manualSticker;
-    if (sticker == null && observation != null) {
+    if (sticker == null && widget.autoStamp && observation != null) {
       sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
     }
     var entryDate = entry?.renderedObservation?.date;
     if (_shouldSuppress(entryDate)) {
       sticker = null;
     }
-    if (soloingCell && !widget.soloCell!.showSticker) {
+    if (soloingCell && sticker == null) {
       sticker = StickerWithText(Sticker.grey, "?");
     }
-    var showStickerDialog = !soloingCell && (observation != null || entry?.manualSticker != null);
+    var showStickerDialog = alreadySoloed || (soloingCell && (observation != null || entry?.manualSticker != null));
     Widget stickerWidget = StickerWidget(
       stickerWithText: sticker,
-      onTap: showStickerDialog ? _showCorrectionDialog(context, entryIndex, null) : () {},
+      onTap: showStickerDialog ? _showCorrectionDialog(context, entryIndex, /*this is sketchy*/entry?.manualSticker) : () {},
     );
     StickerWithText? stickerCorrection = widget.cycle?.stickerCorrections[entryIndex];
     if (showStickerDialog && stickerCorrection != null) {
@@ -180,7 +183,9 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
             model: widget.model,
             entryIndex: entryIndex,
             cycle: widget.cycle!,
-            editingEnabled: widget.editingEnabled);
+            editingEnabled: widget.editingEnabled,
+            existingCorrection: existingCorrection,
+          );
         },
       );
     };
