@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/cycle_rendering.dart';
@@ -112,7 +113,7 @@ class StaticExercise extends Exercise {
 const preBuildUpLengthRange = UniformRange(4, 6);
 
 final dynamicExerciseList = [
-  DynamicExercise(name: "Short Test Cycles", recipe: CycleRecipe.create(
+  if (kDebugMode) DynamicExercise(name: "Short Test Cycles", recipe: CycleRecipe.create(
     flowLength: 2, preBuildUpLength: 2, peakTypeLength: 1, buildUpLength: 2, postPeakLength: 5,
   )),
 
