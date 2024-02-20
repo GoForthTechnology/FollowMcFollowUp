@@ -56,6 +56,9 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
   }
 
   ChartEntry? _getChartEntry(int entryIndex) {
+    if (entryIndex >= widget.cycle!.entries.length) {
+      return null;
+    }
     var hasCycle = widget.cycle != null;
     if (widget.soloCell == null && hasCycle && entryIndex < widget.cycle!.entries.length) {
       return widget.cycle?.entries[entryIndex];
@@ -118,7 +121,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
 
     StickerWithText? sticker = entry?.manualSticker;
     if (sticker == null && widget.autoStamp && observation != null) {
-      sticker = StickerWithText(observation.getSticker(), observation.getStickerText());
+      sticker = observation.getStickerWithText();
     }
     var entryDate = entry?.renderedObservation?.date;
     if (_shouldSuppress(entryDate)) {

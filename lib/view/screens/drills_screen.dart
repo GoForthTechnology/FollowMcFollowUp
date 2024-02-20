@@ -40,7 +40,7 @@ class StampSelectionPanel extends StatelessWidget {
       contents: exercises.map((exercise) => TextButton(
         onPressed: exercise.enabled ? () {
           AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-              cycle: exercise.getState(includeErrorScenarios: false).cycles.last));
+              cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
         } : null,
         child: Text(exercise.name),
       )).toList(),

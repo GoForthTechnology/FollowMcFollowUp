@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
@@ -65,15 +67,22 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                   editingEnabled: true,
                   correctingEnabled: false,
                   autoStamp: false,
-                  soloCell: model.showFullCycle ? null : SoloCell(
+                  soloCell: SoloCell(
                     cycleIndex: 0,
-                    entryIndex: model.cycles[0].entries.where((e) => e.manualSticker != null).length,
+                    entryIndex: min(
+                      model.cycles[0].entries.where((e) => e.manualSticker != null).length,
+                      model.cycles[0].entries.length - 1,
+                    ),
                     showSticker: model.showSticker,
                   ),
                   rightWidgetFn: (cycle) => null,
                 ),
               ],),
             ),
+            Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(
+              onPressed: model.toggleShowAnswers,
+              child: model.showAnswers ? const Text("Hide Answers") : const Text("Show Answers"),
+            )),
         ]))),
       );
     });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
@@ -9,7 +10,7 @@ class ChartCorrectionViewModel extends ChartViewModel with ChangeNotifier {
 
   int entryIndex = 0;
   bool showCycleControlBar = false;
-  bool showFullCycle = false;
+  bool showAnswers = false;
   bool showSticker = false;
 
   ChartCorrectionViewModel() : super(1) {
@@ -35,7 +36,22 @@ class ChartCorrectionViewModel extends ChartViewModel with ChangeNotifier {
   }
 
   bool showNextButton() {
-    var cycle = charts[0].cycles[0].cycle;
+    var cycle = findCycle(1);
     return cycle != null && entryIndex < cycle.entries.length - 1;
+  }
+
+  void toggleShowAnswers() {
+    showAnswers = !showAnswers;
+    cycles.first.entries.forEachIndexed((index, entry) {
+      if (showAnswers) {
+        var correctSticker = entry.renderedObservation!.getStickerWithText();
+        if (entry.manualSticker != null && entry.manualSticker != correctSticker) {
+          updateStickerCorrections(1, index, correctSticker);
+        }
+      } else {
+        updateStickerCorrections(1, index, null);
+      }
+    });
+    notifyListeners();
   }
 }

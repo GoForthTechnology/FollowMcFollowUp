@@ -28,6 +28,16 @@ class StickerWithText {
 
   factory StickerWithText.fromJson(Map<String, dynamic> json) => _$StickerWithTextFromJson(json);
   Map<String, dynamic> toJson() => _$StickerWithTextToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StickerWithText &&
+          sticker == other.sticker &&
+          text == other.text;
+
+  @override
+  int get hashCode => sticker.hashCode ^ text.hashCode;
 }
 
 enum Sticker {

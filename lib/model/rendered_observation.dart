@@ -71,6 +71,11 @@ class RenderedObservation {
     return "";
   }
 
+  StickerWithText getStickerWithText() {
+    var text = getStickerText();
+    return StickerWithText(getSticker(), text == "" ? null : text);
+  }
+
   Sticker getSticker() {
     bool isFertile = fertilityReasons.isNotEmpty;
     bool hasInfertilityReasons = infertilityReasons.isNotEmpty;
