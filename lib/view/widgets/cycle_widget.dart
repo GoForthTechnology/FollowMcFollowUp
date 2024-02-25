@@ -130,7 +130,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     if (soloingCell && sticker == null) {
       sticker = StickerWithText(Sticker.grey, "?");
     }
-    var showStickerDialog = alreadySoloed || (soloingCell && (observation != null || entry?.manualSticker != null));
+    var showStickerDialog = !soloingCell || alreadySoloed || (soloingCell && (observation != null || entry?.manualSticker != null));
     Widget stickerWidget = StickerWidget(
       stickerWithText: sticker,
       onTap: showStickerDialog ? _showCorrectionDialog(context, entryIndex, /*this is sketchy*/entry?.manualSticker) : () {},

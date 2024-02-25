@@ -20,10 +20,10 @@ class DrillsScreen extends StatelessWidget {
   Widget _content(BuildContext context) {
     List<Exercise> exercises = List.from(dynamicExerciseList)
       ..addAll(staticExerciseList);
-    return Column(children: [
+    return SingleChildScrollView(child: Column(children: [
       StampSelectionPanel(exercises: exercises,),
       ChartCorrectingPanel(exercises: exercises,),
-    ],);
+    ],));
   }
 }
 

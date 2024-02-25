@@ -42,13 +42,13 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
           // the App.build method, and use it to set our appbar title.
           title: const Text("Follow Up Simulator"),
           actions: [
-            IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility, color: Colors.white), onPressed: () {
+            IconButton(icon: Icon(model.showErrors ? Icons.visibility_off: Icons.visibility), onPressed: () {
               model.toggleShowErrors();
             },),
-            IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () async {
+            IconButton(icon: const Icon(Icons.save), onPressed: () async {
               downloadJson(model.getStateAsJson(), "exercise.json");
             },),
-            IconButton(icon: const Icon(Icons.open_in_browser, color: Colors.white), onPressed: () async {
+            IconButton(icon: const Icon(Icons.open_in_browser), onPressed: () async {
               openJsonFile().then((file) async {
                 if (file == null) {
                   _showSnackBar("No file selected");

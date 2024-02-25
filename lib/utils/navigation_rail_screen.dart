@@ -52,7 +52,7 @@ class NavigationRailScreen extends StatelessWidget {
   }
 
   Widget _railLayout(BuildContext context) {
-    return Row(children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       NavigationRail(
         selectedIndex: item.index,
         destinations: NavigationItem.values.map((i) => NavigationRailDestination(
