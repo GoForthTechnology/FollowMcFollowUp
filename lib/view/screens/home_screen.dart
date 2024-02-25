@@ -73,6 +73,7 @@ class HomeScreen extends StatelessWidget with UiLoggy {
           ),
           const Icon(Icons.home),
           const Icon(Icons.timer),
+          const Icon(Icons.assignment),
         ],
       )));
   }
