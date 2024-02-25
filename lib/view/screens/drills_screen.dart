@@ -59,10 +59,10 @@ class ChartCorrectingPanel extends StatelessWidget {
       title: "Chart Correcting",
       subtitle: "Find and correct all the errors in the provided chart",
       contents: exercises.map((exercise) => TextButton(
-        onPressed: exercise.enabled ? null : () {
+        onPressed: exercise.enabled ? () {
           AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
               exerciseState: exercise.getState(includeErrorScenarios: true)));
-        },
+        } : null,
         child: Text(exercise.name),
       )).toList(),
     );

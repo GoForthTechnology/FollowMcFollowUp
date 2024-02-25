@@ -117,7 +117,9 @@ final dynamicExerciseList = [
     flowLength: 2, preBuildUpLength: 2, peakTypeLength: 1, buildUpLength: 2, postPeakLength: 5,
   )),
 
-  DynamicExercise(name: "Typical Cycles", recipe: CycleRecipe.create()),
+  DynamicExercise(name: "Typical Cycles", recipe: CycleRecipe.create(
+    prePeakMucusPatchProbability: 0.1,
+  )),
 
   const DynamicExercise(name: "Over reading lubrication"),
 
