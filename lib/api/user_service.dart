@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/model/student_profile.dart';
+import 'package:fmfu/model/user_profile.dart';
 import 'package:fmfu/utils/crud_interface.dart';
 import 'package:fmfu/utils/firebase_crud_interface.dart';
 
@@ -11,8 +12,9 @@ class UserService extends ChangeNotifier {
 
   final CrudInterface<EducatorProfile> _educatorPersistence;
   final CrudInterface<StudentProfile> _studentPersistence;
+  final CrudInterface<UserProfile> _profilePersistence;
 
-  UserService(this._educatorPersistence, this._studentPersistence);
+  UserService(this._educatorPersistence, this._studentPersistence, this._profilePersistence);
 
   static UserService createWithFirebase() {
     var educatorPersistence = StreamingFirebaseCrud<EducatorProfile>(
@@ -26,7 +28,25 @@ class UserService extends ChangeNotifier {
         toJson: (u) => u.toJson(),
         fromJson: StudentProfile.fromJson,
     );
-    return UserService(educatorPersistence, studentPersistence);
+    var profilePersistence = StreamingFirebaseCrud<UserProfile>(
+      directory: "users",
+      fromJson: UserProfile.fromJson,
+      toJson: (u) => u.toJson(),
+    );
+    return UserService(educatorPersistence, studentPersistence, profilePersistence);
+  }
+
+  Stream<UserProfile> currentProfile() async* {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("Not logged in!");
+    }
+    yield* _profilePersistence.get(user.uid).map((profile) {
+      if (profile == null) {
+        throw Exception("No profile found for id ${user.uid}");
+      }
+      return profile;
+    });
   }
 
   Stream<EducatorProfile> currentEducator() async* {

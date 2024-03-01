@@ -6,13 +6,14 @@ import 'package:fmfu/view/screens/chart_correction_screen.dart';
 import 'package:fmfu/view/screens/chart_editor_screen.dart';
 import 'package:fmfu/view/screens/drills_screen.dart';
 import 'package:fmfu/view/screens/education_program_crud_screen.dart';
-import 'package:fmfu/view/screens/education_program_list_screen.dart';
 import 'package:fmfu/view/screens/email_verify_screen.dart';
 import 'package:fmfu/view/screens/exercise_list_screen.dart';
 import 'package:fmfu/view/screens/fup_simulator_screen.dart';
 import 'package:fmfu/view/screens/fupf_screen.dart';
 import 'package:fmfu/view/screens/home_screen.dart';
 import 'package:fmfu/view/screens/login_screen.dart';
+import 'package:fmfu/view/screens/program_list_screen.dart';
+import 'package:fmfu/view/screens/signup_screen.dart';
 
 @AdaptiveAutoRouter(
   replaceInRouteName: 'Page,Route,Screen',
@@ -92,7 +93,7 @@ import 'package:fmfu/view/screens/login_screen.dart';
 
     AutoRoute(
       path: '/programs',
-      page: EducationProgramListScreen,
+      page: ProgramListScreen,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -109,6 +110,11 @@ import 'package:fmfu/view/screens/login_screen.dart';
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
+    ),
+
+    AutoRoute(
+      path: '/signup/:programID',
+      page: SignupScreen,
     ),
 
     AutoRoute(

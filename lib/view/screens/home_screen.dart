@@ -64,13 +64,6 @@ class HomeScreen extends StatelessWidget with UiLoggy {
             text: "Under construction.",
             onClick: () => router.push(FupFormScreenRoute()),
           ),
-          if (educatorProfile != null) _tile(
-            color: Colors.pinkAccent,
-            icon: Icons.edit_calendar,
-            title: "Manage Program",
-            text: "Create and configure education programs.",
-            onClick: () => router.push(const EducationProgramListScreenRoute()),
-          ),
         ],
       )));
   }

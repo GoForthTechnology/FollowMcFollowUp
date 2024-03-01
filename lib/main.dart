@@ -5,6 +5,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/api/education_program_service.dart';
+import 'package:fmfu/api/enrollment_service.dart';
 import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/auth.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: RecipeControlViewModel()),
         ChangeNotifierProvider.value(value: EducationProgramService.createWithFirebase()),
         ChangeNotifierProvider.value(value: UserService.createWithFirebase()),
+        ChangeNotifierProvider.value(value: EnrollmentService()),
       ], child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'FCP Classroom',
