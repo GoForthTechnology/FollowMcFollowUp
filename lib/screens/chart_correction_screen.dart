@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/view/widgets/chart_widget.dart';
+import 'package:fmfu/widgets/chart_widget.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:provider/provider.dart';

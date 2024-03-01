@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
-import 'package:fmfu/view/widgets/info_panel.dart';
+import 'package:fmfu/widgets/info_panel.dart';
 
 class DrillsScreen extends StatelessWidget {
   const DrillsScreen({super.key});

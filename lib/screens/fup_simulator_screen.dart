@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/utils/files.dart';
-import 'package:fmfu/view/widgets/chart_widget.dart';
-import 'package:fmfu/view/widgets/fup_form_widget.dart';
+import 'package:fmfu/widgets/chart_widget.dart';
+import 'package:fmfu/widgets/fup_form_widget.dart';
 import 'package:fmfu/view_model/fup_simulator_view_model.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';

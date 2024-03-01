@@ -7,7 +7,7 @@ import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
-import 'package:fmfu/view/widgets/info_panel.dart';
+import 'package:fmfu/widgets/info_panel.dart';
 import 'package:provider/provider.dart';
 
 class ProgramListScreen extends StatelessWidget {

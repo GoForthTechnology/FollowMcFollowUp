@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/utils/screen_widget.dart';
-import 'package:fmfu/view/widgets/fup_form_widget.dart';
+import 'package:fmfu/widgets/fup_form_widget.dart';
 
 class FupFormScreen extends ScreenWidget {
   static const String routeName = "fupf";

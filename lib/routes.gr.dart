@@ -17,20 +17,20 @@ import 'package:fmfu/auth.dart' as _i17;
 import 'package:fmfu/model/assignment.dart' as _i18;
 import 'package:fmfu/model/chart.dart' as _i20;
 import 'package:fmfu/model/exercise.dart' as _i19;
-import 'package:fmfu/view/screens/assignment_detail_screen.dart' as _i4;
-import 'package:fmfu/view/screens/assignment_list_screen.dart' as _i2;
-import 'package:fmfu/view/screens/chart_correction_screen.dart' as _i8;
-import 'package:fmfu/view/screens/chart_editor_screen.dart' as _i7;
-import 'package:fmfu/view/screens/drills_screen.dart' as _i3;
-import 'package:fmfu/view/screens/education_program_crud_screen.dart' as _i11;
-import 'package:fmfu/view/screens/email_verify_screen.dart' as _i14;
-import 'package:fmfu/view/screens/exercise_list_screen.dart' as _i9;
-import 'package:fmfu/view/screens/fup_simulator_screen.dart' as _i6;
-import 'package:fmfu/view/screens/fupf_screen.dart' as _i5;
-import 'package:fmfu/view/screens/home_screen.dart' as _i1;
-import 'package:fmfu/view/screens/login_screen.dart' as _i12;
-import 'package:fmfu/view/screens/program_list_screen.dart' as _i10;
-import 'package:fmfu/view/screens/signup_screen.dart' as _i13;
+import 'package:fmfu/screens/assignment_detail_screen.dart' as _i4;
+import 'package:fmfu/screens/assignment_list_screen.dart' as _i2;
+import 'package:fmfu/screens/chart_correction_screen.dart' as _i8;
+import 'package:fmfu/screens/chart_editor_screen.dart' as _i7;
+import 'package:fmfu/screens/drills_screen.dart' as _i3;
+import 'package:fmfu/screens/education_program_crud_screen.dart' as _i11;
+import 'package:fmfu/screens/email_verify_screen.dart' as _i14;
+import 'package:fmfu/screens/exercise_list_screen.dart' as _i9;
+import 'package:fmfu/screens/fup_simulator_screen.dart' as _i6;
+import 'package:fmfu/screens/fupf_screen.dart' as _i5;
+import 'package:fmfu/screens/home_screen.dart' as _i1;
+import 'package:fmfu/screens/login_screen.dart' as _i12;
+import 'package:fmfu/screens/program_list_screen.dart' as _i10;
+import 'package:fmfu/screens/signup_screen.dart' as _i13;
 
 class AppRouter extends _i15.RootStackRouter {
   AppRouter({

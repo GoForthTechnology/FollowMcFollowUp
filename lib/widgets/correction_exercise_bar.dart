@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Flow;
 import 'package:fmfu/model/observation.dart';
 import 'package:fmfu/model/stickers.dart';
-import 'package:fmfu/view/widgets/cycle_widget.dart';
+import 'package:fmfu/widgets/cycle_widget.dart';
 import 'package:fmfu/view_model/chart_correction_view_model.dart';
 import 'package:fmfu/view_model/exercise_view_model.dart';
 import 'package:fmfu/view_model/vdrs_view_model.dart';

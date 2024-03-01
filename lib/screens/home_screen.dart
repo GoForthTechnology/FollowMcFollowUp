@@ -5,7 +5,7 @@ import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
-import 'package:fmfu/view/screens/chart_editor_screen.dart';
+import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 

@@ -10,7 +10,7 @@ import 'package:fmfu/model/assignments.dart';
 import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/model/student_profile.dart';
 import 'package:fmfu/utils/stream_widget.dart';
-import 'package:fmfu/view/widgets/add_student_dialog.dart';
+import 'package:fmfu/widgets/add_student_dialog.dart';
 import 'package:loggy/loggy.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';

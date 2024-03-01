@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmfu/model/chart.dart';
-import 'package:fmfu/view/widgets/cycle_widget.dart';
+import 'package:fmfu/widgets/cycle_widget.dart';
 import 'package:fmfu/view_model/chart_view_model.dart';
 import 'package:loggy/loggy.dart';
 
