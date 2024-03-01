@@ -71,9 +71,6 @@ class HomeScreen extends StatelessWidget with UiLoggy {
             text: "Create and configure education programs.",
             onClick: () => router.push(const EducationProgramListScreenRoute()),
           ),
-          const Icon(Icons.home),
-          const Icon(Icons.timer),
-          const Icon(Icons.assignment),
         ],
       )));
   }
