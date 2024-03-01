@@ -16,10 +16,13 @@ class SignupScreen extends StatelessWidget {
     return Consumer<EnrollmentService>(builder: (context, service, child) => FutureBuilder(
       future: service.contains(programID).first,
       builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
         var validID = snapshot.data ?? false;
         if (!validID) {
           FirebaseAnalytics.instance.logSignUp(signUpMethod: "From Link", parameters: {"Invalid ID": programID});
-          return const Text("Invalid ID");
+          return const Center(child: Text("Invalid sign up link."));
         }
         FirebaseAnalytics.instance.logSignUp(signUpMethod: "From Link", parameters: {"Valid ID": programID});
         return RegisterScreen(
