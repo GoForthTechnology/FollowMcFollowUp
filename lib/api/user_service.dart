@@ -1,18 +1,21 @@
 
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/model/student_profile.dart';
 import 'package:fmfu/model/user_profile.dart';
 import 'package:fmfu/utils/crud_interface.dart';
 import 'package:fmfu/utils/firebase_crud_interface.dart';
+import 'package:rxdart/rxdart.dart';
 
 class UserService extends ChangeNotifier {
 
   final CrudInterface<EducatorProfile> _educatorPersistence;
   final CrudInterface<StudentProfile> _studentPersistence;
-  final CrudInterface<UserProfile> _profilePersistence;
+  final StreamingFirebaseCrud<UserProfile> _profilePersistence;
 
   UserService(this._educatorPersistence, this._studentPersistence, this._profilePersistence);
 
@@ -35,6 +38,22 @@ class UserService extends ChangeNotifier {
       toJson: (u) => u.toJson(),
     );
     return UserService(educatorPersistence, studentPersistence, profilePersistence);
+  }
+
+  Stream<List<UserProfile>> getStudents(EducationProgram program) {
+    return FirebaseDatabase.instance
+        .ref("users")
+        .orderByChild("educatorID")
+        .equalTo(program.educatorID)
+        .onValue
+        .map((e) => e.snapshot.children
+            .where((s) => s.value != null)
+            .map((snapshot) => snapshot.value as Map<String, dynamic>)
+            .map(UserProfile.fromJson)
+            .toList()).onErrorReturnWith((error, stackTrace) {
+              print("Error: $error $stackTrace");
+              return [];
+    });
   }
 
   Stream<UserProfile> currentProfile() async* {

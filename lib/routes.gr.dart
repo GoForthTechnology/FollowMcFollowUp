@@ -22,13 +22,13 @@ import 'package:fmfu/screens/assignment_list_screen.dart' as _i2;
 import 'package:fmfu/screens/chart_correction_screen.dart' as _i8;
 import 'package:fmfu/screens/chart_editor_screen.dart' as _i7;
 import 'package:fmfu/screens/drills_screen.dart' as _i3;
-import 'package:fmfu/screens/education_program_crud_screen.dart' as _i11;
 import 'package:fmfu/screens/email_verify_screen.dart' as _i14;
 import 'package:fmfu/screens/exercise_list_screen.dart' as _i9;
 import 'package:fmfu/screens/fup_simulator_screen.dart' as _i6;
 import 'package:fmfu/screens/fupf_screen.dart' as _i5;
 import 'package:fmfu/screens/home_screen.dart' as _i1;
 import 'package:fmfu/screens/login_screen.dart' as _i12;
+import 'package:fmfu/screens/program_edit_screen.dart' as _i11;
 import 'package:fmfu/screens/program_list_screen.dart' as _i10;
 import 'package:fmfu/screens/signup_screen.dart' as _i13;
 
@@ -124,16 +124,16 @@ class AppRouter extends _i15.RootStackRouter {
         child: const _i10.ProgramListScreen(),
       );
     },
-    EducationProgramCrudScreenRoute.name: (routeData) {
+    ProgramEditScreenRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<EducationProgramCrudScreenRouteArgs>(
-          orElse: () => EducationProgramCrudScreenRouteArgs(
-              programId: pathParams.optString('programId')));
+      final args = routeData.argsAs<ProgramEditScreenRouteArgs>(
+          orElse: () => ProgramEditScreenRouteArgs(
+              programID: pathParams.getString('programID')));
       return _i15.AdaptivePage<dynamic>(
         routeData: routeData,
-        child: _i11.EducationProgramCrudScreen(
+        child: _i11.ProgramEditScreen(
           key: args.key,
-          programId: args.programId,
+          programID: args.programID,
         ),
       );
     },
@@ -313,8 +313,8 @@ class AppRouter extends _i15.RootStackRouter {
           ],
         ),
         _i15.RouteConfig(
-          EducationProgramCrudScreenRoute.name,
-          path: '/program/:programId',
+          ProgramEditScreenRoute.name,
+          path: '/program/:programID',
           guards: [authGuard],
         ),
         _i15.RouteConfig(
@@ -595,38 +595,38 @@ class ProgramListScreenRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i11.EducationProgramCrudScreen]
-class EducationProgramCrudScreenRoute
-    extends _i15.PageRouteInfo<EducationProgramCrudScreenRouteArgs> {
-  EducationProgramCrudScreenRoute({
+/// [_i11.ProgramEditScreen]
+class ProgramEditScreenRoute
+    extends _i15.PageRouteInfo<ProgramEditScreenRouteArgs> {
+  ProgramEditScreenRoute({
     _i16.Key? key,
-    String? programId,
+    required String programID,
   }) : super(
-          EducationProgramCrudScreenRoute.name,
-          path: '/program/:programId',
-          args: EducationProgramCrudScreenRouteArgs(
+          ProgramEditScreenRoute.name,
+          path: '/program/:programID',
+          args: ProgramEditScreenRouteArgs(
             key: key,
-            programId: programId,
+            programID: programID,
           ),
-          rawPathParams: {'programId': programId},
+          rawPathParams: {'programID': programID},
         );
 
-  static const String name = 'EducationProgramCrudScreenRoute';
+  static const String name = 'ProgramEditScreenRoute';
 }
 
-class EducationProgramCrudScreenRouteArgs {
-  const EducationProgramCrudScreenRouteArgs({
+class ProgramEditScreenRouteArgs {
+  const ProgramEditScreenRouteArgs({
     this.key,
-    this.programId,
+    required this.programID,
   });
 
   final _i16.Key? key;
 
-  final String? programId;
+  final String programID;
 
   @override
   String toString() {
-    return 'EducationProgramCrudScreenRouteArgs{key: $key, programId: $programId}';
+    return 'ProgramEditScreenRouteArgs{key: $key, programID: $programID}';
   }
 }
 

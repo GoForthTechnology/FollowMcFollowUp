@@ -1,11 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fmfu/api/education_program_service.dart';
 import 'package:fmfu/api/enrollment_service.dart';
-import 'package:fmfu/logic/exercises.dart';
+import 'package:fmfu/api/user_service.dart';
 import 'package:fmfu/model/education_program.dart';
-import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
 import 'package:fmfu/widgets/info_panel.dart';
 import 'package:provider/provider.dart';
@@ -41,12 +39,35 @@ class ProgramListScreen extends StatelessWidget {
           subtitle: "",
           contents: [
             EnrollmentWidget(program: p),
+            StudentCountWidget(program: p,),
           ],
         )).toList();
         return SingleChildScrollView(child: Column(children: tiles));
       },
     ));
   }
+}
+
+class StudentCountWidget extends StatelessWidget {
+  final EducationProgram program;
+
+  const StudentCountWidget({super.key, required this.program});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<UserService>(builder: (context, service, child) => Row(children: [
+      StreamBuilder(
+        stream: service.getStudents(program),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+          return Text("Num Students: ${snapshot.data?.length ?? 0}");
+        },
+      ),
+    ],),);
+  }
+
 }
 
 class EnrollmentWidget extends StatefulWidget {
@@ -95,46 +116,4 @@ class _EnrollmentWidgetState extends State<EnrollmentWidget> {
     return "http://${Uri.base.authority}/#/signup/${widget.program.id}";
   }
 
-}
-
-class StampSelectionPanel extends StatelessWidget {
-  final List<Exercise> exercises;
-
-  const StampSelectionPanel({super.key, required this.exercises});
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableInfoPanel(
-      title: "Stamp Selection",
-      subtitle: "Select the correct stamp for each day in the cycle",
-      contents: exercises.map((exercise) => TextButton(
-        onPressed: exercise.enabled ? () {
-          AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-              cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
-        } : null,
-        child: Text(exercise.name),
-      )).toList(),
-    );
-  }
-}
-
-class ChartCorrectingPanel extends StatelessWidget {
-  final List<Exercise> exercises;
-
-  const ChartCorrectingPanel({super.key, required this.exercises});
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableInfoPanel(
-      title: "Chart Correcting",
-      subtitle: "Find and correct all the errors in the provided chart",
-      contents: exercises.map((exercise) => TextButton(
-        onPressed: exercise.enabled ? () {
-          AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
-              exerciseState: exercise.getState(includeErrorScenarios: true)));
-        } : null,
-        child: Text(exercise.name),
-      )).toList(),
-    );
-  }
 }

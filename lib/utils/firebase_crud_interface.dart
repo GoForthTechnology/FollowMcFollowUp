@@ -18,6 +18,7 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
     FirebaseAuth.instance
         .authStateChanges()
         .listen((user) {
+          print("New User ${user == null}");
           this.user = user;
           notifyListeners();
     });
@@ -34,19 +35,33 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
     return ref;
   }
 
+  Stream<List<T>> getWhere(String fieldName, String fieldValue) async* {
+    var ref = _ref();
+    if (ref == null) {
+      yield* const Stream.empty();
+    } else {
+      yield* db.ref(_ref()).orderByChild(fieldName).equalTo(fieldValue).onValue
+          .map((e) => e.snapshot.children
+          .map((snapshot) => snapshot.value as Map<String, dynamic>)
+          .map(fromJson)
+          .toList());
+    }
+  }
+
   @override
   Stream<T?> get(String id) async* {
     var ref = _ref(id: id);
     if (ref == null) {
       yield* const Stream.empty();
+    } else {
+      yield* db.ref(ref).onValue
+          .map((e) {
+        if (e.snapshot.value == null) {
+          return null;
+        }
+        return fromJson(e.snapshot.value as Map<String, dynamic>);
+      });
     }
-    yield* db.ref(ref).onValue
-        .map((e) {
-          if (e.snapshot.value == null) {
-            return null;
-          }
-          return fromJson(e.snapshot.value as Map<String, dynamic>);
-        });
   }
 
   @override
@@ -54,12 +69,13 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
     var ref = _ref();
     if (ref == null) {
       yield* const Stream.empty();
-    }
-    yield* db.ref(ref).onValue
+    } else {
+      yield* db.ref(ref).onValue
         .map((e) => e.snapshot.children
         .map((snapshot) => snapshot.value as Map<String, dynamic>)
         .map(fromJson)
         .toList());
+    }
   }
 
   @override

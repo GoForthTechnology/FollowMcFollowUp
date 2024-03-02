@@ -5,13 +5,13 @@ import 'package:fmfu/screens/assignment_list_screen.dart';
 import 'package:fmfu/screens/chart_correction_screen.dart';
 import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:fmfu/screens/drills_screen.dart';
-import 'package:fmfu/screens/education_program_crud_screen.dart';
 import 'package:fmfu/screens/email_verify_screen.dart';
 import 'package:fmfu/screens/exercise_list_screen.dart';
 import 'package:fmfu/screens/fup_simulator_screen.dart';
 import 'package:fmfu/screens/fupf_screen.dart';
 import 'package:fmfu/screens/home_screen.dart';
 import 'package:fmfu/screens/login_screen.dart';
+import 'package:fmfu/screens/program_edit_screen.dart';
 import 'package:fmfu/screens/program_list_screen.dart';
 import 'package:fmfu/screens/signup_screen.dart';
 
@@ -106,8 +106,8 @@ import 'package:fmfu/screens/signup_screen.dart';
     ),
 
     AutoRoute(
-      path: '/program/:programId',
-      page: EducationProgramCrudScreen,
+      path: '/program/:programID',
+      page: ProgramEditScreen,
       guards: [AuthGuard],
     ),
 

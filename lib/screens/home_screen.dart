@@ -1,13 +1,10 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:fmfu/api/user_service.dart';
-import 'package:fmfu/model/educator_profile.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
 import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:loggy/loggy.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget with UiLoggy {
   const HomeScreen({super.key});
@@ -32,7 +29,7 @@ class HomeScreen extends StatelessWidget with UiLoggy {
     ));
   }
 
-  Widget content(BuildContext context, EducatorProfile? educatorProfile) {
+  Widget content(BuildContext context) {
     final router = AutoRouter.of(context);
     return Center(child: ConstrainedBox(constraints: const BoxConstraints.tightFor(width: 400), child: GridView.extent(
         primary: false,
@@ -73,10 +70,7 @@ class HomeScreen extends StatelessWidget with UiLoggy {
     return NavigationRailScreen(
         title: const Text("Your Overview"),
         item: NavigationItem.home,
-        content: Consumer<UserService>(builder: (context, userService, _) => FutureProvider<EducatorProfile?>(
-      create: (_) => userService.getOrCreateEducatorProfile(),
-      initialData: null,
-      child: Consumer<EducatorProfile?>(builder: (context, educatorProfile, _) => content(context, educatorProfile)),
-    )));
+        content: content(context),
+    );
   }
 }
