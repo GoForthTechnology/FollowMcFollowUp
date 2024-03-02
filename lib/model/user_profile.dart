@@ -13,6 +13,7 @@ class UserProfile extends Indexable<UserProfile> {
   final String? programID;
   final String firstName;
   final String lastName;
+  final String email;
 
   UserProfile({
     required this.id,
@@ -20,6 +21,7 @@ class UserProfile extends Indexable<UserProfile> {
     required this.lastName,
     required this.educatorID,
     required this.programID,
+    required this.email,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
@@ -36,6 +38,6 @@ class UserProfile extends Indexable<UserProfile> {
 
   @override
   UserProfile setId(String id) {
-    return UserProfile(id: id, firstName: firstName, lastName: lastName, programID: programID, educatorID: educatorID);
+    return UserProfile(id: id, firstName: firstName, lastName: lastName, programID: programID, educatorID: educatorID, email: email);
   }
 }

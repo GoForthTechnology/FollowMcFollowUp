@@ -65,7 +65,7 @@ class _ViewState {
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
-    return EducationProgram(name!, _id, ep1Date!, ep2Date!, enrolledStudentIds: enrolledStudents);
+    return EducationProgram(name!, _id, "", ep1Date!, ep2Date!, enrolledStudentIds: enrolledStudents);
   }
 }
 

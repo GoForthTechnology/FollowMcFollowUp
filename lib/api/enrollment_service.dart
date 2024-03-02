@@ -1,21 +1,25 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fmfu/model/education_program.dart';
 
 class EnrollmentService extends ChangeNotifier {
 
   final FirebaseDatabase db = FirebaseDatabase.instance;
 
-  Future<void> add(String id) async {
-    return db.ref("enrollments/$id").set(true);
+  Future<void> add(EducationProgram program) async {
+    return _ref(program.id!).set(program.educatorID);
   }
 
-  Future<void> remove(String id) async {
-    return db.ref("enrollments/$id").remove();
+  Future<void> remove(EducationProgram program) async {
+    return _ref(program.id!).remove();
   }
 
-  Stream<bool> contains(String id) async* {
+  Stream<String?> contains(String id) async* {
     yield* _ref(id).onValue.map((e) {
-      return e.snapshot.exists;
+      if (!e.snapshot.exists) {
+        return null;
+      }
+      return e.snapshot.value as String;
     });
   }
 

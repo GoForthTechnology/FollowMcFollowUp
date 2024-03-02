@@ -31,6 +31,7 @@ class UserService extends ChangeNotifier {
     var profilePersistence = StreamingFirebaseCrud<UserProfile>(
       directory: "users",
       fromJson: UserProfile.fromJson,
+      prependUidToId: false,
       toJson: (u) => u.toJson(),
     );
     return UserService(educatorPersistence, studentPersistence, profilePersistence);
@@ -101,5 +102,9 @@ class UserService extends ChangeNotifier {
     );
     await _educatorPersistence.update(profile);
     return profile;
+  }
+
+  Future<void> createUser(UserProfile profile) async {
+    return _profilePersistence.update(profile);
   }
 }

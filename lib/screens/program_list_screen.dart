@@ -60,38 +60,35 @@ class EnrollmentWidget extends StatefulWidget {
 }
 
 class _EnrollmentWidgetState extends State<EnrollmentWidget> {
-  bool enrollmentEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     var scaffoldMessenger = ScaffoldMessenger.of(context);
-    return Consumer<EnrollmentService>(builder: (context, service, child) => Row(children: [
-      const Text("Enable Enrollment?"),
-      StreamBuilder<bool>(
-        stream: service.contains(widget.program.id ?? ""),
-        builder: (context, snapshot) => Switch(value: snapshot.data ?? false, onChanged: (v) {
+    return Consumer<EnrollmentService>(builder: (context, service, child) => StreamBuilder(
+      stream: service.contains(widget.program.id ?? ""),
+      builder: ((context, snapshot) => Row(children: [
+        const Text("Enable Enrollment?"),
+        Switch(value: snapshot.data != null, onChanged: (v) {
           if (v) {
-            service.add(widget.program.id ?? "").then((_) {
+            service.add(widget.program).then((_) {
               const snackBar = SnackBar(content: Text("Enrollment activated"));
+              scaffoldMessenger.clearSnackBars();
               scaffoldMessenger.showSnackBar(snackBar);
             });
           } else {
-            service.remove(widget.program.id ?? "").then((_) {
+            service.remove(widget.program).then((_) {
               const snackBar = SnackBar(content: Text("Enrollment deactivated"));
+              scaffoldMessenger.clearSnackBars();
               scaffoldMessenger.showSnackBar(snackBar);
             });
           }
-          setState(() {
-            enrollmentEnabled = v;
-          });
         },),
-      ),
-      if (enrollmentEnabled) TextButton(onPressed: () async {
-        await Clipboard.setData(ClipboardData(text: _signupLink()));
-        const snackBar = SnackBar(content: Text("Link copied to clipboard"));
-        scaffoldMessenger.showSnackBar(snackBar);
-      }, child: const Text("Copy Invite Link")),
-    ],));
+        if (snapshot.data != null) TextButton(onPressed: () async {
+          await Clipboard.setData(ClipboardData(text: _signupLink()));
+          const snackBar = SnackBar(content: Text("Link copied to clipboard"));
+          scaffoldMessenger.showSnackBar(snackBar);
+        }, child: const Text("Copy Invite Link")),
+      ],))));
   }
 
   String _signupLink() {

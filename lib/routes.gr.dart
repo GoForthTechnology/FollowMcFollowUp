@@ -231,6 +231,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           FupFormScreenRoute.name,
           path: '/followup_form',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -244,6 +245,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           FollowUpSimulatorPageRoute.name,
           path: '/simulator',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -257,6 +259,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           ChartEditorPageRoute.name,
           path: '/editor/:templateIndex',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -270,6 +273,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           ChartCorrectingScreenRoute.name,
           path: '/correction',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -283,6 +287,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           ExerciseScreenRoute.name,
           path: '/exercises/individual',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -296,6 +301,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           ProgramListScreenRoute.name,
           path: '/programs',
+          guards: [authGuard],
           children: [
             _i15.RouteConfig(
               '*#redirect',
@@ -309,6 +315,7 @@ class AppRouter extends _i15.RootStackRouter {
         _i15.RouteConfig(
           EducationProgramCrudScreenRoute.name,
           path: '/program/:programId',
+          guards: [authGuard],
         ),
         _i15.RouteConfig(
           LoginScreenRoute.name,

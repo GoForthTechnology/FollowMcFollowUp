@@ -54,6 +54,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/followup_form',
       page: FupFormScreen,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -62,6 +63,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/simulator',
       page: FollowUpSimulatorPage,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -70,6 +72,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/editor/:templateIndex',
       page: ChartEditorPage,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -78,6 +81,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/correction',
       page: ChartCorrectingScreen,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -86,6 +90,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/exercises/individual',
       page: ExerciseScreen,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -94,6 +99,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/programs',
       page: ProgramListScreen,
+      guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
@@ -102,6 +108,7 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/program/:programId',
       page: EducationProgramCrudScreen,
+      guards: [AuthGuard],
     ),
 
     AutoRoute(

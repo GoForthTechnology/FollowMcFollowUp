@@ -10,23 +10,24 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
   final FirebaseDatabase db;
   final T Function(Map<String, dynamic>) fromJson;
   final Map<String, dynamic> Function(T) toJson;
-  final userCompleter = Completer<User>();
   final bool prependUidToId;
+
+  User? user;
 
   StreamingFirebaseCrud({required this.directory, required this.fromJson, required this.toJson, this.prependUidToId = true}) : db = FirebaseDatabase.instance {
     FirebaseAuth.instance
         .authStateChanges()
         .listen((user) {
-      if (user != null) {
-        userCompleter.complete(user);
-        notifyListeners();
-      }
+          this.user = user;
+          notifyListeners();
     });
   }
 
-  Future<String?> _ref({String? id}) async {
-    var user = await userCompleter.future;
-    var ref = "$directory/${user.uid}";
+  String? _ref({String? id}) {
+    if (user == null) {
+      return null;
+    }
+    var ref = "$directory/${user!.uid}";
     if (prependUidToId && id != null) {
       ref = "$ref/$id";
     }
@@ -35,7 +36,10 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
 
   @override
   Stream<T?> get(String id) async* {
-    var ref = await _ref(id: id);
+    var ref = _ref(id: id);
+    if (ref == null) {
+      yield* const Stream.empty();
+    }
     yield* db.ref(ref).onValue
         .map((e) {
           if (e.snapshot.value == null) {
@@ -47,7 +51,10 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
 
   @override
   Stream<List<T>> getAll() async* {
-    var ref = await _ref(id: null);
+    var ref = _ref();
+    if (ref == null) {
+      yield* const Stream.empty();
+    }
     yield* db.ref(ref).onValue
         .map((e) => e.snapshot.children
         .map((snapshot) => snapshot.value as Map<String, dynamic>)
@@ -57,7 +64,7 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
 
   @override
   Future<String> insert(T t) async {
-    var ref = await _ref(id: null);
+    var ref = _ref(id: null);
     var child = db.ref(ref).push();
     var id = child.key!;
     var ut = t.setId(id);
@@ -66,7 +73,7 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
 
   @override
   Future<void> remove(String id) async {
-    var ref = await _ref(id: id);
+    var ref = _ref(id: id);
     return db.ref(ref).remove();
   }
 
@@ -77,7 +84,7 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
         t.setId(id);
       });
     }
-    var ref = await _ref(id: t.getId());
+    var ref = _ref(id: t.getId());
     return db.ref(ref).set(toJson(t));
   }
 }

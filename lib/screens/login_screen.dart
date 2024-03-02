@@ -3,8 +3,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/routes.gr.dart';
+import 'package:loggy/loggy.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget with UiLoggy {
   const LoginScreen({super.key});
 
   @override

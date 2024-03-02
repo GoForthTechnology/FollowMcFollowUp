@@ -11,6 +11,7 @@ part 'education_program.g.dart';
 class EducationProgram extends Indexable<EducationProgram> {
   final String? id;
   final String name;
+  final String educatorID;
 
   final List<String> enrolledStudentIds;
   final List<Assignment> assignments;
@@ -20,7 +21,7 @@ class EducationProgram extends Indexable<EducationProgram> {
   @LocalDateJsonConverter()
   final LocalDate ep2Date;
 
-  EducationProgram(this.name, this.id, this.ep1Date, this.ep2Date, {this.enrolledStudentIds = const [], this.assignments = const []});
+  EducationProgram(this.name, this.id, this.educatorID, this.ep1Date, this.ep2Date, {this.enrolledStudentIds = const [], this.assignments = const []});
 
   factory EducationProgram.fromJson(Map<String, dynamic> json) => _$EducationProgramFromJson(json);
   Map<String, dynamic> toJson() => _$EducationProgramToJson(this);
@@ -32,6 +33,6 @@ class EducationProgram extends Indexable<EducationProgram> {
 
   @override
   EducationProgram setId(String id) {
-    return EducationProgram(name, id, ep1Date, ep2Date, enrolledStudentIds: enrolledStudentIds);
+    return EducationProgram(name, id, educatorID, ep1Date, ep2Date, enrolledStudentIds: enrolledStudentIds);
   }
 }
