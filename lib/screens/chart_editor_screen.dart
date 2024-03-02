@@ -105,18 +105,18 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
     } : null;
     final refreshTooltip = canRefresh ? "Refresh cycle from recipe" : "Refresh disabled to preserve edits";
     return [
-      IconButton(icon: const Icon(Icons.refresh, color: Colors.white),
+      IconButton(icon: const Icon(Icons.refresh),
           onPressed: refreshAction, tooltip: refreshTooltip),
-      IconButton(icon: const Icon(Icons.tune, color: Colors.white), onPressed: () {
+      IconButton(icon: const Icon(Icons.tune), onPressed: () {
         model.toggleControlBar();
       }, tooltip: "Open cycle settings panel",),
-      IconButton(icon: const Icon(Icons.save, color: Colors.white), onPressed: () {
+      IconButton(icon: const Icon(Icons.save), onPressed: () {
         _promptForSaveType(context, model);
       }, tooltip: "Save chart as an exercise",),
-      IconButton(icon: const Icon(Icons.file_download, color: Colors.white), onPressed: () async {
+      IconButton(icon: const Icon(Icons.file_download), onPressed: () async {
         _promptForDownloadType(context, model);
       }, tooltip: "Download current chart",),
-      IconButton(icon: const Icon(Icons.file_upload, color: Colors.white), onPressed: () async {
+      IconButton(icon: const Icon(Icons.file_upload), onPressed: () async {
         openJsonFile().then((file) {
           if (file == null) {
             _showSnackBar(context, "No file selected");
@@ -269,15 +269,7 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
       showErrors: model.showErrors,
       titleWidget: _chartTitleWidget(model),
       chart: model.charts[model.chartIndex],
-      rightWidgetFn: (cycle) => Padding(
-          padding: const EdgeInsets.all(10),
-          child: ElevatedButton(
-            child: const Text("Run Correcting\nExercise"),
-            onPressed: () {
-              AutoRouter.of(context).push(ChartCorrectingScreenRoute(cycle: cycle));
-            },
-          )
-      ),
+      rightWidgetFn: (cycle) => Container(),
     );
   }
 

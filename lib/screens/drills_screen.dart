@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/routes.gr.dart';
+import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
 import 'package:fmfu/widgets/info_panel.dart';
 
@@ -23,6 +24,13 @@ class DrillsScreen extends StatelessWidget {
     return SingleChildScrollView(child: Column(children: [
       StampSelectionPanel(exercises: exercises,),
       ChartCorrectingPanel(exercises: exercises,),
+      Padding(
+        padding: const EdgeInsets.all(20),
+        child: ElevatedButton(onPressed: () {
+          ChartEditorPage.route(context)
+              .then((route) => AutoRouter.of(context).push(route));
+        }, child: const Text("Create new drill")),
+      ),
     ],));
   }
 }
