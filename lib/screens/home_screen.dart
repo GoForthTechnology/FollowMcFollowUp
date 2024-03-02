@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
-import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:loggy/loggy.dart';
 
 class HomeScreen extends StatelessWidget with UiLoggy {
@@ -39,26 +38,46 @@ class HomeScreen extends StatelessWidget with UiLoggy {
         maxCrossAxisExtent: 300.0,
         children: <Widget>[
           _tile(
-              color: Colors.lightBlue,
-              icon: Icons.edit,
-              title: "Exercise Builder",
-              text: "Create an exercise.",
-              onClick: () async {
-                ChartEditorPage.route(context).then((route) => router.push(route));
-              }
+            color: Colors.lightBlue,
+            icon: Icons.timer,
+            title: "Drills",
+            text: "Hone your skills with dynamic exercises",
+            onClick: () => router.push(const DrillsScreenRoute()),
           ),
           _tile(
             color: Colors.lightBlue,
             icon: Icons.assignment,
             title: "Assignments",
             text: "Complete your pre-client assignments",
-            onClick: () => router.push(const AssignmentListScreenRoute()),
+            onClick: () {
+              const snackBar = SnackBar(content: Text("Coming soon"));
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          ),
+          _tile(
+            color: Colors.lightBlue,
+            icon: Icons.person,
+            title: "Clients",
+            text: "Manage your clients and followups",
+            onClick: () {
+              const snackBar = SnackBar(content: Text("Coming soon"));
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          ),
+          _tile(
+            color: Colors.lightBlue,
+            icon: Icons.school,
+            title: "Programs",
+            text: "Manage your education programs",
+            onClick: () => router.push(const ProgramListScreenRoute()),
           ),
           _tile(
             color: Colors.grey[300]!,
             icon: Icons.engineering,
             title: "Follow Up Form",
-            text: "Under construction.",
+            text: "Explore the follow up form (under construction).",
             onClick: () => router.push(FupFormScreenRoute()),
           ),
         ],
