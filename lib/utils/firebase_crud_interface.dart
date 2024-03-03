@@ -18,7 +18,6 @@ class StreamingFirebaseCrud<T extends Indexable> extends CrudInterface<T> {
     FirebaseAuth.instance
         .authStateChanges()
         .listen((user) {
-          print("New User ${user == null}");
           this.user = user;
           notifyListeners();
     });

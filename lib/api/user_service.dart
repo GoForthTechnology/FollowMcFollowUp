@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fmfu/model/education_program.dart';
 import 'package:fmfu/model/user_profile.dart';
 import 'package:fmfu/utils/firebase_crud_interface.dart';
+import 'package:loggy/loggy.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserService extends ChangeNotifier {
@@ -35,7 +36,7 @@ class UserService extends ChangeNotifier {
             .map((snapshot) => snapshot.value as Map<String, dynamic>)
             .map(UserProfile.fromJson)
             .toList()).onErrorReturnWith((error, stackTrace) {
-              print("Error: $error $stackTrace");
+              logError("Error: $error, $stackTrace");
               return [];
     });
   }
