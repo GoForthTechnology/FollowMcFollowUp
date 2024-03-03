@@ -270,7 +270,8 @@ class _RecipeControlWidgetState extends State<RecipeControlWidget> {
         canRemove: false,
       ),
       ..._additionalObservations(context, model.mucusDischargeModel),
-      _lengthControl("Length", model.length, hint: "The overall length of the post peak phase"),
+      const Divider(),
+      _lengthControl("Overall Length", model.length, hint: "The overall length of the post peak phase"),
       _subSubSectionHeader("Default Observation"),
       _observation(
         context: context,

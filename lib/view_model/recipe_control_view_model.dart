@@ -96,7 +96,7 @@ class RecipeControlViewModel extends ChangeNotifier {
 
     final postPeakRecipe = PostPeakRecipe(
       lengthDist: NormalDistribution(postPeakModel.length.get(), 1),
-      mucusLengthDist: NormalDistribution(1, 1),
+      mucusLengthDist: NormalDistribution(postPeakModel.mucusLength.get(), 1),
       mucusDischargeGenerator: postPeakModel.mucusDischargeModel.asGenerator(),
       nonMucusDischargeGenerator: postPeakModel.dischargeModel.asGenerator(),
       abnormalBleedingGenerator: unusualBleedingGenerator,
