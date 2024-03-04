@@ -55,17 +55,16 @@ class StudentCountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserService>(builder: (context, service, child) => Row(children: [
-      StreamBuilder(
-        stream: service.getStudents(program),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
-          return Text("Num Students: ${snapshot.data?.length ?? 0}");
-        },
-      ),
-    ],),);
+    return Consumer<UserService>(builder: (context, service, child) => StreamBuilder(
+      stream: service.getStudents(program),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        var students = snapshot.data ?? [];
+        return Text("Num Students: ${students.length}");
+      },
+    ));
   }
 
 }
