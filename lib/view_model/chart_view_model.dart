@@ -53,7 +53,14 @@ abstract class ChartViewModel with GlobalLoggy {
   }
 
   void refreshCycles() {
-    updateCharts(recipeControlViewModel.getRecipe());
+    var r = Random();
+    Set<ErrorScenario> errorScenarios = {};
+    recipeControlViewModel.errorScenarios.forEach((scenario, probability) {
+      if (r.nextDouble() <= probability) {
+        errorScenarios.add(scenario);
+      }
+    });
+    updateCharts(recipeControlViewModel.getRecipe(), errorScenarios: errorScenarios);
     onChartChange();
   }
 

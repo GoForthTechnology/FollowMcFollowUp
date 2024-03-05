@@ -165,11 +165,11 @@ final dynamicExerciseList = [
 
   DynamicExercise(name: "Unusual Bleeding", recipe: CycleRecipe.create(
     preBuildUpLength: preBuildUpLengthRange.get().round(),
-    unusualBleedingProbability: const UniformRange(0.6, 0.9).get(),
+    unusualBleedingProbability: const UniformRange(0.2, 0.5).get(),
   ), errorScenarios: {
     ErrorScenario.forgetObservationOnFlow: 0.3,
     ErrorScenario.forgetRedStampForUnusualBleeding: 0.5,
-    ErrorScenario.forgetCountOfThreeForUnusualBleeding: 0.7,
+    ErrorScenario.forgetCountOfThreeForUnusualBleeding: 0.9,
   }),
 
   DynamicExercise(name: "Limited Mucus", recipe: CycleRecipe.create(
