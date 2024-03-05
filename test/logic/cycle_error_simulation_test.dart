@@ -35,7 +35,7 @@ void main() {
       var entries = renderedObservations
           .map((observation) => ChartEntry(observationText: observation.observationText, additionalText: observation.additionalText(), renderedObservation: observation, manualSticker: StickerWithText(Sticker.red, null)))
           .toList();
-      var correctedEntries = introduceErrors(entries, {ErrorScenario.forgetObservationOnFlow});
+      var correctedEntries = introduceErrors(entries, {ErrorScenario.forgetObservationOnBleeding});
       expect(correctedEntries[3].observationText, "L");
 
       correctedEntries = introduceErrors(entries, {});
