@@ -7,7 +7,7 @@ import 'package:fmfu/model/stickers.dart';
 
 enum ErrorScenario {
   forgetD4,
-  forgetObservationOnFlow,
+  forgetObservationOnBleeding,
   forgetRedStampForUnusualBleeding,
   forgetCountOfThreeForUnusualBleeding,
 }
@@ -31,7 +31,7 @@ List<ChartEntry> introduceErrors(List<ChartEntry> entries, Set<ErrorScenario> sc
       case ErrorScenario.forgetD4:
         out = runForgetD4(out);
         break;
-      case ErrorScenario.forgetObservationOnFlow:
+      case ErrorScenario.forgetObservationOnBleeding:
         out = runForgetObservationOnFlow(out);
         break;
       case ErrorScenario.forgetRedStampForUnusualBleeding:
@@ -106,7 +106,7 @@ List<ChartEntry> runForgetObservationOnFlow(List<ChartEntry> entries) {
   List<ChartEntry> out = entries;
   for (int i=0; i<out.length; i++) {
     var entry = entries[i];
-    if (entry.renderedObservation?.inFlow ?? false) {
+    if (entry.renderedObservation?.hasBleeding ?? false) {
       String updatedObservationText = entry.observationText;
       if (entry.observationText.startsWith("L")) {
         updatedObservationText = "L";

@@ -79,7 +79,7 @@ Map<String, dynamic> _$DynamicExerciseToJson(DynamicExercise instance) =>
 
 const _$ErrorScenarioEnumMap = {
   ErrorScenario.forgetD4: 'forgetD4',
-  ErrorScenario.forgetObservationOnFlow: 'forgetObservationOnFlow',
+  ErrorScenario.forgetObservationOnBleeding: 'forgetObservationOnBleeding',
   ErrorScenario.forgetRedStampForUnusualBleeding:
       'forgetRedStampForUnusualBleeding',
   ErrorScenario.forgetCountOfThreeForUnusualBleeding:

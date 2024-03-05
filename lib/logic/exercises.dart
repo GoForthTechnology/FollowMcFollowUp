@@ -128,14 +128,14 @@ final dynamicExerciseList = [
     prePeakMucusPatchProbability: 1.0,
     postPeakMucusPatchProbability: 1.0,
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 
   DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)", recipe: CycleRecipe.create(
     preBuildUpLength: 0,
     buildUpLength: const UniformRange(8, 10).get().round(),
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 
   const DynamicExercise(name: "Variable return of Peak-type mucus"),
@@ -144,7 +144,7 @@ final dynamicExerciseList = [
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     postPeakMucusPatchProbability: const UniformRange(0.7, 0.9).get(),
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 
   DynamicExercise(name: "Post-Peak Pasty", recipe: CycleRecipe.create(
@@ -152,7 +152,7 @@ final dynamicExerciseList = [
     prePeakMucusPatchProbability: const UniformRange(0.6, 0.8).get(),
     postPeakPasty: true,
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 
   const DynamicExercise(name: "Post-Peak, Peak-type mucus"),
@@ -160,14 +160,14 @@ final dynamicExerciseList = [
   DynamicExercise(name: "Premenstrual Spotting", recipe: CycleRecipe.create(
     preMenstrualSpottingLength: 4,
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 
   DynamicExercise(name: "Unusual Bleeding", recipe: CycleRecipe.create(
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     unusualBleedingProbability: const UniformRange(0.2, 0.5).get(),
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
     ErrorScenario.forgetRedStampForUnusualBleeding: 0.5,
     ErrorScenario.forgetCountOfThreeForUnusualBleeding: 0.9,
   }),
@@ -177,7 +177,7 @@ final dynamicExerciseList = [
     buildUpLength: const UniformRange(1, 2).get().round(),
     peakTypeLength: const UniformRange(0, 1).get().round(),
   ), errorScenarios: {
-    ErrorScenario.forgetObservationOnFlow: 0.3,
+    ErrorScenario.forgetObservationOnBleeding: 0.3,
   }),
 ];
 
