@@ -36,6 +36,7 @@ List<ChartEntry> introduceErrors(List<ChartEntry> entries, Set<ErrorScenario> sc
         break;
       case ErrorScenario.forgetRedStampForUnusualBleeding:
         out = runForgetRedStampForUnusualBleeding(out);
+        out = runForgetCountOfThreeForUnusualBleeding(out);
         break;
       case ErrorScenario.forgetCountOfThreeForUnusualBleeding:
         out = runForgetCountOfThreeForUnusualBleeding(out);
