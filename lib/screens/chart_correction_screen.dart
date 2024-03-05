@@ -78,6 +78,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                     showSticker: model.showSticker,
                   ),
                   rightWidgetFn: (cycle) => null,
+                  showErrors: model.showAnswers, // only show errors when answers are enabled
                 ),
               ],),
             ),
