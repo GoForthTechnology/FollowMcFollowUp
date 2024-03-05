@@ -68,7 +68,8 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                   chart: model.charts[0],
                   model: model,
                   includeFooter: false,
-                  editingEnabled: true,
+                  stampEditingEnabled: true,
+                  observationEditingEnabled: false,
                   correctingEnabled: false,
                   autoStamp: false,
                   soloCell: SoloCell(

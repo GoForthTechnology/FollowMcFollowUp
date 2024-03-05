@@ -8,7 +8,8 @@ class ChartWidget extends StatelessWidget with UiLoggy {
   final Chart chart;
   final ChartViewModel model;
   final Widget? titleWidget;
-  final bool editingEnabled;
+  final bool stampEditingEnabled;
+  final bool observationEditingEnabled;
   final bool correctingEnabled;
   final bool showErrors;
   final bool autoStamp;
@@ -19,7 +20,8 @@ class ChartWidget extends StatelessWidget with UiLoggy {
   const ChartWidget({
     required this.chart,
     required this.model,
-    this.editingEnabled = false,
+    this.stampEditingEnabled = false,
+    this.observationEditingEnabled = false,
     this.correctingEnabled = false,
     this.showErrors = false,
     this.includeFooter = true,
@@ -78,7 +80,8 @@ class ChartWidget extends StatelessWidget with UiLoggy {
       rows.add(CycleWidget(
         cycle: slice.cycle,
         model: model,
-        editingEnabled: editingEnabled,
+        stampEditingEnabled: stampEditingEnabled,
+        observationEditingEnabled: observationEditingEnabled,
         correctingEnabled: correctingEnabled,
         showErrors: showErrors,
         dayOffset: slice.offset,

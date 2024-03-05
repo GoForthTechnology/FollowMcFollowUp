@@ -264,7 +264,8 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
   ChartWidget _chartWidget(BuildContext context, ChartListViewModel model) {
     return  ChartWidget(
       model: model,
-      editingEnabled: model.editEnabled,
+      stampEditingEnabled: model.editEnabled,
+      observationEditingEnabled: model.editEnabled,
       correctingEnabled: !model.editEnabled,
       showErrors: model.showErrors,
       titleWidget: _chartTitleWidget(model),

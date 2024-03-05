@@ -18,7 +18,8 @@ class CycleWidget extends StatefulWidget {
   final Cycle? cycle;
   final int dayOffset;
   final bool correctingEnabled;
-  final bool editingEnabled;
+  final bool stampEditingEnabled;
+  final bool observationEditingEnabled;
   final bool showErrors;
   final bool autoStamp;
   final SoloCell? soloCell;
@@ -31,7 +32,8 @@ class CycleWidget extends StatefulWidget {
   const CycleWidget({
     required this.cycle,
     required this.model,
-    this.editingEnabled = false,
+    this.stampEditingEnabled = false,
+    this.observationEditingEnabled = false,
     this.correctingEnabled = false,
     this.showErrors = false,
     this.autoStamp = true,
@@ -99,12 +101,13 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
         drawOval: entry != null && hasFollowup,
       ),
     );
-    var canShowDialog = widget.editingEnabled || widget.correctingEnabled;
+    var canShowDialog = widget.observationEditingEnabled || widget.correctingEnabled;
     return ChartCellWidget(
       alignment: Alignment.topCenter,
       content: content,
       backgroundColor: textBackgroundColor,
-      onTap: (!canShowDialog || entry == null) ? () {} : _showObservationDialog(context, entryIndex, entry, observationCorrection),
+      onTap: (!canShowDialog || entry == null) ? () {} : _showObservationDialog(
+          context, entryIndex, entry, observationCorrection, widget.observationEditingEnabled),
       onLongPress: () {
         if (kDebugMode) {
           print(entry?.toJson());
@@ -157,7 +160,8 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       BuildContext context,
       int entryIndex,
       ChartEntry entry,
-      String? correction) {
+      String? correction,
+      bool editingEnabled) {
     return () {
       showDialog(
         context: context,
@@ -166,7 +170,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
             cycle: widget.cycle!,
             entry: entry,
             entryIndex: entryIndex,
-            editEnabled: widget.editingEnabled,
+            editEnabled: editingEnabled,
             model: widget.model,
           );
         },
@@ -186,7 +190,7 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
             model: widget.model,
             entryIndex: entryIndex,
             cycle: widget.cycle!,
-            editingEnabled: widget.editingEnabled,
+            editingEnabled: widget.stampEditingEnabled,
             existingCorrection: existingCorrection,
           );
         },

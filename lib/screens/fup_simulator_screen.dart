@@ -89,7 +89,6 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
   ChartWidget _chartWidget(FollowUpSimulatorViewModel model) {
     return  ChartWidget(
       model: model,
-      editingEnabled: false,
       correctingEnabled: true,
       showErrors: model.showErrors,
       titleWidget: _chartTitleWidget(model),
