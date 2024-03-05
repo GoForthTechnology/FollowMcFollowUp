@@ -37,6 +37,10 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
+      int entryIndex = min(
+        model.cycles[0].entries.where((e) => e.manualSticker != null).length,
+        model.cycles[0].entries.length - 1,
+      );
       return Scaffold(
         appBar: AppBar(
           title: const Text("Basic Chart Correcting"),
@@ -51,7 +55,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "Day #${(model.entryIndex+1).toString().padLeft(2, '0')}",
+              "Day #${(entryIndex+1).toString().padLeft(2, '0')}",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -69,10 +73,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                   autoStamp: false,
                   soloCell: SoloCell(
                     cycleIndex: 0,
-                    entryIndex: min(
-                      model.cycles[0].entries.where((e) => e.manualSticker != null).length,
-                      model.cycles[0].entries.length - 1,
-                    ),
+                    entryIndex: entryIndex,
                     showSticker: model.showSticker,
                   ),
                   rightWidgetFn: (cycle) => null,
