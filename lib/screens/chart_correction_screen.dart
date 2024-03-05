@@ -37,10 +37,10 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChartCorrectionViewModel, ExerciseViewModel>(builder: (context, model, exerciseModel, child) {
-      int entryIndex = min(
-        model.cycles[0].entries.where((e) => e.manualSticker != null).length,
-        model.cycles[0].entries.length - 1,
-      );
+      var entries = model.cycles[0].entries;
+      var numWithStamp = entries.where((e) => e.manualSticker != null).length;
+      var exerciseComplete = numWithStamp == entries.length;
+      var entryIndex = min(numWithStamp, entries.length - 1);
       return Scaffold(
         appBar: AppBar(
           title: const Text("Basic Chart Correcting"),
@@ -78,7 +78,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
                     showSticker: model.showSticker,
                   ),
                   rightWidgetFn: (cycle) => null,
-                  showErrors: model.showAnswers, // only show errors when answers are enabled
+                  showErrors: model.showAnswers || exerciseComplete, // only show errors when answers are enabled
                 ),
               ],),
             ),
@@ -86,6 +86,10 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
               onPressed: model.toggleShowAnswers,
               child: model.showAnswers ? const Text("Hide Answers") : const Text("Show Answers"),
             )),
+            if (exerciseComplete) Text("Exercise complete", style: Theme.of(context).textTheme.displayMedium,),
+            if (exerciseComplete) Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(onPressed: () {
+              Navigator.of(context).pop();
+            }, child: const Text("Select Another Drill"))),
         ]))),
       );
     });
