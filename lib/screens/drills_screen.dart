@@ -7,6 +7,7 @@ import 'package:fmfu/routes.gr.dart';
 import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:fmfu/utils/navigation_rail_screen.dart';
 import 'package:fmfu/widgets/info_panel.dart';
+import 'package:loggy/loggy.dart';
 
 class DrillsScreen extends StatelessWidget {
   const DrillsScreen({super.key});
@@ -22,7 +23,8 @@ class DrillsScreen extends StatelessWidget {
   
   Widget _content(BuildContext context) {
     List<Exercise> exercises = List.from(dynamicExerciseList)
-      ..addAll(staticExerciseList);
+      //..addAll(staticExerciseList) TODO: re-enable once the random selection bug is fixed
+    ;
     return SingleChildScrollView(child: Column(children: [
       StampSelectionPanel(exercises: exercises,),
       ChartCorrectingPanel(exercises: exercises,),
@@ -37,6 +39,14 @@ class DrillsScreen extends StatelessWidget {
   }
 }
 
+Exercise randomActiveExercise(List<Exercise> exercises) {
+  var activeExercises = exercises.where((e) => e.enabled).toList();
+  var index = Random().nextInt(activeExercises.length);
+  var exercise = activeExercises[index];
+  logDebug("Random exercise index $index out of ${activeExercises.length}, ${exercise.name}");
+  return exercise;
+}
+
 class StampSelectionPanel extends StatelessWidget {
   final List<Exercise> exercises;
 
@@ -45,9 +55,8 @@ class StampSelectionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var randomExercise = TextButton(onPressed: () {
-      var randomExercise = exercises[Random().nextInt(exercises.length)];
       AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-          cycle: randomExercise.getState(includeErrorScenarios: true).cycles[1]));
+          cycle: randomActiveExercise(exercises).getState(includeErrorScenarios: true).cycles[1]));
     }, child: const Text("Random Exercise"));
     var exerciseWidgets = exercises.map((exercise) => TextButton(
       onPressed: exercise.enabled ? () {
@@ -72,9 +81,8 @@ class ChartCorrectingPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var randomExercise = TextButton(onPressed: () {
-      var randomExercise = exercises[Random().nextInt(exercises.length)];
       AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
-          exerciseState: randomExercise.getState(includeErrorScenarios: true)));
+          exerciseState: randomActiveExercise(exercises).getState(includeErrorScenarios: true)));
     }, child: const Text("Random Exercise"));
     var exerciseWidgets = exercises.map((exercise) => TextButton(
       onPressed: exercise.enabled ? () {
