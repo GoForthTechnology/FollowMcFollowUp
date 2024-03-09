@@ -22,12 +22,7 @@ void downloadJson(String content, String fileName) async {
 }
 
 void downloadFile({required String content, required String mimeType, required fileName}) async {
-  // TODO fix this;
-  const String? path = null; //await getSavePath(suggestedName: fileName);
-  if (path == null) {
-    // Operation was canceled by the user.
-    return;
-  }
+  const String path = "";
   final Uint8List fileData = Uint8List.fromList(content.codeUnits);
   const String mimeType = 'text/plain';
   final XFile textFile =
