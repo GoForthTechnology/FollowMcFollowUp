@@ -56,7 +56,7 @@ class StampSelectionPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     var randomExercise = TextButton(onPressed: () {
       AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-          cycle: randomActiveExercise(exercises).getState(includeErrorScenarios: true).cycles[1]));
+          cycle: randomActiveExercise(exercises).getState(includeErrorScenarios: false).cycles[1]));
     }, child: const Text("Random Exercise"));
     var exerciseWidgets = exercises.map((exercise) => TextButton(
       onPressed: exercise.enabled ? () {

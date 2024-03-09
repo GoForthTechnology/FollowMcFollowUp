@@ -27,6 +27,8 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
     if (widget.cycle != null) {
       model.setCycle(widget.cycle!, notify: false);
     }
+    final exerciseModel = Provider.of<ExerciseViewModel>(context, listen: false);
+    exerciseModel.reset();
     super.initState();
   }
 

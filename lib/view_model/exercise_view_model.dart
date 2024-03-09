@@ -15,6 +15,13 @@ class ExerciseViewModel extends ChangeNotifier with GlobalLoggy {
 
   int questionIndex = -1;
 
+  void reset() {
+    stampAnswerSubmissions.clear();
+    currentStickerSelection = null;
+    currentStickerTextSelection = null;
+    questionIndex = -1;
+  }
+
   Question getQuestion() {
     return questionIndex % 2 == 0 ? Question.text : Question.sticker;
   }
