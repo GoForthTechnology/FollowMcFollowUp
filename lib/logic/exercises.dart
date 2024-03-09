@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -118,6 +119,8 @@ final basicErrorScenarios = {
   ErrorScenario.forgetD5: 0.3,
 };
 
+const String splitPeakRecipe = '{"flowRecipe":{"maxFlow":"heavy","minFlow":"veryLight","flowLength":{"mean":5,"stdDev":1},"dischargeSummaryGenerator":{"typicalDischarge":{"dischargeType":"dry","dischargeDescriptors":[],"dischargeFrequencies":["allDay"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"sticky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["twice"]},"alternatives":[]},"probability":0.1},{"generator":{"typicalDischarge":{"dischargeType":"stretchy","dischargeDescriptors":["clear"],"dischargeFrequencies":["twice"]},"alternatives":[]},"probability":0}]}},"preBuildUpRecipe":{"length":{"mean":4,"stdDev":1},"nonMucusDischargeGenerator":{"typicalDischarge":{"dischargeType":"dry","dischargeDescriptors":[],"dischargeFrequencies":["allDay"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"sticky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["twice"]},"alternatives":[]},"probability":0.1},{"generator":{"typicalDischarge":{"dischargeType":"stretchy","dischargeDescriptors":["clear"],"dischargeFrequencies":["twice"]},"alternatives":[]},"probability":0}]},"abnormalBleedingGenerator":{"probability":0}},"buildUpRecipe":{"lengthDist":{"mean":4,"stdDev":1},"peakTypeLengthDist":{"mean":4,"stdDev":2},"peakTypeDischargeGenerator":{"typicalDischarge":{"dischargeType":"stretchy","dischargeDescriptors":["clear"],"dischargeFrequencies":["twice"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"tacky","dischargeDescriptors":["clear"],"dischargeFrequencies":["once"]},"alternatives":[]},"probability":0.5},{"generator":{"typicalDischarge":{"dischargeType":"stretchy","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["once"]},"alternatives":[]},"probability":0.5}]},"nonPeakTypeDischargeGenerator":{"typicalDischarge":{"dischargeType":"sticky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["twice"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"tacky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["once"]},"alternatives":[]},"probability":0.5}]}},"postPeakRecipe":{"lengthDist":{"mean":12,"stdDev":1},"mucusLengthDist":{"mean":4,"stdDev":1},"mucusDischargeGenerator":{"typicalDischarge":{"dischargeType":"sticky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["twice"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"tacky","dischargeDescriptors":["clear"],"dischargeFrequencies":["once"]},"alternatives":[]},"probability":0.5}]},"nonMucusDischargeGenerator":{"typicalDischarge":{"dischargeType":"dry","dischargeDescriptors":[],"dischargeFrequencies":["allDay"]},"alternatives":[{"generator":{"typicalDischarge":{"dischargeType":"sticky","dischargeDescriptors":["cloudy"],"dischargeFrequencies":["twice"]},"alternatives":[]},"probability":0}]},"abnormalBleedingGenerator":{"probability":0},"preMenstrualSpottingLengthDist":{"mean":0,"stdDev":1}}}';
+
 final dynamicExerciseList = [
   if (kDebugMode) DynamicExercise(name: "Short Test Cycles", recipe: CycleRecipe.create(
     flowLength: 2, preBuildUpLength: 2, peakTypeLength: 1, buildUpLength: 2, postPeakLength: 5,
@@ -126,6 +129,12 @@ final dynamicExerciseList = [
   DynamicExercise(name: "Typical Cycles", recipe: CycleRecipe.create(
     prePeakMucusPatchProbability: 0.1,
   ), errorScenarios: basicErrorScenarios),
+
+  DynamicExercise(
+    name: "Split Peak",
+    recipe: CycleRecipe.fromJson(jsonDecode(splitPeakRecipe)),
+    errorScenarios: basicErrorScenarios,
+  ),
 
   const DynamicExercise(name: "Over reading lubrication"),
 
