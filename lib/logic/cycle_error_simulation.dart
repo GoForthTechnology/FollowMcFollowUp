@@ -7,6 +7,7 @@ import 'package:fmfu/model/stickers.dart';
 
 enum ErrorScenario {
   forgetD4,
+  forgetD5,
   forgetObservationOnBleeding,
   forgetRedStampForUnusualBleeding,
   forgetCountOfThreeForUnusualBleeding,
@@ -29,24 +30,53 @@ List<ChartEntry> introduceErrors(List<ChartEntry> entries, Set<ErrorScenario> sc
   for (var scenario in scenarios) {
     switch (scenario) {
       case ErrorScenario.forgetD4:
-        out = runForgetD4(out);
+        out = _runForgetD4(out);
+        break;
+      case ErrorScenario.forgetD5:
+        out = _runForgetD5(out);
         break;
       case ErrorScenario.forgetObservationOnBleeding:
-        out = runForgetObservationOnFlow(out);
+        out = _runForgetObservationOnFlow(out);
         break;
       case ErrorScenario.forgetRedStampForUnusualBleeding:
-        out = runForgetRedStampForUnusualBleeding(out);
-        out = runForgetCountOfThreeForUnusualBleeding(out);
+        out = _runForgetRedStampForUnusualBleeding(out);
+        out = _runForgetCountOfThreeForUnusualBleeding(out);
         break;
       case ErrorScenario.forgetCountOfThreeForUnusualBleeding:
-        out = runForgetCountOfThreeForUnusualBleeding(out);
+        out = _runForgetCountOfThreeForUnusualBleeding(out);
         break;
     }
   }
   return out;
 }
 
-List<ChartEntry> runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entries) {
+List<ChartEntry> _runForgetD5(List<ChartEntry> entries) {
+  var out = entries;
+  out = _removeCountOfThree(entries, CountOfThreeReason.singleDayOfPeakMucus);
+  out = _removeCountOfThree(entries, CountOfThreeReason.peakDay);
+
+  for (int i=0; i<out.length; i++) {
+    var entry = out[i];
+    if (entry.renderedObservation?.getStickerText() == "P") {
+      var manualSticker = entry.renderedObservation == null
+          ? null : StickerWithText(entry.renderedObservation!.getSticker(), null);
+      out[i] = ChartEntry(
+        observationText: entry.observationText,
+        additionalText: entry.additionalText,
+        renderedObservation: entry.renderedObservation,
+        manualSticker: manualSticker,
+      );
+    }
+  }
+
+  return out;
+}
+
+List<ChartEntry> _runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entries) {
+  return _removeCountOfThree(entries, CountOfThreeReason.unusualBleeding);
+}
+
+List<ChartEntry> _removeCountOfThree(List<ChartEntry> entries, CountOfThreeReason reason) {
   List<ChartEntry> out = entries;
   for (int i = 0; i < out.length; i++) {
     final entry = entries[i];
@@ -55,7 +85,7 @@ List<ChartEntry> runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entrie
     }
     var observation = entry.renderedObservation!;
     var countOfThreeReason = observation.debugInfo.countOfThreeReason;
-    if (countOfThreeReason == CountOfThreeReason.unusualBleeding) {
+    if (countOfThreeReason == reason) {
       Sticker updatedStamp;
       if (observation.hasMucus) {
         updatedStamp = Sticker.whiteBaby;
@@ -73,7 +103,7 @@ List<ChartEntry> runForgetCountOfThreeForUnusualBleeding(List<ChartEntry> entrie
   return out;
 }
 
-List<ChartEntry> runForgetRedStampForUnusualBleeding(List<ChartEntry> entries) {
+List<ChartEntry> _runForgetRedStampForUnusualBleeding(List<ChartEntry> entries) {
   List<ChartEntry> out = entries;
   for (int i=0; i<out.length; i++) {
     final entry = entries[i];
@@ -103,7 +133,7 @@ List<ChartEntry> runForgetRedStampForUnusualBleeding(List<ChartEntry> entries) {
   return out;
 }
 
-List<ChartEntry> runForgetObservationOnFlow(List<ChartEntry> entries) {
+List<ChartEntry> _runForgetObservationOnFlow(List<ChartEntry> entries) {
   List<ChartEntry> out = entries;
   for (int i=0; i<out.length; i++) {
     var entry = entries[i];
@@ -127,7 +157,7 @@ List<ChartEntry> runForgetObservationOnFlow(List<ChartEntry> entries) {
   return out;
 }
 
-List<ChartEntry> runForgetD4(List<ChartEntry> entries) {
+List<ChartEntry> _runForgetD4(List<ChartEntry> entries) {
   List<ChartEntry> out = entries;
   int d4Index = -1;
   for (int i=0; i<entries.length; i++) {
