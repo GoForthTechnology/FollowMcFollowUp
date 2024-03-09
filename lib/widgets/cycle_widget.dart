@@ -70,35 +70,38 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
     return null;
   }
 
-  bool _shouldSuppress(time.LocalDate? entryDate) {
-    if (entryDate == null) {
-      return false;
-    }
-    var currentFollowUpDate = widget.model.currentFollowUpDate();
-    bool suppressForFollowup = currentFollowUpDate != null && entryDate > currentFollowUpDate;
-    bool suppressForStartOfCharting = entryDate < widget.model.startOfCharting();
-    return suppressForFollowup || suppressForStartOfCharting;
-  }
-
   Widget _createObservationCell(int entryIndex) {
     var entry = _getChartEntry(entryIndex);
     time.LocalDate? entryDate = entry?.renderedObservation?.date;
-    var shouldSuppress = _shouldSuppress(entryDate);
-
+    var currentFollowUpDate = widget.model.currentFollowUpDate();
+    bool showDate = entryDate != null && entryDate >= widget.model.startOfCharting();
+    bool showObservation = showDate;
+    if (currentFollowUpDate != null) {
+      showDate = showDate && entryDate <= currentFollowUpDate;
+      showObservation = showObservation && entryDate < currentFollowUpDate;
+    }
     var textBackgroundColor = Colors.white;
-    if (widget.showErrors && (entry?.hasErrors() ?? false) && !shouldSuppress) {
+    if (widget.showErrors && (entry?.hasErrors() ?? false) && showObservation) {
       textBackgroundColor = const Color(0xFFEECDCD);
     }
-    String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
-    if (shouldSuppress) {
-      entry = null;
+    if (!showObservation) {
+      if (entryDate != null && currentFollowUpDate == entryDate) {
+        entry = ChartEntry(
+          observationText: '',
+          additionalText: '',
+          renderedObservation: RenderedObservation.blank(entryDate),
+        );
+      } else {
+        entry = null;
+      }
     }
     bool hasFollowup = entryDate != null && widget.model.followUps().contains(entryDate);
+    String? observationCorrection = widget.cycle?.observationCorrections[entryIndex];
     Widget content = CustomPaint(
       painter: ObservationPainter(
         entry,
         observationCorrection,
-        drawOval: entry != null && hasFollowup,
+        drawOval: showDate && hasFollowup,
       ),
     );
     var canShowDialog = widget.observationEditingEnabled || widget.correctingEnabled;
@@ -127,7 +130,11 @@ class CycleWidgetState extends State<CycleWidget> with UiLoggy {
       sticker = observation.getStickerWithText();
     }
     var entryDate = entry?.renderedObservation?.date;
-    if (_shouldSuppress(entryDate)) {
+    var currentFollowUpDate = widget.model.currentFollowUpDate();
+    bool showSticker = entryDate != null
+        && entryDate >= widget.model.startOfCharting()
+        && (currentFollowUpDate == null || entryDate < currentFollowUpDate);
+    if (!showSticker) {
       sticker = null;
     }
     if (soloingCell && sticker == null) {
