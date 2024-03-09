@@ -112,6 +112,12 @@ class StaticExercise extends Exercise {
 }
 const preBuildUpLengthRange = UniformRange(4, 6);
 
+final basicErrorScenarios = {
+  ErrorScenario.forgetObservationOnBleeding: 0.3,
+  ErrorScenario.forgetD4: 0.3,
+  ErrorScenario.forgetD5: 0.3,
+};
+
 final dynamicExerciseList = [
   if (kDebugMode) DynamicExercise(name: "Short Test Cycles", recipe: CycleRecipe.create(
     flowLength: 2, preBuildUpLength: 2, peakTypeLength: 1, buildUpLength: 2, postPeakLength: 5,
@@ -119,7 +125,7 @@ final dynamicExerciseList = [
 
   DynamicExercise(name: "Typical Cycles", recipe: CycleRecipe.create(
     prePeakMucusPatchProbability: 0.1,
-  )),
+  ), errorScenarios: basicErrorScenarios),
 
   const DynamicExercise(name: "Over reading lubrication"),
 
@@ -127,41 +133,31 @@ final dynamicExerciseList = [
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     prePeakMucusPatchProbability: 1.0,
     postPeakMucusPatchProbability: 1.0,
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 
   DynamicExercise(name: "Mucus Cycle > 8 days (reg. Cycles)", recipe: CycleRecipe.create(
     preBuildUpLength: 0,
     buildUpLength: const UniformRange(8, 10).get().round(),
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 
   const DynamicExercise(name: "Variable return of Peak-type mucus"),
 
   DynamicExercise(name: "Post-Peak, non-Peak-type mucus", recipe: CycleRecipe.create(
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     postPeakMucusPatchProbability: const UniformRange(0.7, 0.9).get(),
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 
   DynamicExercise(name: "Post-Peak Pasty", recipe: CycleRecipe.create(
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     prePeakMucusPatchProbability: const UniformRange(0.6, 0.8).get(),
     postPeakPasty: true,
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 
   const DynamicExercise(name: "Post-Peak, Peak-type mucus"),
 
   DynamicExercise(name: "Premenstrual Spotting", recipe: CycleRecipe.create(
     preMenstrualSpottingLength: 4,
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 
   DynamicExercise(name: "Unusual Bleeding", recipe: CycleRecipe.create(
     preBuildUpLength: preBuildUpLengthRange.get().round(),
@@ -176,9 +172,7 @@ final dynamicExerciseList = [
     preBuildUpLength: preBuildUpLengthRange.get().round(),
     buildUpLength: const UniformRange(1, 2).get().round(),
     peakTypeLength: const UniformRange(0, 1).get().round(),
-  ), errorScenarios: {
-    ErrorScenario.forgetObservationOnBleeding: 0.3,
-  }),
+  ), errorScenarios: basicErrorScenarios),
 ];
 
 @JsonSerializable(explicitToJson: true)

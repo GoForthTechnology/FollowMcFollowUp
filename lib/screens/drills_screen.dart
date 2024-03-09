@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/exercises.dart';
@@ -42,16 +44,22 @@ class StampSelectionPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var randomExercise = TextButton(onPressed: () {
+      var randomExercise = exercises[Random().nextInt(exercises.length)];
+      AutoRouter.of(context).push(ChartCorrectingScreenRoute(
+          cycle: randomExercise.getState(includeErrorScenarios: true).cycles[1]));
+    }, child: const Text("Random Exercise"));
+    var exerciseWidgets = exercises.map((exercise) => TextButton(
+      onPressed: exercise.enabled ? () {
+        AutoRouter.of(context).push(ChartCorrectingScreenRoute(
+            cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
+      } : null,
+      child: Text(exercise.name),
+    )).toList();
     return ExpandableInfoPanel(
       title: "Stamp Selection",
       subtitle: "Select the correct stamp for each day in the cycle",
-      contents: exercises.map((exercise) => TextButton(
-        onPressed: exercise.enabled ? () {
-          AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-              cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
-        } : null,
-        child: Text(exercise.name),
-      )).toList(),
+      contents: [randomExercise, ...exerciseWidgets],
     );
   }
 }
@@ -63,16 +71,22 @@ class ChartCorrectingPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var randomExercise = TextButton(onPressed: () {
+      var randomExercise = exercises[Random().nextInt(exercises.length)];
+      AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
+          exerciseState: randomExercise.getState(includeErrorScenarios: true)));
+    }, child: const Text("Random Exercise"));
+    var exerciseWidgets = exercises.map((exercise) => TextButton(
+      onPressed: exercise.enabled ? () {
+        AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
+            exerciseState: exercise.getState(includeErrorScenarios: true)));
+      } : null,
+      child: Text(exercise.name),
+    )).toList();
     return ExpandableInfoPanel(
       title: "Chart Correcting",
       subtitle: "Find and correct all the errors in the provided chart",
-      contents: exercises.map((exercise) => TextButton(
-        onPressed: exercise.enabled ? () {
-          AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
-              exerciseState: exercise.getState(includeErrorScenarios: true)));
-        } : null,
-        child: Text(exercise.name),
-      )).toList(),
+      contents: [randomExercise, ...exerciseWidgets],
     );
   }
 }
