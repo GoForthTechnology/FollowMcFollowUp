@@ -6,7 +6,6 @@ import 'package:fmfu/screens/chart_correction_screen.dart';
 import 'package:fmfu/screens/chart_editor_screen.dart';
 import 'package:fmfu/screens/drills_screen.dart';
 import 'package:fmfu/screens/email_verify_screen.dart';
-import 'package:fmfu/screens/exercise_list_screen.dart';
 import 'package:fmfu/screens/fup_simulator_screen.dart';
 import 'package:fmfu/screens/fupf_screen.dart';
 import 'package:fmfu/screens/home_screen.dart';
@@ -81,15 +80,6 @@ import 'package:fmfu/screens/signup_screen.dart';
     AutoRoute(
       path: '/correction',
       page: ChartCorrectingScreen,
-      guards: [AuthGuard],
-      children: [
-        RedirectRoute(path: '*', redirectTo: ''),
-      ],
-    ),
-
-    AutoRoute(
-      path: '/exercises/individual',
-      page: ExerciseScreen,
       guards: [AuthGuard],
       children: [
         RedirectRoute(path: '*', redirectTo: ''),

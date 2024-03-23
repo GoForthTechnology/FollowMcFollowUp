@@ -11,8 +11,9 @@ import 'package:provider/provider.dart';
 
 class ChartCorrectingScreen extends StatefulWidget {
   final Cycle? cycle;
+  final String exerciseName;
 
-  const ChartCorrectingScreen({super.key, required this.cycle});
+  const ChartCorrectingScreen({super.key, required this.cycle, required this.exerciseName});
 
   @override
   State<StatefulWidget> createState() => ChartCorrectionState();
@@ -22,7 +23,9 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
 
   @override
   void initState() {
-    FirebaseAnalytics.instance.logEvent(name: "Stamp Selection Exercise - Start");
+    FirebaseAnalytics.instance.logEvent(name: "Stamp Selection Exercise - Start", parameters: {
+      "exerciseName": widget.exerciseName,
+    });
     final model = Provider.of<ChartCorrectionViewModel>(context, listen: false);
     if (widget.cycle != null) {
       model.setCycle(widget.cycle!, notify: false);

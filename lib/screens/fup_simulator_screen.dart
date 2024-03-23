@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:fmfu/model/exercise.dart';
 import 'package:fmfu/utils/files.dart';
 import 'package:fmfu/widgets/chart_widget.dart';
@@ -14,8 +15,9 @@ import 'package:fmfu/model/stickers.dart';
 
 class FollowUpSimulatorPage extends StatefulWidget {
   final ExerciseState exerciseState;
+  final String exerciseName;
 
-  const FollowUpSimulatorPage({super.key, required this.exerciseState});
+  const FollowUpSimulatorPage({super.key, required this.exerciseState, required this.exerciseName});
 
   @override
   State<StatefulWidget> createState() => _FollowUpSimulatorPageState();
@@ -28,6 +30,9 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
   @override
   void initState() {
     super.initState();
+    FirebaseAnalytics.instance.logEvent(name: "Chart Correction Exercise - Start", parameters: {
+      "exerciseName": widget.exerciseName,
+    });
     final model = Provider.of<FollowUpSimulatorViewModel>(context, listen: false);
     model.restoreStateFromJson(widget.exerciseState, notify: false);
   }

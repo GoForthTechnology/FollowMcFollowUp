@@ -55,13 +55,16 @@ class StampSelectionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var randomExercise = TextButton(onPressed: () {
+      var exercise = randomActiveExercise(exercises);
       AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-          cycle: randomActiveExercise(exercises).getState(includeErrorScenarios: false).cycles[1]));
+        exerciseName: "Random: ${exercise.name}",
+          cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
     }, child: const Text("Random Exercise"));
     var exerciseWidgets = exercises.map((exercise) => TextButton(
       onPressed: exercise.enabled ? () {
         AutoRouter.of(context).push(ChartCorrectingScreenRoute(
-            cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
+          exerciseName: exercise.name,
+          cycle: exercise.getState(includeErrorScenarios: false).cycles[1]));
       } : null,
       child: Text(exercise.name),
     )).toList();
@@ -81,13 +84,16 @@ class ChartCorrectingPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var randomExercise = TextButton(onPressed: () {
+      var exercise = randomActiveExercise(exercises);
       AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
-          exerciseState: randomActiveExercise(exercises).getState(includeErrorScenarios: true)));
+        exerciseName: exercise.name,
+        exerciseState: exercise.getState(includeErrorScenarios: true)));
     }, child: const Text("Random Exercise"));
     var exerciseWidgets = exercises.map((exercise) => TextButton(
       onPressed: exercise.enabled ? () {
         AutoRouter.of(context).push(FollowUpSimulatorPageRoute(
-            exerciseState: exercise.getState(includeErrorScenarios: true)));
+          exerciseName: exercise.name,
+          exerciseState: exercise.getState(includeErrorScenarios: true)));
       } : null,
       child: Text(exercise.name),
     )).toList();
