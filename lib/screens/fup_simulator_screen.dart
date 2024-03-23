@@ -113,11 +113,13 @@ class _FollowUpSimulatorPageState extends State<FollowUpSimulatorPage> with Glob
           )),
           Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
               onPressed: model.hasPreviousFollowUp() ? () {
+                FirebaseAnalytics.instance.logEvent(name: "Goto previous followup");
                 model.goToPreviousFollowup();
               } : null,
               child: const Text("Previous Followup"))),
           Padding(padding: const EdgeInsets.only(left: 20), child: ElevatedButton(
               onPressed: model.hasNextFollowUp() ? () {
+                FirebaseAnalytics.instance.logEvent(name: "Goto next followup");
                 model.goToNextFollowup();
               } : null,
               child: const Text("Next Followup"))),

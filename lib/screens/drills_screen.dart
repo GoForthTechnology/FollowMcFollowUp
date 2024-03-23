@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fmfu/logic/exercises.dart';
 import 'package:fmfu/routes.gr.dart';
@@ -31,6 +32,7 @@ class DrillsScreen extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.all(20),
         child: ElevatedButton(onPressed: () {
+          FirebaseAnalytics.instance.logEvent(name: "Create new drill");
           ChartEditorPage.route(context)
               .then((route) => AutoRouter.of(context).push(route));
         }, child: const Text("Create new drill")),

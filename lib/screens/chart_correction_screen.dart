@@ -94,6 +94,7 @@ class ChartCorrectionState extends State<ChartCorrectingScreen> {
             if (exerciseComplete) Text("Exercise complete", style: Theme.of(context).textTheme.displayMedium,),
             if (exerciseComplete) Padding(padding: const EdgeInsets.all(10), child: ElevatedButton(onPressed: () {
               Navigator.of(context).pop();
+              FirebaseAnalytics.instance.logEvent(name: "Select another drill");
             }, child: const Text("Select Another Drill"))),
         ]))),
       );

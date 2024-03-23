@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:fmfu/logic/cycle_error_simulation.dart';
 import 'package:fmfu/logic/cycle_generation.dart';
 import 'package:fmfu/logic/exercises.dart';
@@ -117,6 +118,7 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
         _promptForDownloadType(context, model);
       }, tooltip: "Download current chart",),
       IconButton(icon: const Icon(Icons.file_upload), onPressed: () async {
+        FirebaseAnalytics.instance.logEvent(name: "Load exercise");
         openJsonFile().then((file) {
           if (file == null) {
             _showSnackBar(context, "No file selected");
@@ -131,6 +133,7 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
   }
 
   void _promptForDownloadType(BuildContext context, ChartListViewModel model) {
+    FirebaseAnalytics.instance.logEvent(name: "Download exercise");
     const itemSeparation = 10.0;
     const maxDialogWidth = 300.0;
     List<String> dynamicExerciseIssues = model.dynamicExerciseIssues();
@@ -162,6 +165,7 @@ class ChartEditorPage extends StatelessWidget with UiLoggy {
   }
 
   void _promptForSaveType(BuildContext context, ChartListViewModel model) {
+    FirebaseAnalytics.instance.logEvent(name: "Save exercise");
     const itemSeparation = 10.0;
     const maxDialogWidth = 300.0;
     List<String> dynamicExerciseIssues = model.dynamicExerciseIssues();
